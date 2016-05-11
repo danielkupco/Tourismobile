@@ -12,17 +12,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
+import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
+
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @ViewById
     Button btnScroll;
+
+    @ViewById
+    FrameLayout fragmentContainer;
 
     @AfterViews
     void init() {
@@ -46,6 +52,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (fragmentContainer != null) {
+
+            // Create a new Fragment to be placed in the activity layout
+            HomeFragment_ fragment = new HomeFragment_();
+
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            fragment.setArguments(getIntent().getExtras());
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragmentContainer, fragment).commit();
+        }
     }
 
     @Override
