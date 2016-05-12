@@ -21,8 +21,11 @@ public class TagRepository {
     public TagRepository() {
         this.tags = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
-            tags.add(new Tag(String.format("Tag %d", i), String.format("Description of tag %d.", i)));
+        for (int i = 1; i <= 25; i++) {
+            if(i > 25 / 2)
+                tags.add(new Tag(String.format("Tag %d", i), String.format("Realy loooooong description of tag %d", i)));
+            else
+                tags.add(new Tag(String.format("Tag %d", i), String.format("Description of tag %d", i)));
         }
     }
 

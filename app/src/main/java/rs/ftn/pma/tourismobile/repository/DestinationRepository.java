@@ -21,10 +21,10 @@ public class DestinationRepository {
     public DestinationRepository() {
         this.destinations = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             Destination dst = new Destination(
                     String.format("Destination %d", i),
-                    String.format("Description of %d. destination.", i),
+                    String.format("Description of destination %d", i),
                     String.format("Link to destination %d", i),
                     i % 2 == 0);
             this.destinations.add(dst);
