@@ -1,12 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rs.ftn.pma.tourismobile.fragments.DestinationsFragment">
+    tools:context="rs.ftn.pma.tourismobile.fragments.DestinationsFragment"
+    android:background="@color/primary" >
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/destinationsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hi from Destinations fragment!" />
+        android:scrollbars="vertical"
+        android:padding="@dimen/recycle_view_padding"
+        android:background="@color/primary" />
 
 </FrameLayout>

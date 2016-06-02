@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="rs.ftn.pma.tourismobile.fragments.TagsFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/tagList"
+        android:id="@+id/tagsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:padding="@dimen/recycle_view_padding"
+        android:background="@color/primary" />
 
-</FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAdd"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:src="@drawable/ic_plus_white_24dp"
+        android:scaleType="center" />
+
+</android.support.design.widget.CoordinatorLayout>

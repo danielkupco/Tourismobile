@@ -99,4 +99,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tag_name">Tag name</string>
+    <string name="tag_description">Tag description</string>
+
+    <!-- Hints -->
+    <string name="hint_name">Name</string>
 </resources>
