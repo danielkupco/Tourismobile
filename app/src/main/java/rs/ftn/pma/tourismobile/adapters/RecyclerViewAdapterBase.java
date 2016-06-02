@@ -31,9 +31,9 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     }
 
     /**
-     * If view item is annotated, user this to inflate view with needed layout.<br>
+     * If view item is annotated, use this to inflate view with needed layout.<br>
      * Inflate method implementation is not working properly in generated class since parent is not passed as 2nd argument in inflate method.<br>
-     * So, for example, view item's width can't match parent's.
+     * So, for example, view item's width can't match parent's (it's width takes only half of a screen).
      * @param parent
      * @param viewType
      * @return view with forced layout

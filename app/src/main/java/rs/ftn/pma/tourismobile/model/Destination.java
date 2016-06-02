@@ -11,15 +11,17 @@ public class Destination {
     private String name;
     private String decription;
     private String link;
+    private String imageURI;
     private boolean favourite;
     private List<Tag> tags = new ArrayList<Tag>();
 
     public Destination() {}
 
-    public Destination(String name, String decription, String link, boolean favourite) {
+    public Destination(String name, String decription, String link, String imageURI, boolean favourite) {
         this.name = name;
         this.decription = decription;
         this.link = link;
+        this.imageURI = imageURI;
         this.favourite = favourite;
     }
 
@@ -45,6 +47,14 @@ public class Destination {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
     }
 
     public boolean isFavourite() {

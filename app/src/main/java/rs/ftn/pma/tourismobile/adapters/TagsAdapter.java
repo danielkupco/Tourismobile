@@ -38,4 +38,10 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> {
         return TagItemView_.build(context);
     }
 
+    public boolean addTag(Tag tag) {
+        tagRepository.getTags().add(tag);
+        this.notifyItemInserted(tagRepository.getTags().size() - 1);
+        return true;
+    }
+
 }

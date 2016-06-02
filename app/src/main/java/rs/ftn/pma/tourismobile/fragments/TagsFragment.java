@@ -8,18 +8,20 @@ import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.TagsAdapter;
+import rs.ftn.pma.tourismobile.dialogs.NewTagDialog;
 
 
 @EFragment(R.layout.fragment_tags)
 public class TagsFragment extends Fragment {
 
     @ViewById
-    RecyclerView tagList;
+    RecyclerView tagsList;
 
     @Bean
     TagsAdapter tagsAdapter;
@@ -28,19 +30,21 @@ public class TagsFragment extends Fragment {
     void bindAdapter() {
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        tagList.setHasFixedSize(true);
+        tagsList.setHasFixedSize(true);
 
         // must set layout manager to recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        tagList.setLayoutManager(layoutManager);
+        tagsList.setLayoutManager(layoutManager);
 
         // binding adapter to the view
-        tagList.setAdapter(tagsAdapter);
+        tagsList.setAdapter(tagsAdapter);
     }
 
-//    @ItemClick
-//    void tagListItemClicked(Tag tag) {
-//    }
+    @Click
+    void fabAdd() {
+        Toast.makeText(getActivity(), "Click FAB", Toast.LENGTH_SHORT).show();
+        new NewTagDialog().setAdapter(tagsAdapter).show(getFragmentManager(), "new tag");
+    }
 
 }

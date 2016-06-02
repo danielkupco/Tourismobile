@@ -1,12 +1,16 @@
 package rs.ftn.pma.tourismobile.repository;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
+
+import com.facebook.common.util.UriUtil;
 
 import org.androidannotations.annotations.EBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.model.Destination;
 
 /**
@@ -26,7 +30,11 @@ public class DestinationRepository {
                     String.format("Destination %d", i),
                     String.format("Description of destination %d", i),
                     String.format("Link to destination %d", i),
-                    i % 2 == 0);
+                    new Uri.Builder()
+                            .scheme(UriUtil.LOCAL_RESOURCE_SCHEME) // "res"
+                            .path(String.valueOf(i % 2 == 0 ? R.drawable.milford_sound : R.drawable.stonehenge))
+                            .build().toString(),
+                    i % 2 == 0); // favourite
             this.destinations.add(dst);
         }
     }
