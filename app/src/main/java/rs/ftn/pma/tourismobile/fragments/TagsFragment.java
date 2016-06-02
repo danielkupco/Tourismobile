@@ -4,7 +4,6 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -14,11 +13,13 @@ import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.TagsAdapter;
-import rs.ftn.pma.tourismobile.dialogs.NewTagDialog;
+import rs.ftn.pma.tourismobile.dialogs.NewTagDialog_;
 
 
 @EFragment(R.layout.fragment_tags)
 public class TagsFragment extends Fragment {
+
+    private static final String TAG = TagsFragment.class.getSimpleName();
 
     @ViewById
     RecyclerView tagsList;
@@ -43,8 +44,11 @@ public class TagsFragment extends Fragment {
 
     @Click
     void fabAdd() {
-        Toast.makeText(getActivity(), "Click FAB", Toast.LENGTH_SHORT).show();
-        new NewTagDialog().setAdapter(tagsAdapter).show(getFragmentManager(), "new tag");
+        // creating dialog fragment in AA way
+        NewTagDialog_.builder()
+                // pass arguments here if any
+                .build()
+                .show(getFragmentManager(), TAG);
     }
 
 }

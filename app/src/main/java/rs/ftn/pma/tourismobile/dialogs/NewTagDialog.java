@@ -7,23 +7,28 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.androidannotations.annotations.EFragment;
+
 import rs.ftn.pma.tourismobile.R;
-import rs.ftn.pma.tourismobile.adapters.TagsAdapter;
+import rs.ftn.pma.tourismobile.util.ValidationUtils;
 
 /**
+ * Dialog for creating tags. It extends DialogFragment so it is annotated with <code>@EFragment</code>.<br>
  * Created by danex on 5/15/16.
  */
+@EFragment
 public class NewTagDialog extends DialogFragment {
 
-    private TagsAdapter tagsAdapter;
+    public static final String TAG = NewTagDialog.class.getSimpleName();
 
+    private View dialogLayout;
 
-    public NewTagDialog setAdapter(TagsAdapter tagsAdapter) {
-        this.tagsAdapter = tagsAdapter;
-        return this;
-    }
+    private TextView firstInvalidField;
 
     @NonNull
     @Override
@@ -34,25 +39,66 @@ public class NewTagDialog extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_new_tag, null))
+        dialogLayout = inflater.inflate(R.layout.dialog_new_tag, null);
+
+        builder.setView(dialogLayout)
                 // Add action buttons
-                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.btn_create), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        // Do nothing here because we override this button later to change the close behaviour.
+                        // However, we still need this because on older versions of Android unless we
+                        // pass a handler the button doesn't get instantiated
                         Toast.makeText(getActivity(), "Create", Toast.LENGTH_SHORT).show();
-//                        String tagName = ((TextView) getView().findViewById(R.id.name)).getText().toString();
-//                        String tagDescription = ((TextView) getView().findViewById(R.id.description)).getText().toString();
-//                        Tag tag = new Tag(tagName, tagDescription);
-//                        tagsAdapter.addTag(tag);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         NewTagDialog.this.getDialog().cancel();
                         Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
                     }
                 });
         return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        final AlertDialog dialog = (AlertDialog) getDialog();
+        if(dialog != null) {
+
+            Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+            positiveButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    TextView tvName = (TextView) dialogLayout.findViewById(R.id.tagName);
+                    TextView tvDescription = (TextView) dialogLayout.findViewById(R.id.tagDescription);
+                    boolean validForm = validateTextField(tvName);
+                    validForm &= validateTextField(tvDescription);
+                    if (!validForm) {
+                        firstInvalidField.requestFocus();
+                        firstInvalidField = null;
+                        return;
+                    }
+
+                    // We must dismiss dialog otherwise it stays open!
+                    dialog.dismiss();
+                }
+            });
+        }
+    }
+
+    private boolean validateTextField(TextView field) {
+        boolean valid = ValidationUtils.validateField(field,
+                true, // no additional validation
+                getString(R.string.error_field_required),
+                getString(R.string.error_text_not_alphanum));
+        if(!valid && firstInvalidField == null) {
+            firstInvalidField = field;
+        }
+        return valid;
     }
 
 }
