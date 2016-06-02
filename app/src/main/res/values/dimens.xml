@@ -13,10 +13,10 @@
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- Edit text (text field) -->
-    <dimen name="tf_margin_small">4dp</dimen>
-    <dimen name="tf_margin_medium">8dp</dimen>
-    <dimen name="tf_margin_large">16dp</dimen>
+    <!-- Edit text (text views) -->
+    <dimen name="tv_margin_small">4dp</dimen>
+    <dimen name="tv_margin_medium">8dp</dimen>
+    <dimen name="tv_margin_large">16dp</dimen>
 
     <!-- RecyclerView and CardView dimensions -->
     <dimen name="recycler_view_padding">4dp</dimen>

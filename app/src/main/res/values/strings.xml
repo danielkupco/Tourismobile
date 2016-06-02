@@ -102,6 +102,22 @@
     <string name="tag_name">Tag name</string>
     <string name="tag_description">Tag description</string>
 
+    <!-- Error messages -->
+    <string name="error_text_not_alphanum">Text can contain only letters and digits</string>
+    <string name="error_invalid_name">Name can consist only letters</string>
+    <string name="error_invalid_email">The mail address is invalid</string>
+    <string name="error_not_available_email">The mail address is not available!</string>
+    <string name="error_invalid_password">The password must be at least 4 characters long!</string>
+    <string name="error_incorrect_password">The password is incorrect</string>
+    <string name="error_not_same_password">The passwords are not same</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_spinner_type">You must select some type</string>
+
+    <!-- Buttons -->
+    <string name="btn_create">Create</string>
+    <string name="btn_cancel">Cancel</string>
+
     <!-- Hints -->
     <string name="hint_name">Name</string>
+    <string name="hint_description">Description</string>
 </resources>
