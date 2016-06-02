@@ -1,0 +1,55 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="drawable_padding">8dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+
+    <!-- Dividers -->
+    <dimen name="divider_thickness">0.8dp</dimen>
+    <dimen name="divider_margin">4dp</dimen>
+
+    <!-- Floating action button -->
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Edit text (text field) -->
+    <dimen name="tf_margin_small">4dp</dimen>
+    <dimen name="tf_margin_medium">8dp</dimen>
+    <dimen name="tf_margin_large">16dp</dimen>
+
+    <!-- RecyclerView and CardView dimensions -->
+    <dimen name="recycler_view_padding">4dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_elevation">2dp</dimen>
+    <dimen name="card_max_elevation">5dp</dimen>
+    <dimen name="card_corner_radius">2dp</dimen>
+    <dimen name="card_primary_text_size">24sp</dimen>
+    <dimen name="card_primary_text_top_padding">10dp</dimen>
+    <dimen name="card_primary_text_padding">6dp</dimen>
+    <dimen name="card_secondary_text_size">14sp</dimen>
+    <dimen name="card_secondary_text_padding">6dp</dimen>
+    <dimen name="card_actions_padding">6dp</dimen>
+
+    <!-- List view -->
+    <dimen name="list_item_text">16sp</dimen>
+    <dimen name="list_divider_height">2px</dimen>
+
+    <!-- Standard values -->
+    <dimen name="std_padding">4dp</dimen>
+    <dimen name="tab_indicator_height">5px</dimen>
+    <dimen name="zero_value">0dp</dimen>
+
+    <!-- User profile -->
+    <dimen name="profile_line_thickness">.65dp</dimen>
+    <dimen name="profile_line_margin">8dp</dimen>
+    <dimen name="profile_details_height">40dp</dimen>
+
+    <!--Layout margins and paddings-->
+    <dimen name="layout_margins">8dp</dimen>
+    <dimen name="layout_paddings">8dp</dimen>
+
+    <!-- Font sizes -->
+    <dimen name="font_medium">20dp</dimen>
+
+</resources>
