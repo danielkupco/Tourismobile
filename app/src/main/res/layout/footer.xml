@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@color/primary">
+
+    <!-- footer high enough just to push list above floating action button -->
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginBottom="@dimen/fab_margin">
+    </View>
+
+</android.support.v7.widget.LinearLayoutCompat>

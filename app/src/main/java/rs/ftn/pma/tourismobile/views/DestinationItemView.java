@@ -17,7 +17,7 @@ import rs.ftn.pma.tourismobile.model.Destination;
  * Created by danex on 5/12/16.
  */
 @EViewGroup(R.layout.view_item_destination)
-public class DestinationItemView extends CardView implements IBindedViewItem<Destination> {
+public class DestinationItemView extends CardView implements IViewHolder<Destination> {
 
     @ViewById
     SimpleDraweeView image;

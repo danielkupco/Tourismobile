@@ -27,10 +27,11 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> {
     @RootContext
     Context context;
 
-    // It is important to set data after injection
+    // It is important to initialize adapter and set data after injection
     @AfterInject
     void initData() {
         items = new ArrayList<>(tagRepository.getTags());
+        hasFooter = true;
     }
 
     @Override

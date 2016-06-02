@@ -4,30 +4,66 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import rs.ftn.pma.tourismobile.views.IBindedViewItem;
+import rs.ftn.pma.tourismobile.views.FooterView_;
+import rs.ftn.pma.tourismobile.views.IViewHolder;
 import rs.ftn.pma.tourismobile.views.ViewWrapper;
 
 /**
+ * Generic abstract RecyclerViewAdapter class with header/footer support.
  * Created by danex on 5/12/16.
  * Based on <a href="https://github.com/excilys/androidannotations/wiki/Adapters-and-lists">this example</a>
  */
 public abstract class RecyclerViewAdapterBase<T, V extends View> extends RecyclerView.Adapter<ViewWrapper<V>> {
 
-    protected List<T> items = new ArrayList<>();
+    protected static final int TYPE_HEADER = 0;
+    protected static final int TYPE_ITEM = 1;
+    protected static final int TYPE_FOOTER = 2;
+
+    protected boolean hasHeader = false;
+    protected boolean hasFooter = false;
+
+    protected List<T> items;
 
     @Override
     public int getItemCount() {
-        return items.size();
+        int totalCount = 0;
+        if(items != null)
+            totalCount = items.size();
+        if(hasHeader)
+            totalCount++;
+        if(hasFooter)
+            totalCount++;
+        return totalCount;
     }
 
     @Override
-    public final ViewWrapper<V> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType (int position) {
+        if(hasHeader && position == 0) {
+            return TYPE_HEADER;
+        } else if(hasFooter && position == getItemCount() - 1) {
+            return TYPE_FOOTER;
+        }
+        else {
+            return TYPE_ITEM;
+        }
+    }
+
+    @Override
+    public final ViewWrapper onCreateViewHolder(ViewGroup parent, int viewType) {
 //        return new ViewWrapper<V>(onCreateItemView(parent, viewType));
-        // force layout if necessary
-        return new ViewWrapper<V>(layoutAfterCreate(parent, viewType));
+        if(viewType == TYPE_HEADER) {
+            return new ViewWrapper<>(FooterView_.build(parent.getContext()));
+        } else if(viewType == TYPE_FOOTER) {
+            return new ViewWrapper<>(FooterView_.build(parent.getContext()));
+        } else if(viewType == TYPE_ITEM) {
+            // force layout if necessary
+            return new ViewWrapper<V>(layoutAfterCreate(parent, viewType));
+        }
+        else {
+            throw new RuntimeException("Invalid view item type for recycler view!");
+        }
     }
 
     /**
@@ -49,13 +85,18 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
 
     @Override
     public void onBindViewHolder(ViewWrapper<V> viewHolder, int position) {
+        if((hasHeader && position == 0) || (hasFooter && position == getItemCount() - 1))
+            return;
+
+        if(hasHeader)
+            position--;
+
         V view = viewHolder.getView();
         T item = items.get(position);
 
-        if(view instanceof IBindedViewItem) {
-            ((IBindedViewItem) view).bind(item);
+        if(view instanceof IViewHolder) {
+            ((IViewHolder) view).bind(item);
         }
     }
 
-    // additional methods to manipulate the items
 }

@@ -16,7 +16,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
  * Created by danex on 5/12/16.
  */
 @EViewGroup(R.layout.view_item_tag)
-public class TagItemView extends CardView implements IBindedViewItem<Tag> {
+public class TagItemView extends CardView implements IViewHolder<Tag> {
 
     @ViewById
     TextView name;
