@@ -28,6 +28,10 @@ dependencies {
     // Android annotations
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+    // ORMlite
+    compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '4.48'
+    compile "org.androidannotations:ormlite-api:$AAVersion"
+    apt "org.androidannotations:ormlite:$AAVersion"
     // Fresco image caching library
     compile 'com.facebook.fresco:fresco:0.10.0'
     // Android support
