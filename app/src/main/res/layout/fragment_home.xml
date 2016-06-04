@@ -18,9 +18,9 @@
         android:text="Hello World from Home fragment!" />
 
     <Button
-        android:id="@+id/btnScroll"
+        android:id="@+id/btnDBPedia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scroll"/>
+        android:text="DBPedia"/>
 
 </LinearLayout>
