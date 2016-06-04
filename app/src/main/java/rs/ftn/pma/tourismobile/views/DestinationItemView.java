@@ -36,7 +36,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     public void bind(Destination item) {
         image.setImageURI(Uri.parse(item.getImageURI()));
         name.setText(item.getName());
-        description.setText(item.getDecription());
+        description.setText(item.getDescription());
     }
 
 }

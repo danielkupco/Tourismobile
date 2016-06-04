@@ -9,9 +9,11 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Tag;
-import rs.ftn.pma.tourismobile.repository.TagRepository;
 import rs.ftn.pma.tourismobile.views.TagItemView;
 import rs.ftn.pma.tourismobile.views.TagItemView_;
 
@@ -19,10 +21,10 @@ import rs.ftn.pma.tourismobile.views.TagItemView_;
  * Created by danex on 5/12/16.
  */
 @EBean
-public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> {
+public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> implements Observer {
 
     @Bean
-    TagRepository tagRepository;
+    TagDAOWrapper tagDAOWrapper;
 
     @RootContext
     Context context;
@@ -30,8 +32,9 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> {
     // It is important to initialize adapter and set data after injection
     @AfterInject
     void initData() {
-        items = new ArrayList<>(tagRepository.getTags());
+        items = new ArrayList<>(tagDAOWrapper.getAll());
         hasFooter = true;
+        tagDAOWrapper.addObserver(this);
     }
 
     @Override
@@ -39,10 +42,11 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> {
         return TagItemView_.build(context);
     }
 
-    public boolean addTag(Tag tag) {
-        tagRepository.getTags().add(tag);
-        this.notifyItemInserted(tagRepository.getTags().size() - 1);
-        return true;
+    // updating adapter if repository data has changed
+    @Override
+    public void update(Observable observable, Object data) {
+        if(observable instanceof TagDAOWrapper) {
+            items = new ArrayList<>(tagDAOWrapper.getAll());
+        }
     }
-
 }

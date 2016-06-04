@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
+import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.util.ValidationUtils;
 
 /**
@@ -25,6 +28,9 @@ import rs.ftn.pma.tourismobile.util.ValidationUtils;
 public class NewTagDialog extends DialogFragment {
 
     public static final String TAG = NewTagDialog.class.getSimpleName();
+
+    @Bean
+    TagDAOWrapper tagDAOWrapper;
 
     private View dialogLayout;
 
@@ -82,6 +88,9 @@ public class NewTagDialog extends DialogFragment {
                         firstInvalidField = null;
                         return;
                     }
+
+                    Tag tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString());
+                    tagDAOWrapper.createTag(tag);
 
                     // We must dismiss dialog otherwise it stays open!
                     dialog.dismiss();
