@@ -32,7 +32,7 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> imple
     // It is important to initialize adapter and set data after injection
     @AfterInject
     void initData() {
-        items = new ArrayList<>(tagDAOWrapper.getAll());
+        items = new ArrayList<>(tagDAOWrapper.findAll());
         hasFooter = true;
         tagDAOWrapper.addObserver(this);
     }
@@ -46,7 +46,7 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> imple
     @Override
     public void update(Observable observable, Object data) {
         if(observable instanceof TagDAOWrapper) {
-            items = new ArrayList<>(tagDAOWrapper.getAll());
+            items = new ArrayList<>(tagDAOWrapper.findAll());
         }
     }
 }

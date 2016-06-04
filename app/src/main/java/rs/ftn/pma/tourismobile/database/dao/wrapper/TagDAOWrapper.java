@@ -13,7 +13,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
 /**
  * Created by Daniel Kupčo on 04.06.2016.
  */
-@EBean(scope = EBean.Scope.Singleton)
+@EBean
 public class TagDAOWrapper extends Observable {
 
     private static final String TAG = TagDAOWrapper.class.getSimpleName();
@@ -27,8 +27,12 @@ public class TagDAOWrapper extends Observable {
         notifyObservers();
     }
 
-    public List<Tag> getAll() {
+    public List<Tag> findAll() {
         return tagDAO.queryForAll();
+    }
+
+    public Tag findById(int id) {
+        return tagDAO.queryForId(id);
     }
 
 }

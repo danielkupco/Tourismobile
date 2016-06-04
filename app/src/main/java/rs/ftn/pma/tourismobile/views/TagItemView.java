@@ -4,12 +4,12 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.TagDetailsActivity_;
 import rs.ftn.pma.tourismobile.model.Tag;
 
 /**
@@ -17,6 +17,8 @@ import rs.ftn.pma.tourismobile.model.Tag;
  */
 @EViewGroup(R.layout.view_item_tag)
 public class TagItemView extends CardView implements IViewHolder<Tag> {
+
+    private int tagId;
 
     @ViewById
     TextView name;
@@ -29,13 +31,14 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, name.getText() + " " + description.getText(), Toast.LENGTH_SHORT).show();
+                TagDetailsActivity_.intent(context).tagId(tagId).start();
             }
         });
     }
 
     @Override
     public void bind(Tag tag) {
+        tagId = tag.getId();
         name.setText(tag.getName());
         description.setText(tag.getDescription());
     }
