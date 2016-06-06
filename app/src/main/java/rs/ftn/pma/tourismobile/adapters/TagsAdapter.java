@@ -42,7 +42,7 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> imple
         return TagItemView_.build(context);
     }
 
-    // updating adapter if repository data has changed
+    // updating adapter if data has changed
     @Override
     public void update(Observable observable, Object data) {
         if(observable instanceof TagDAOWrapper) {

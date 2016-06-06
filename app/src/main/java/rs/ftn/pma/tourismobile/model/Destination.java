@@ -15,9 +15,12 @@ public class Destination {
 
     public static final String ID_FIELD = "id";
     public static final String NAME_FIELD = "name";
-    public static final String DESCRIPTION_FIELD = "description";
-    public static final String LINK_FIELD = "link";
+    public static final String COMMENT_FIELD = "comment";
+    public static final String ABSTRACT_FIELD = "abstract";
+    public static final String WIKI_LINK_FIELD = "wikiLink";
     public static final String IMAGE_URI_FIELD = "image_uri";
+    public static final String LATITUDE_FIELD = "latitude";
+    public static final String LONGITUDE_FIELD = "longitude";
     public static final String FAVOURITE_FIELD = "favourite";
 
     @DatabaseField(columnName = ID_FIELD, generatedId = true)
@@ -26,14 +29,23 @@ public class Destination {
     @DatabaseField(columnName = NAME_FIELD, canBeNull = false)
     private String name;
 
-    @DatabaseField(columnName = DESCRIPTION_FIELD, canBeNull = false)
+    @DatabaseField(columnName = COMMENT_FIELD)
+    private String comment;
+
+    @DatabaseField(columnName = ABSTRACT_FIELD)
     private String description;
 
-    @DatabaseField(columnName = LINK_FIELD, canBeNull = false)
-    private String link;
+    @DatabaseField(columnName = WIKI_LINK_FIELD, canBeNull = false)
+    private String wikiLink;
 
     @DatabaseField(columnName = IMAGE_URI_FIELD)
     private String imageURI;
+
+    @DatabaseField(columnName = LATITUDE_FIELD)
+    private double latitude;
+
+    @DatabaseField(columnName = LONGITUDE_FIELD)
+    private double longitude;
 
     @DatabaseField(columnName = FAVOURITE_FIELD, canBeNull = false)
     private boolean favourite;
@@ -42,11 +54,14 @@ public class Destination {
 
     public Destination() {}
 
-    public Destination(String name, String description, String link, String imageURI, boolean favourite) {
+    public Destination(String name, String comment, String description, String wikiLink, String imageURI, double latitude, double longitude, boolean favourite) {
         this.name = name;
+        this.comment = comment;
         this.description = description;
-        this.link = link;
+        this.wikiLink = wikiLink;
         this.imageURI = imageURI;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.favourite = favourite;
     }
 
@@ -58,6 +73,14 @@ public class Destination {
         this.name = name;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -66,12 +89,12 @@ public class Destination {
         this.description = description;
     }
 
-    public String getLink() {
-        return link;
+    public String getWikiLink() {
+        return wikiLink;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setWikiLink(String wikiLink) {
+        this.wikiLink = wikiLink;
     }
 
     public String getImageURI() {
@@ -80,6 +103,22 @@ public class Destination {
 
     public void setImageURI(String imageURI) {
         this.imageURI = imageURI;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public boolean isFavourite() {
@@ -102,4 +141,19 @@ public class Destination {
         return tags.contains(tag) ? false : tags.add(tag);
     }
 
+    @Override
+    public String toString() {
+        return "Destination{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", comment='" + comment + '\'' +
+                ", description='" + description + '\'' +
+                ", wikiLink='" + wikiLink + '\'' +
+                ", imageURI='" + imageURI + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", favourite=" + favourite +
+                ", tags=" + tags +
+                '}';
+    }
 }

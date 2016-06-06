@@ -3,8 +3,6 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -13,9 +11,6 @@ import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
-import rs.ftn.pma.tourismobile.model.Destination;
-import rs.ftn.pma.tourismobile.repository.DestinationRepository;
-import rs.ftn.pma.tourismobile.util.ItemClickSupport;
 
 @EFragment(R.layout.fragment_destinations)
 public class DestinationsFragment extends Fragment {
@@ -25,9 +20,6 @@ public class DestinationsFragment extends Fragment {
 
     @Bean
     DestinationsAdapter destinationsAdapter;
-
-    @Bean
-    DestinationRepository destinationRepository;
 
     @AfterViews
     void bindAdapter() {
@@ -42,18 +34,16 @@ public class DestinationsFragment extends Fragment {
 
         // binding adapter to the view
         destinationsList.setAdapter(destinationsAdapter);
+        destinationsAdapter.queryDBPedia();
 
-
-        ItemClickSupport.addTo(destinationsList).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        // do it
-                        Destination d = destinationRepository.getDestinations().get(position);
-                        Toast.makeText(getActivity(), String.format("Click on %s", d.getName()), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
+//        ItemClickSupport.addTo(destinationsList).setOnItemClickListener(
+//                new ItemClickSupport.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+//                        // do it
+//                    }
+//                }
+//        );
     }
 
 }

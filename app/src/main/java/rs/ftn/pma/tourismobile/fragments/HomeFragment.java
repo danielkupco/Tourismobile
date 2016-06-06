@@ -3,8 +3,6 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -29,7 +27,7 @@ public class HomeFragment extends Fragment {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String query = "SELECT DISTINCT * FROM <http://dbpedia.org>\n" +
                 "WHERE  { \n" +
-                "  ?park a dbo:Park ;\n" +
+                "  ?destination a dbo:Park ;\n" +
                 "    dbp:name ?name ;\n" +
                 "    geo:lat ?lat ;\n" +
                 "    geo:long ?long ;\n" +
@@ -47,9 +45,9 @@ public class HomeFragment extends Fragment {
         Log.e(TAG, "json");
         Log.e(TAG, DBPediaUtils.formatJson(result));
 
-        Log.e(TAG, "extracted json");
-        JsonArray json = DBPediaUtils.getResults(result);
-        Log.e(TAG, json.toString());
+//        Log.e(TAG, "extracted json");
+//        JsonArray json = DBPediaUtils.getResults(result);
+//        Log.e(TAG, json.toString());
     }
 
 }

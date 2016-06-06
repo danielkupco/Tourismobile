@@ -19,6 +19,8 @@ import rs.ftn.pma.tourismobile.model.Destination;
 @EViewGroup(R.layout.view_item_destination)
 public class DestinationItemView extends CardView implements IViewHolder<Destination> {
 
+    private static final String TAG = DestinationItemView.class.getSimpleName();
+
     @ViewById
     SimpleDraweeView image;
 
@@ -28,12 +30,15 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @ViewById
     TextView description;
 
+    private Destination destination;
+
     public DestinationItemView(Context context) {
         super(context);
     }
 
     @Override
     public void bind(Destination item) {
+        destination = item;
         image.setImageURI(Uri.parse(item.getImageURI()));
         name.setText(item.getName());
         description.setText(item.getDescription());
