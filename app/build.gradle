@@ -57,6 +57,8 @@ dependencies {
 //    }
     // Fresco image caching library
     compile 'com.facebook.fresco:fresco:0.10.0'
+    // Material design progress bar
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
     // Android support
     compile "com.android.support:appcompat-v7:$ASVersion"
     compile "com.android.support:design:$ASVersion"

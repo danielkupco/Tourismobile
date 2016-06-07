@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rs.ftn.pma.tourismobile.views.FooterView_;
@@ -25,6 +26,11 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     protected boolean hasFooter = false;
 
     protected List<T> items;
+
+    public void setItems(List<T> items) {
+        this.items = new ArrayList<>(items);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

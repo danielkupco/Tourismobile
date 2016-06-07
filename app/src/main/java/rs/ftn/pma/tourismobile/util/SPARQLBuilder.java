@@ -43,7 +43,7 @@ public class SPARQLBuilder {
     }
 
     public SPARQLBuilder startWhere() {
-        query.append(" WHERE { ");
+        query.append(" WHERE {");
         return this;
     }
 
@@ -53,6 +53,10 @@ public class SPARQLBuilder {
     }
 
     public SPARQLBuilder triplet(String subject, String predicate, String object) {
+        char lastChar = query.charAt(query.length() - 1);
+        if(!(lastChar == '{' || lastChar == '.')) {
+            query.append(" .");
+        }
         query.append(String.format(" ?%s %s %s", subject, predicate, object));
         return this;
     }

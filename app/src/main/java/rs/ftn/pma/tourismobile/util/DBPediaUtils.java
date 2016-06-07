@@ -38,7 +38,6 @@ public class DBPediaUtils {
         for(JsonElement jsonElement : jsonArray) {
             Destination destination = new Destination();
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            Log.e(TAG, jsonObject.toString());
             destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
             destination.setComment(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD));
             destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
@@ -47,8 +46,6 @@ public class DBPediaUtils {
             destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
             destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
             destinations.add(destination);
-            Log.e(TAG, "extracted destination");
-            Log.v(TAG, destination.toString());
         }
         return destinations;
     }
