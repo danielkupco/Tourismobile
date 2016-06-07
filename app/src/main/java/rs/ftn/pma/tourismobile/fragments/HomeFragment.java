@@ -11,7 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
-import rs.ftn.pma.tourismobile.util.DBPediaUtils;
+import rs.ftn.pma.tourismobile.util.SPARQLBuilder;
 
 @EFragment(R.layout.fragment_home)
 public class HomeFragment extends Fragment {
@@ -41,13 +41,33 @@ public class HomeFragment extends Fragment {
                 "LIMIT 10";
         params.set("query", query);
         params.set("format", "json");
-        Object result = serviceDBPedia.queryDBPedia(params);
-        Log.e(TAG, "json");
-        Log.e(TAG, DBPediaUtils.formatJson(result));
+//        Object result = serviceDBPedia.queryDBPedia(params);
+//        Log.e(TAG, "json");
+//        Log.e(TAG, DBPediaUtils.formatJson(result));
 
-//        Log.e(TAG, "extracted json");
-//        JsonArray json = DBPediaUtils.getResults(result);
-//        Log.e(TAG, json.toString());
+        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
+        String sparql = sparqlBuilder.select()
+                .from("http://dbpedia.org")
+                .startWhere()
+                .triplet("destination", "a", "dbo:Park")
+                .property("dbp:name").as("name")
+                .property("geo:lat").as("lat")
+                .property("geo:long").as("long")
+                .property("dbo:thumbnail").as("thumbnail")
+                .property("foaf:isPrimaryTopicOf").as("wikiLink")
+                .property("rdfs:comment").as("comment")
+                .property("dbo:abstract").as("abstract")
+                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
+                .endWhere()
+                .orderBy("name")
+                .limit(10)
+                .build();
+
+        String prettified = sparqlBuilder.prettify();
+
+        Log.e(TAG, sparql);
+        Log.e(TAG, prettified);
+        Log.e(TAG, query);
     }
 
 }

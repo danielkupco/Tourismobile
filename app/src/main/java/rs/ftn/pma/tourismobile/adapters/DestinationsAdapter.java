@@ -21,6 +21,7 @@ import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
+import rs.ftn.pma.tourismobile.util.SPARQLBuilder;
 import rs.ftn.pma.tourismobile.views.DestinationItemView;
 import rs.ftn.pma.tourismobile.views.DestinationItemView_;
 
@@ -57,22 +58,28 @@ public class DestinationsAdapter extends RecyclerViewAdapterBase<Destination, De
     @Background
     public void queryDBPedia() {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String query = "SELECT DISTINCT * FROM <http://dbpedia.org>\n" +
-                "WHERE  { \n" +
-                "  ?destination a dbo:Park ;\n" +
-                "    dbp:name ?name ;\n" +
-                "    geo:lat ?lat ;\n" +
-                "    geo:long ?long ;\n" +
-                "    dbo:thumbnail ?thumbnail ;\n" +
-                "    foaf:isPrimaryTopicOf ?wikiLink ;\n" +
-                "    rdfs:comment ?comment ;\n" +
-                "    dbo:abstract ?abstract .\n" +
-                "  FILTER( lang(?comment)=\"en\" && lang(?abstract)=\"en\") .\n" +
-                "}\n" +
-                "ORDER BY ?name\n" +
-                "LIMIT 10";
-        params.set("query", query);
+
+        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
+        String sparql = sparqlBuilder.select()
+                .from("http://dbpedia.org")
+                .startWhere()
+                .triplet("destination", "a", "dbo:Park")
+                .property("dbp:name").as("name")
+                .property("geo:lat").as("lat")
+                .property("geo:long").as("long")
+                .property("dbo:thumbnail").as("thumbnail")
+                .property("foaf:isPrimaryTopicOf").as("wikiLink")
+                .property("rdfs:comment").as("comment")
+                .property("dbo:abstract").as("abstract")
+                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
+                .endWhere()
+                .orderBy("name")
+                .limit(10)
+                .build();
+
+        params.set("query", sparql);
         params.set("format", "json");
+
         Object result = serviceDBPedia.queryDBPedia(params);
         queryDBPediaSuccess(result);
     }
