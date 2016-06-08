@@ -22,8 +22,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:viewAspectRatio="1.78"
-            app:placeholderImage="@drawable/loading_circle"
-            app:placeholderImageScaleType="centerInside" />
+            android:scaleType="fitCenter"
+            app:failureImage="@drawable/no_image_available"
+            app:failureImageScaleType="centerInside"
+            app:progressBarImage="@drawable/loading_circle"
+            app:progressBarImageScaleType="centerInside"
+            app:progressBarAutoRotateInterval="3000" />
 
 
         <TextView

@@ -1,7 +1,5 @@
 package rs.ftn.pma.tourismobile.util;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -39,7 +37,7 @@ public class DBPediaUtils {
             Destination destination = new Destination();
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
-            destination.setComment(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD));
+            destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
             destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
             destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
             destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
@@ -65,6 +63,13 @@ public class DBPediaUtils {
         if(jsonObject.has(fieldName))
             return getJsonValue(jsonObject, fieldName).getAsDouble();
         return new JsonPrimitive(0.0).getAsDouble();
+    }
+
+    public static String shortenString(String string, int limit) {
+        if(string.length() > limit) {
+            return String.format("%s...", string.substring(0, limit - 3));
+        }
+        return string;
     }
 
 }
