@@ -7,10 +7,12 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.DestinationDetailsActivity_;
 import rs.ftn.pma.tourismobile.model.Destination;
 
 /**
@@ -42,6 +44,14 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         image.setImageURI(Uri.parse(item.getImageURI()));
         name.setText(item.getName());
         description.setText(item.getComment());
+    }
+
+    @Click
+    void btnDetails() {
+        DestinationDetailsActivity_.intent(this.getContext())
+//                .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .wikiPageID(destination.getWikiPageID())
+                .start();
     }
 
 }

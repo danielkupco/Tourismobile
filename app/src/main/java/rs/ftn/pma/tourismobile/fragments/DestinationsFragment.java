@@ -77,13 +77,10 @@ public class DestinationsFragment extends Fragment {
                 .startWhere()
                 .triplet("destination", "a", "dbo:Park")
                 .property("dbp:name").as("name")
-                .property("geo:lat").as("lat")
-                .property("geo:long").as("long")
                 .property("dbo:thumbnail").as("thumbnail")
-                .property("foaf:isPrimaryTopicOf").as("wikiLink")
                 .property("rdfs:comment").as("comment")
-                .property("dbo:abstract").as("abstract")
-                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
+                .property("dbo:wikiPageID").as("wikiPageID")
+                .filter("lang(?comment)=\"en\"")
                 .endWhere()
                 .orderBy("name")
                 .limit(queryLimit)
@@ -104,7 +101,7 @@ public class DestinationsFragment extends Fragment {
 
     @UiThread
     void queryDBPediaSuccess(Object result) {
-        destinationsAdapter.addItems(DBPediaUtils.extractDestinationsFromResponse(result));
+        destinationsAdapter.addItems(DBPediaUtils.extractDestinationsForList(result));
         updateUIAfterQuery(true);
     }
 

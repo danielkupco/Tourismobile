@@ -23,6 +23,7 @@
             android:label="@string/title_activity_scrolling"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.TagDetailsActivity_" />
+        <activity android:name=".activities.DestinationDetailsActivity_" />
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ public class Destination {
     public static final String COMMENT_FIELD = "comment";
     public static final String ABSTRACT_FIELD = "abstract";
     public static final String WIKI_LINK_FIELD = "wikiLink";
+    public static final String WIKI_PAGE_ID_FIELD = "wikiPageID";
     public static final String IMAGE_URI_FIELD = "image_uri";
     public static final String LATITUDE_FIELD = "latitude";
     public static final String LONGITUDE_FIELD = "longitude";
@@ -38,6 +39,9 @@ public class Destination {
     @DatabaseField(columnName = WIKI_LINK_FIELD, canBeNull = false)
     private String wikiLink;
 
+    @DatabaseField(columnName = WIKI_PAGE_ID_FIELD, canBeNull = false)
+    private int wikiPageID;
+
     @DatabaseField(columnName = IMAGE_URI_FIELD)
     private String imageURI;
 
@@ -54,11 +58,12 @@ public class Destination {
 
     public Destination() {}
 
-    public Destination(String name, String comment, String description, String wikiLink, String imageURI, double latitude, double longitude, boolean favourite) {
+    public Destination(String name, String comment, String description, String wikiLink, int wikiPageID, String imageURI, double latitude, double longitude, boolean favourite) {
         this.name = name;
         this.comment = comment;
         this.description = description;
         this.wikiLink = wikiLink;
+        this.wikiPageID = wikiPageID;
         this.imageURI = imageURI;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -96,6 +101,10 @@ public class Destination {
     public void setWikiLink(String wikiLink) {
         this.wikiLink = wikiLink;
     }
+
+    public int getWikiPageID() { return wikiPageID; }
+
+    public void setWikiPageID(int wikiPageID) { this.wikiPageID = wikiPageID; }
 
     public String getImageURI() {
         return imageURI;

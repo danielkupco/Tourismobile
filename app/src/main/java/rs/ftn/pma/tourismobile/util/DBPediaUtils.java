@@ -29,23 +29,43 @@ public class DBPediaUtils {
         return new Gson().toJsonTree(object).getAsJsonObject().getAsJsonObject("results").getAsJsonArray("bindings");
     }
 
-    public static List<Destination> extractDestinationsFromResponse(Object response) {
-        Gson gson = new Gson();
+    public static List<Destination> extractDestinationsForList(Object response) {
         List<Destination> destinations = new ArrayList<>();
-        JsonArray jsonArray = gson.toJsonTree(response).getAsJsonObject().getAsJsonObject("results").getAsJsonArray("bindings");
+        JsonArray jsonArray = getResults(response);
         for(JsonElement jsonElement : jsonArray) {
             Destination destination = new Destination();
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
             destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
-            destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
-            destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
+//            destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
+//            destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
+            destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
             destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
-            destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
-            destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
+//            destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
+//            destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
             destinations.add(destination);
         }
         return destinations;
+    }
+
+    public static Destination extractDestinationForDetails(Object response) {
+        List<Destination> destinations = new ArrayList<>();
+        JsonArray jsonArray = getResults(response);
+        if(jsonArray.size() == 0)
+            return null;
+
+        JsonElement jsonElement = jsonArray.get(0);
+        Destination destination = new Destination();
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
+        destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
+//        destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
+        destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
+        destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
+//            destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
+        destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
+        destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
+        destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
+        return destination;
     }
 
     public static JsonElement getJsonValue(JsonObject jsonObject, String fieldName) {
@@ -63,6 +83,12 @@ public class DBPediaUtils {
         if(jsonObject.has(fieldName))
             return getJsonValue(jsonObject, fieldName).getAsDouble();
         return new JsonPrimitive(0.0).getAsDouble();
+    }
+
+    public static int getJsonValueAsInteger(JsonObject jsonObject, String fieldName) {
+        if(jsonObject.has(fieldName))
+            return getJsonValue(jsonObject, fieldName).getAsInt();
+        return new JsonPrimitive(0).getAsInt();
     }
 
     public static String shortenString(String string, int limit) {
