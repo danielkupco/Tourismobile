@@ -53,7 +53,6 @@ public class DestinationsFragment extends Fragment {
         destinationsList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Log.e(TAG, String.format("Page: %d , count: %d", page, totalItemsCount));
                 progressBar.setVisibility(View.VISIBLE);
                 queryDBPedia(page);
             }
@@ -68,7 +67,7 @@ public class DestinationsFragment extends Fragment {
     public void queryDBPedia(int page) {
         try {
             List<Destination> destinationList = dbPediaUtils.queryDBPediaForList(page);
-            destinationsAdapter.addItems(destinationList);
+            queryDBPediaSuccess(destinationList);
         }
         catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -77,7 +76,8 @@ public class DestinationsFragment extends Fragment {
     }
 
     @UiThread
-    void queryDBPediaSuccess(Object result) {
+    void queryDBPediaSuccess(List<Destination> destinationList) {
+        destinationsAdapter.addItems(destinationList);
         updateUIAfterQuery();
     }
 

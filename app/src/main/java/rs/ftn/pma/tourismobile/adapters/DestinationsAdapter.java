@@ -8,6 +8,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,7 +34,8 @@ public class DestinationsAdapter extends RecyclerViewAdapterBase<Destination, De
     // It is important to set data after injection
     @AfterInject
     void initData() {
-        setItems(destinationDAOWrapper.findAll());
+//        setItems(destinationDAOWrapper.findAll());
+        setItems(new ArrayList<Destination>());
         hasFooter = true;
         destinationDAOWrapper.addObserver(this);
     }
@@ -46,8 +48,8 @@ public class DestinationsAdapter extends RecyclerViewAdapterBase<Destination, De
     // updating adapter if data has changed
     @Override
     public void update(Observable observable, Object data) {
-        if(observable instanceof DestinationDAOWrapper) {
-            setItems(destinationDAOWrapper.findAll());
-        }
+//        if(observable instanceof DestinationDAOWrapper) {
+//            setItems(destinationDAOWrapper.findAll());
+//        }
     }
 }

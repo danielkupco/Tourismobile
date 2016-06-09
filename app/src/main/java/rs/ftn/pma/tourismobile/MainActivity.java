@@ -18,11 +18,14 @@ import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
+import rs.ftn.pma.tourismobile.fragments.HomeFragment;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
 import rs.ftn.pma.tourismobile.fragments.TagsFragment_;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById
     Button btnScroll;
@@ -45,17 +48,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // the fragment_container FrameLayout
         if (findViewById(R.id.fragment_container) != null) {
             // set HomeFragment at the beginning
+            if(getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+                // Create a new Fragment to be placed in the activity layout
+                HomeFragment fragment = HomeFragment_.builder().build();
 
-            // Create a new Fragment to be placed in the activity layout
-            HomeFragment_ fragment = new HomeFragment_();
+                // In case this activity was started with special instructions from an
+                // Intent, pass the Intent's extras to the fragment as arguments
+                fragment.setArguments(getIntent().getExtras());
 
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            fragment.setArguments(getIntent().getExtras());
-
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, fragment).commit();
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment, TAG).commit();
+            }
         }
     }
 
@@ -103,15 +107,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.nav_destinations: {
-                fragment = new DestinationsFragment_();
+                fragment = DestinationsFragment_.builder().build();
                 break;
             }
             case R.id.nav_favourites: {
-                fragment = new FavouritesFragment_();
+                fragment = FavouritesFragment_.builder().build();
                 break;
             }
             case R.id.nav_tags: {
-                fragment = new TagsFragment_();
+                fragment = TagsFragment_.builder().build();
                 break;
             }
             case R.id.nav_settings: {
@@ -121,13 +125,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             default: {
-                fragment = new HomeFragment_();
+                fragment = HomeFragment_.builder().build();
             }
         }
 
         if(fragment != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment).commit();
+                    .replace(R.id.fragment_container, fragment, TAG).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

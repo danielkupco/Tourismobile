@@ -18,6 +18,7 @@ import org.androidannotations.annotations.ViewById;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 
@@ -48,10 +49,16 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     TextView tvWikiLink;
 
     @Extra
+    int destinationID = 0;
+
+    @Extra
     int wikiPageID;
 
     @Bean
     DBPediaUtils dbPediaUtils;
+
+    @Bean
+    DestinationDAOWrapper destinationDAOWrapper;
 
     private Destination destination;
 
@@ -59,7 +66,12 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     @Background
     void loadDestination() {
         try {
-            Destination destination = dbPediaUtils.queryDBPediaForDetails(wikiPageID);
+            if(destinationID > 0) {
+                this.destination = destinationDAOWrapper.findById(destinationID);
+            }
+            else {
+                this.destination = dbPediaUtils.queryDBPediaForDetails(wikiPageID);
+            }
             queryDBPediaSuccess(destination);
         }
         catch (Exception e) {
