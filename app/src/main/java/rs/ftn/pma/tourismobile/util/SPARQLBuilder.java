@@ -66,6 +66,15 @@ public class SPARQLBuilder {
         return this;
     }
 
+    public SPARQLBuilder propertyChoice(String... properties) {
+        query.append(" ; ");
+        for(String property : properties) {
+            query.append(String.format("%s|", property));
+        }
+        query.deleteCharAt(query.length() - 1);
+        return this;
+    }
+
     public SPARQLBuilder as(String variable) {
         query.append(String.format(" ?%s", variable));
         return this;

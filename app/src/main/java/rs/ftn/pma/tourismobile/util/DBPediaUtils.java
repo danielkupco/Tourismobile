@@ -1,5 +1,7 @@
 package rs.ftn.pma.tourismobile.util;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -38,18 +40,21 @@ public class DBPediaUtils {
                 .from("http://dbpedia.org")
                 .startWhere()
                 .triplet("destination", "a", "dbo:Park")
-                .property("dbp:name").as("name")
-                .property("dbo:thumbnail").as("thumbnail")
-                .property("rdfs:comment").as("comment")
-                .property("dbo:wikiPageID").as("wikiPageID")
+                .property("dbp:name").as(Destination.NAME_FIELD)
+                .property("dbo:thumbnail").as(Destination.IMAGE_URI_FIELD)
+                .property("rdfs:comment").as(Destination.COMMENT_FIELD)
+                .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)
                 .filter("lang(?comment)=\"en\"")
                 .endWhere()
-                .orderBy("name")
+                .orderBy(Destination.NAME_FIELD)
                 .limit(queryLimit)
                 .offset(queryLimit * page)
                 .build();
         params.set("query", sparql);
         params.set("format", "json");
+
+        Log.e(TAG, "sparql list");
+        Log.e(TAG, sparql);
 
         Object result = serviceDBPedia.queryDBPedia(params);
         return extractDestinationsForList(result);
@@ -63,20 +68,23 @@ public class DBPediaUtils {
                 .startWhere()
                 .triplet("destination", "a", "dbo:Park")
                 .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
-                .property("dbp:name").as("name")
-                .property("geo:lat").as("lat")
-                .property("geo:long").as("long")
-                .property("dbo:thumbnail").as("thumbnail")
-                .property("foaf:isPrimaryTopicOf").as("wikiLink")
-                .property("rdfs:comment").as("comment")
-                .property("dbo:abstract").as("abstract")
+                .property("dbp:name").as(Destination.NAME_FIELD)
+                .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
+                .propertyChoice("geo:long", "dbp:latD").as(Destination.LONGITUDE_FIELD)
+                .property("dbo:thumbnail").as(Destination.IMAGE_URI_FIELD)
+                .property("foaf:isPrimaryTopicOf").as(Destination.WIKI_LINK_FIELD)
+                .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)
+                .property("rdfs:comment").as(Destination.COMMENT_FIELD)
+                .property("dbo:abstract").as(Destination.ABSTRACT_FIELD)
                 .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
                 .endWhere()
-                .orderBy("name")
+                .orderBy(Destination.NAME_FIELD)
                 .build();
         params.set("query", sparql);
         params.set("format", "json");
 
+        Log.e(TAG, "sparql details");
+        Log.e(TAG, sparql);
         Object result = serviceDBPedia.queryDBPedia(params);
         return extractDestinationForDetails(result);
     }
@@ -91,6 +99,8 @@ public class DBPediaUtils {
     }
 
     public static List<Destination> extractDestinationsForList(Object response) {
+        Log.e(TAG, "response list");
+        Log.e(TAG, response.toString());
         List<Destination> destinations = new ArrayList<>();
         JsonArray jsonArray = getResults(response);
         for(JsonElement jsonElement : jsonArray) {
@@ -99,14 +109,16 @@ public class DBPediaUtils {
             destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
             destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
             destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
-            destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
+            destination.setImageURI(getJsonValueAsString(jsonObject, Destination.IMAGE_URI_FIELD));
             destinations.add(destination);
+            Log.e(TAG, destination.toString());
         }
         return destinations;
     }
 
     public static Destination extractDestinationForDetails(Object response) {
-        List<Destination> destinations = new ArrayList<>();
+        Log.e(TAG, "response details");
+        Log.e(TAG, response.toString());
         JsonArray jsonArray = getResults(response);
         if(jsonArray.size() == 0)
             return null;
@@ -115,13 +127,14 @@ public class DBPediaUtils {
         Destination destination = new Destination();
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
-//        destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
+        destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
         destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
         destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
-//            destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
-        destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
-        destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
-        destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
+        destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
+        destination.setImageURI(getJsonValueAsString(jsonObject, Destination.IMAGE_URI_FIELD));
+        destination.setLatitude(getJsonValueAsDouble(jsonObject, Destination.LATITUDE_FIELD));
+        destination.setLongitude(getJsonValueAsDouble(jsonObject, Destination.LONGITUDE_FIELD));
+        Log.e(TAG, destination.toString());
         return destination;
     }
 

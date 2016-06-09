@@ -39,7 +39,7 @@ public class Destination {
     @DatabaseField(columnName = WIKI_LINK_FIELD, canBeNull = false)
     private String wikiLink;
 
-    @DatabaseField(columnName = WIKI_PAGE_ID_FIELD, canBeNull = false)
+    @DatabaseField(columnName = WIKI_PAGE_ID_FIELD, canBeNull = false, unique = true)
     private int wikiPageID;
 
     @DatabaseField(columnName = IMAGE_URI_FIELD)
@@ -68,6 +68,10 @@ public class Destination {
         this.latitude = latitude;
         this.longitude = longitude;
         this.favourite = favourite;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -158,6 +162,7 @@ public class Destination {
                 ", comment='" + comment + '\'' +
                 ", description='" + description + '\'' +
                 ", wikiLink='" + wikiLink + '\'' +
+                ", wikiPageID=" + wikiPageID +
                 ", imageURI='" + imageURI + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
