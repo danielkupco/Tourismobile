@@ -12,25 +12,23 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
-import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
+import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
-import rs.ftn.pma.tourismobile.util.SPARQLBuilder;
 
 @EFragment(R.layout.fragment_destinations)
 public class DestinationsFragment extends Fragment {
 
     private static final String TAG = DestinationsFragment.class.getSimpleName();
 
-    @RestService
-    ServiceDBPedia serviceDBPedia;
+    @Bean
+    DBPediaUtils dbPediaUtils;
 
     @Bean
     DestinationsAdapter destinationsAdapter;
@@ -68,45 +66,23 @@ public class DestinationsFragment extends Fragment {
 
     @Background
     public void queryDBPedia(int page) {
-        final int queryLimit = 10;
-
-        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
-        String sparql = sparqlBuilder.select()
-                .from("http://dbpedia.org")
-                .startWhere()
-                .triplet("destination", "a", "dbo:Park")
-                .property("dbp:name").as("name")
-                .property("dbo:thumbnail").as("thumbnail")
-                .property("rdfs:comment").as("comment")
-                .property("dbo:wikiPageID").as("wikiPageID")
-                .filter("lang(?comment)=\"en\"")
-                .endWhere()
-                .orderBy("name")
-                .limit(queryLimit)
-                .offset(queryLimit * page)
-                .build();
-        params.set("query", sparql);
-        params.set("format", "json");
-
         try {
-            Object result = serviceDBPedia.queryDBPedia(params);
-            queryDBPediaSuccess(result);
+            List<Destination> destinationList = dbPediaUtils.queryDBPediaForList(page);
+            destinationsAdapter.addItems(destinationList);
         }
-        catch (HttpClientErrorException errorException) {
-            Log.e(TAG, errorException.getMessage());
-            updateUIAfterQuery(false);
+        catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+            updateUIAfterQuery();
         }
     }
 
     @UiThread
     void queryDBPediaSuccess(Object result) {
-        destinationsAdapter.addItems(DBPediaUtils.extractDestinationsForList(result));
-        updateUIAfterQuery(true);
+        updateUIAfterQuery();
     }
 
     @UiThread
-    void updateUIAfterQuery(boolean success) {
+    void updateUIAfterQuery() {
         progressBar.setVisibility(View.INVISIBLE);
     }
 }

@@ -7,18 +7,79 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.util.LinkedMultiValueMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
 
 /**
  * Utility class for DBPedia service and JSON data manipulation.
  * Created by Daniel Kupčo on 05.06.2016.
  */
+@EBean
 public class DBPediaUtils {
 
     private static final String TAG = DBPediaUtils.class.getSimpleName();
+
+    @RestService
+    ServiceDBPedia serviceDBPedia;
+
+    public List<Destination> queryDBPediaForList(int page) {
+        final int queryLimit = 10;
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
+        String sparql = sparqlBuilder.select()
+                .from("http://dbpedia.org")
+                .startWhere()
+                .triplet("destination", "a", "dbo:Park")
+                .property("dbp:name").as("name")
+                .property("dbo:thumbnail").as("thumbnail")
+                .property("rdfs:comment").as("comment")
+                .property("dbo:wikiPageID").as("wikiPageID")
+                .filter("lang(?comment)=\"en\"")
+                .endWhere()
+                .orderBy("name")
+                .limit(queryLimit)
+                .offset(queryLimit * page)
+                .build();
+        params.set("query", sparql);
+        params.set("format", "json");
+
+        Object result = serviceDBPedia.queryDBPedia(params);
+        return extractDestinationsForList(result);
+    }
+
+    public Destination queryDBPediaForDetails(int wikiPageID) {
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
+        String sparql = sparqlBuilder.select()
+                .from("http://dbpedia.org")
+                .startWhere()
+                .triplet("destination", "a", "dbo:Park")
+                .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
+                .property("dbp:name").as("name")
+                .property("geo:lat").as("lat")
+                .property("geo:long").as("long")
+                .property("dbo:thumbnail").as("thumbnail")
+                .property("foaf:isPrimaryTopicOf").as("wikiLink")
+                .property("rdfs:comment").as("comment")
+                .property("dbo:abstract").as("abstract")
+                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
+                .endWhere()
+                .orderBy("name")
+                .build();
+        params.set("query", sparql);
+        params.set("format", "json");
+
+        Object result = serviceDBPedia.queryDBPedia(params);
+        return extractDestinationForDetails(result);
+    }
 
     public static String formatJson(Object object) {
         Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
@@ -37,12 +98,8 @@ public class DBPediaUtils {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             destination.setName(getJsonValueAsString(jsonObject, Destination.NAME_FIELD));
             destination.setComment(shortenString(getJsonValueAsString(jsonObject, Destination.COMMENT_FIELD), 250));
-//            destination.setDescription(getJsonValueAsString(jsonObject, Destination.ABSTRACT_FIELD));
-//            destination.setWikiLink(getJsonValueAsString(jsonObject, Destination.WIKI_LINK_FIELD));
             destination.setWikiPageID(getJsonValueAsInteger(jsonObject, Destination.WIKI_PAGE_ID_FIELD));
             destination.setImageURI(getJsonValueAsString(jsonObject, "thumbnail"));
-//            destination.setLatitude(getJsonValueAsDouble(jsonObject, "lat"));
-//            destination.setLongitude(getJsonValueAsDouble(jsonObject, "long"));
             destinations.add(destination);
         }
         return destinations;

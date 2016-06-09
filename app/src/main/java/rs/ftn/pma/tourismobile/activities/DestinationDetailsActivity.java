@@ -10,20 +10,16 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.model.Destination;
-import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
-import rs.ftn.pma.tourismobile.util.SPARQLBuilder;
 
 /**
  * Created by Daniel Kupčo on 08.06.2016.
@@ -54,59 +50,37 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     @Extra
     int wikiPageID;
 
-    @RestService
-    ServiceDBPedia serviceDBPedia;
+    @Bean
+    DBPediaUtils dbPediaUtils;
 
     private Destination destination;
 
     @AfterInject
     @Background
     void loadDestination() {
-        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
-        String sparql = sparqlBuilder.select()
-                .from("http://dbpedia.org")
-                .startWhere()
-                .triplet("destination", "a", "dbo:Park")
-                .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
-                .property("dbp:name").as("name")
-                .property("geo:lat").as("lat")
-                .property("geo:long").as("long")
-                .property("dbo:thumbnail").as("thumbnail")
-                .property("foaf:isPrimaryTopicOf").as("wikiLink")
-                .property("rdfs:comment").as("comment")
-                .property("dbo:abstract").as("abstract")
-                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
-                .endWhere()
-                .orderBy("name")
-                .build();
-        params.set("query", sparql);
-        params.set("format", "json");
-
         try {
-            Object result = serviceDBPedia.queryDBPedia(params);
-            queryDBPediaSuccess(result);
+            Destination destination = dbPediaUtils.queryDBPediaForDetails(wikiPageID);
+            queryDBPediaSuccess(destination);
         }
-        catch (HttpClientErrorException errorException) {
-            Log.e(TAG, errorException.getMessage());
-            updateUIAfterQuery(false);
+        catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+            updateUIAfterQuery();
         }
     }
 
     @UiThread
-    void queryDBPediaSuccess(Object result) {
-        destination = DBPediaUtils.extractDestinationForDetails(result);
+    void queryDBPediaSuccess(Destination destination) {
         if(destination == null) {
             tvDestinationName.setText("Destination not found!");
-            updateUIAfterQuery(false);
-            return;
         }
-
-        bind(destination);
-        updateUIAfterQuery(true);
+        else {
+            bind(destination);
+        }
+        updateUIAfterQuery();
     }
 
     public void bind(Destination destination) {
+        this.destination = destination;
         destinationImage.setImageURI(Uri.parse(destination.getImageURI()));
         tvDestinationName.setText(destination.getName());
         tvDestinationDescription.setText(destination.getDescription());
@@ -114,7 +88,7 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     }
 
     @UiThread
-    void updateUIAfterQuery(boolean success) {
+    void updateUIAfterQuery() {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
