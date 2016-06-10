@@ -78,6 +78,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
             this.destination = inDatabase;
             persisted = true;
         }
+        // must rewrite persisted value because view items are recycled
         else {
             persisted = false;
         }

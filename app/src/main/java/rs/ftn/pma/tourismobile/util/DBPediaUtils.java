@@ -33,19 +33,34 @@ public class DBPediaUtils {
 
     public List<Destination> queryDBPediaForList(int page) {
         final int queryLimit = 10;
+        final String VARIABLE = "Destination";
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
         String sparql = sparqlBuilder.select()
+                .var(VARIABLE).var(Destination.NAME_FIELD).var(Destination.WIKI_PAGE_ID_FIELD)
+                .var(Destination.IMAGE_URI_FIELD).var(Destination.COMMENT_FIELD)
+                .aggregateVarAs("AVG", Destination.LATITUDE_FIELD, Destination.LATITUDE_FIELD)
+                .aggregateVarAs("AVG", Destination.LONGITUDE_FIELD, Destination.LONGITUDE_FIELD)
                 .from("http://dbpedia.org")
                 .startWhere()
-                .triplet("destination", "a", "dbo:Park")
-                .property("dbp:name").as(Destination.NAME_FIELD)
+                    .startSubquery().select()
+                        .variables() // all
+                        .startWhere()
+                            .triplet(VARIABLE, "a", "dbo:City", false)
+                            .property("rdfs:label").as(Destination.NAME_FIELD)
+                            .property("rdfs:comment").as(Destination.COMMENT_FIELD)
+                            .filter("lang(?comment)=\"en\" && lang(?name)=\"en\"")
+                        .endWhere()
+                    .endSubquery()
+                    // must continue with triplet
+                .triplet(VARIABLE, "dbo:wikiPageID", Destination.WIKI_PAGE_ID_FIELD, true)
                 .property("dbo:thumbnail").as(Destination.IMAGE_URI_FIELD)
-                .property("rdfs:comment").as(Destination.COMMENT_FIELD)
-                .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)
-                .filter("lang(?comment)=\"en\"")
+                .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
+                .propertyChoice("geo:long", "dbp:longD").as(Destination.LONGITUDE_FIELD)
                 .endWhere()
+                .groupBy(VARIABLE, Destination.NAME_FIELD, Destination.WIKI_PAGE_ID_FIELD,
+                        Destination.IMAGE_URI_FIELD, Destination.COMMENT_FIELD)
                 .orderBy(Destination.NAME_FIELD)
                 .limit(queryLimit)
                 .offset(queryLimit * page)
@@ -55,6 +70,7 @@ public class DBPediaUtils {
 
         Log.e(TAG, "sparql list");
         Log.e(TAG, sparql);
+        Log.e(TAG, sparqlBuilder.prettify());
 
         Object result = serviceDBPedia.queryDBPedia(params);
         return extractDestinationsForList(result);
@@ -63,11 +79,11 @@ public class DBPediaUtils {
     public Destination queryDBPediaForDetails(int wikiPageID) {
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
-        String sparql = sparqlBuilder.select()
+        String sparql = sparqlBuilder.select().variables()
                 .from("http://dbpedia.org")
                 .startWhere()
-                .triplet("destination", "a", "dbo:Park")
-                .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
+                .triplet("destination", "a", "dbo:Park", false)
+                .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID), false)
                 .property("dbp:name").as(Destination.NAME_FIELD)
                 .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
                 .propertyChoice("geo:long", "dbp:latD").as(Destination.LONGITUDE_FIELD)
@@ -85,6 +101,7 @@ public class DBPediaUtils {
 
         Log.e(TAG, "sparql details");
         Log.e(TAG, sparql);
+        Log.e(TAG, sparqlBuilder.prettify());
         Object result = serviceDBPedia.queryDBPedia(params);
         return extractDestinationForDetails(result);
     }

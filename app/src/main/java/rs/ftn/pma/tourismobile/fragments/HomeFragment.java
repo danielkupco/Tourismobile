@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         String sparql = sparqlBuilder.select()
                 .from("http://dbpedia.org")
                 .startWhere()
-                .triplet("destination", "a", "dbo:Park")
+                .triplet("destination", "a", "dbo:Park", false)
                 .property("dbp:name").as("name")
                 .property("geo:lat").as("lat")
                 .property("geo:long").as("long")
