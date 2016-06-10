@@ -1,17 +1,13 @@
 package rs.ftn.pma.tourismobile.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility class for building SPARQL queries.
  * Created by Daniel Kupčo on 07.06.2016.
  */
 public class SPARQLBuilder {
-
-    public static void main(String[] args) {
-        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
-        String test = "SELECT (?Destination)  (?name)  (?wikiPageID)  (?image_uri)  (?comment)  (AVG(?latitude) as ?latitude)  (AVG(?longitude) as ?longitude)  FROM <http://dbpedia.org> WHERE { { SELECT * WHERE { ?Destination a dbo:City ; rdfs:label ?name ; rdfs:comment ?comment . FILTER(lang(?comment)=\"en\" && lang(?name)=\"en\") . } } ?Destination dbo:wikiPageID ?wikiPageID ; dbo:thumbnail ?image_uri ; geo:lat|dbp:latD ?latitude ; geo:long|dbp:longD ?longitude . } GROUP BY ?Destination ?name ?wikiPageID ?image_uri ?comment ORDER BY ?name LIMIT 10 OFFSET 0";
-//        Log.e("test", sparqlBuilder.testPrettify(test));
-        System.out.println(sparqlBuilder.testPrettify(test));
-    }
 
     private StringBuilder query;
 
@@ -168,142 +164,82 @@ public class SPARQLBuilder {
         StringBuilder prettified = new StringBuilder(query.toString());
 
         // keywords
-        int index = 0;
-        index = prettified.indexOf("FROM");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("FROM", index);
-        }
-        index = prettified.indexOf("WHERE");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("WHERE", index);
-        }
-        index = prettified.indexOf("{");
-        if(index > 0) {
-            prettified.insert(index + 1, "\n");
-            while(prettified.charAt(index + 2) == ' ') {
-                prettified.deleteCharAt(index + 2);
-            }
-            prettified.insert(index + 2, "  ");
-//            index = prettified.indexOf("{", index);
+        List<String> keywords = new ArrayList<>();
+        keywords.add("SELECT");
+        keywords.add("FROM");
+        keywords.add("WHERE");
+        keywords.add("FILTER");
+        keywords.add("GROUP BY");
+        keywords.add("ORDER BY");
+        keywords.add("LIMIT");
+        keywords.add("OFFSET");
+
+        for(String keyword : keywords) {
+            breakLineOnKeyword(prettified, keyword);
         }
 
-        // separators
-        String indentation = "  ";
-        boolean afterTriplet = false;
-        int lastCurly = prettified.lastIndexOf("}");
-//        while(lastCurly > 0) {
-            for (int i = index; i < lastCurly; i++) {
-                char c = prettified.charAt(i);
-                if (c == ';') {
-                    if (!afterTriplet) {
-                        afterTriplet = true;
-                        indentation = "    ";
-                    }
-                    prettified.replace(i, i + indentation.length(), ";\n" + indentation);
-                } else if (c == '.') {
-                    if (afterTriplet) {
-                        afterTriplet = false;
-                        indentation = "  ";
-                    }
-                    prettified.replace(i, i + indentation.length(), ".\n" + indentation);
-                }
-            }
-//            index = lastCurly;
-//            lastCurly = prettified.indexOf("}", lastCurly);
-//        }
-        index = prettified.indexOf("}");
-        if(index > 0) {
-            while(prettified.charAt(index - 1) == ' ') {
-                prettified.deleteCharAt(index - 1);
-                index--;
-            }
-//            index = prettified.indexOf("}", index);
-        }
-        index = prettified.indexOf("ORDER BY");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("ORDER BY", index);
-        }
-        index = prettified.indexOf("LIMIT");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("LIMIT", index);
-        }
-
-        return prettified.toString();
-    }
-
-    public String testPrettify(String test) {
-        StringBuilder prettified = new StringBuilder(test);
-
-        // keywords
-        int index = 0;
-        index = prettified.indexOf("FROM");
-        while(index > 0) {
-            prettified.insert(index, "\n");
-            index = prettified.indexOf("FROM", index + 2);
-        }
-        index = prettified.indexOf("WHERE");
-        while(index > 0) {
-            prettified.insert(index, "\n");
-            index = prettified.indexOf("WHERE", index + 2);
-        }
-        index = prettified.indexOf("{");
-        if(index > 0) {
-            prettified.insert(index + 1, "\n");
-            while(prettified.charAt(index + 2) == ' ') {
-                prettified.deleteCharAt(index + 2);
-            }
-            prettified.insert(index + 2, "  ");
-//            index = prettified.indexOf("{", index);
-        }
-
-        // separators
-        String indentation = "  ";
-        boolean afterTriplet = false;
+        // separators and indentation
+        String indentation = "";
         int firstOpenCurly = prettified.indexOf("{");
-        int lastClosedCurly = prettified.lastIndexOf("}");
-//        while(lastCurly > 0) {
+        // must be updated because query length is getting bigger
+        int lastClosedCurly = prettified.lastIndexOf("}") + 1;
+        boolean afterTriplet = false;
+
         for (int i = firstOpenCurly; i < lastClosedCurly; i++) {
             char c = prettified.charAt(i);
+            if(c == '{') {
+                prettified.replace(i - 1, i, "\n" + indentation); // insert new line and indentation
+                lastClosedCurly += indentation.length() + 1; // update last closed curly bracket index
+                i += indentation.length(); // skip indentation, new line is already skipped with i++ in the loop
+                indentation += "  "; // increase indentation
+                if(prettified.indexOf("{ ?", i) == i) { // if there is triplet break it to the next line
+                    prettified.replace(i + 1, i + 2, "\n" + indentation);
+                    lastClosedCurly += indentation.length() + 1;
+                    i += indentation.length();
+                }
+            }
+            else if(c == '}') {
+                indentation = indentation.substring(0, indentation.length() - 2); // first decrease the indentation
+                prettified.replace(i - 1, i, "\n" + indentation); // same process as above...
+                lastClosedCurly += indentation.length() + 1;
+                i += indentation.length();
+                if(prettified.indexOf("} ?", i) == i) {
+                    prettified.replace(i + 1, i + 2, "\n" + indentation);
+                    lastClosedCurly += indentation.length() + 1;
+                    i += indentation.length();
+                }
+            }
+
+            // for every keyword in the process (while we have valid indentation in each moment)
+            for(String keyword : keywords) {
+                int index = prettified.indexOf(keyword, i); // get the keyword index form current position
+                if(i == index) { // if we are at the keyword
+                    prettified.insert(i, indentation); // indent it
+                    lastClosedCurly += indentation.length();
+                    i += indentation.length() + keyword.length(); // skip the indentation and the keyword
+                }
+            }
+
+            // separators
             if (c == ';') {
-                if (!afterTriplet) {
+                if (!afterTriplet) { // if after triplet indent a bit more
                     afterTriplet = true;
-                    indentation = "    ";
+                    indentation += "  ";
                 }
-                prettified.replace(i, i + indentation.length(), ";\n" + indentation);
+                prettified.replace(i + 1, i + 2, "\n" + indentation);
+                lastClosedCurly += indentation.length() + 1;
             } else if (c == '.') {
-                if (afterTriplet) {
+                if (afterTriplet) { // if another condition and we are in triplet decrease indentation
                     afterTriplet = false;
-                    indentation = "  ";
+                    indentation = indentation.substring(0, indentation.length() - 2);
                 }
-                prettified.replace(i, i + indentation.length(), ".\n" + indentation);
+                prettified.replace(i + 1, i + 2, "\n" + indentation);
+                lastClosedCurly += indentation.length() + 1;
             }
         }
-//            index = lastCurly;
-//            lastCurly = prettified.indexOf("}", lastCurly);
-//        }
-        index = prettified.indexOf("}");
-        while(index > 0) {
-//            while(prettified.charAt(index - 1) == ' ') {
-//                prettified.deleteCharAt(index - 1);
-//                index--;
-//            }
-            prettified.insert(index + 1, "\n");
-            index = prettified.indexOf("}", index + 2);
-        }
-        index = prettified.indexOf("ORDER BY");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("ORDER BY", index);
-        }
-        index = prettified.indexOf("LIMIT");
-        if(index > 0) {
-            prettified.insert(index, "\n");
-//            index = prettified.indexOf("LIMIT", index);
-        }
+
+        // in the end clear empty lines
+        clearEmptyLines(prettified);
 
         return prettified.toString();
     }
@@ -321,6 +257,31 @@ public class SPARQLBuilder {
             i++;
         }
         return last;
+    }
+
+    public void breakLineOnKeyword(StringBuilder stringBuilder, String keyword) {
+        int index = stringBuilder.indexOf(keyword);
+        while(index > -1) {
+            stringBuilder.insert(index, "\n");
+            index = stringBuilder.indexOf(keyword, index + 2);
+        }
+    }
+
+    public void clearEmptyLines(StringBuilder stringBuilder) {
+        int firstNewLine = stringBuilder.indexOf("\n");
+        int secondNewLine = stringBuilder.indexOf("\n", firstNewLine + 1);
+        while(secondNewLine > -1 && secondNewLine < stringBuilder.length()) {
+            // if there is empty line remove it
+            // first new line index automatically takes the value of the second
+            if(stringBuilder.substring(firstNewLine, secondNewLine).trim().isEmpty()) {
+                stringBuilder.replace(firstNewLine, secondNewLine, "");
+            }
+            // otherwise go to the next new line character
+            else{
+                firstNewLine = secondNewLine;
+            }
+            secondNewLine = stringBuilder.indexOf("\n", firstNewLine + 1);
+        }
     }
 
 }
