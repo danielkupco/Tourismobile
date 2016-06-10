@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -12,6 +13,7 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class DestinationsFragment extends Fragment {
 
         // binding adapter to the view
         destinationsList.setAdapter(destinationsAdapter);
-        queryDBPedia(0);
+        queryDBPedia(0); // first page
     }
 
     @Background
@@ -68,6 +70,13 @@ public class DestinationsFragment extends Fragment {
         try {
             List<Destination> destinationList = dbPediaUtils.queryDBPediaForList(page);
             queryDBPediaSuccess(destinationList);
+        }
+        catch (HttpClientErrorException e) {
+            Log.e(TAG, e.getMessage());
+            updateUIAfterQuery();
+            if(e.getStatusCode().is4xxClientError()) {
+                toast("Sorry! It seems that request isn't valid...");
+            }
         }
         catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -84,5 +93,10 @@ public class DestinationsFragment extends Fragment {
     @UiThread
     void updateUIAfterQuery() {
         progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @UiThread
+    void toast(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
