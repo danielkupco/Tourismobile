@@ -99,4 +99,5 @@ public class DestinationsFragment extends Fragment {
     void toast(String message) {
         Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 }
