@@ -1,12 +1,30 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="rs.ftn.pma.tourismobile.fragments.FavouritesFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="rs.ftn.pma.tourismobile.fragments.FavouritesFragment"
+    android:background="@color/primary">
 
-    <TextView
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:indeterminate="true"
+        app:mpb_progressStyle="horizontal"
+        app:mpb_useIntrinsicPadding="false"
+        app:mpb_showTrack="true"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/destinationsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hi from Favourites fragment!" />
+        android:scrollbars="vertical"
+        android:padding="@dimen/recycler_view_padding"
+        android:background="@color/primary" />
 
-</FrameLayout>
+</android.support.v7.widget.LinearLayoutCompat>

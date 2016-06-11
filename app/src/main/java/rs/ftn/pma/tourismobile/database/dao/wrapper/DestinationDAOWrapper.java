@@ -28,16 +28,6 @@ public class DestinationDAOWrapper extends Observable {
         return destinationDAO.queryForId(id);
     }
 
-    public Destination findByWikiPageID(int wikiPageID) {
-        try {
-            Destination destination = destinationDAO.queryBuilder().where().eq(Destination.WIKI_PAGE_ID_FIELD, wikiPageID).queryForFirst();
-            return destination;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public boolean create(Destination destination) {
         return destinationDAO.create(destination) == 1;
     }
@@ -48,6 +38,34 @@ public class DestinationDAOWrapper extends Observable {
 
     public void delete(Destination destination) {
         destinationDAO.delete(destination);
+    }
+
+    public Destination findByWikiPageID(int wikiPageID) {
+        try {
+            return destinationDAO.queryBuilder().where().eq(Destination.WIKI_PAGE_ID_FIELD, wikiPageID).queryForFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Destination> findAllFavourites() {
+        try {
+            return destinationDAO.queryBuilder().where().eq(Destination.FAVOURITE_FIELD, true).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Destination> findAllFavouritesForPage(int page, int limit) {
+        try {
+            return destinationDAO.queryBuilder().offset(Long.valueOf(page * limit)).limit(Long.valueOf(limit))
+                    .where().eq(Destination.FAVOURITE_FIELD, true).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
