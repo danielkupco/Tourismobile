@@ -133,7 +133,7 @@ public class SPARQLBuilder {
 
     }
 
-    static abstract class SPARQLPart {
+    public static abstract class SPARQLPart {
 
         protected SPARQLPart creator;
 
@@ -177,7 +177,7 @@ public class SPARQLBuilder {
 
     }
 
-    static class SPARQLSelectPart extends SPARQLPart {
+    public static class SPARQLSelectPart extends SPARQLPart {
 
         public SPARQLSelectPart() {
             super(null);
@@ -279,7 +279,7 @@ public class SPARQLBuilder {
 
     }
 
-    static class SPARQLWherePart extends SPARQLPart {
+    public static class SPARQLWherePart extends SPARQLPart {
 
         public SPARQLWherePart(SPARQLSelectPart creator) {
             super(creator, " WHERE {");
@@ -292,6 +292,10 @@ public class SPARQLBuilder {
 
         public SPARQLSelectPart startSubquery() {
             return new SPARQLSelectPart(this, " { ");
+        }
+
+        public SPARQLWherePart triplet(String subject, String predicate, String object) {
+            return triplet(subject, predicate, object, false);
         }
 
         public SPARQLWherePart triplet(String subject, String predicate, String object, boolean isObjectVariable) {
@@ -335,7 +339,7 @@ public class SPARQLBuilder {
 
     }
 
-    static class SPARQLFilterPart extends SPARQLPart {
+    public static class SPARQLFilterPart extends SPARQLPart {
 
         public SPARQLFilterPart(SPARQLWherePart creator) {
             super(creator, " . FILTER(");
