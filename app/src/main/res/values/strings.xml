@@ -27,7 +27,12 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_details">Details</string>
 
+
+    <string name="cb_dbp_property">DBPedia property</string>
+
     <!-- Hints -->
     <string name="hint_name">Name</string>
     <string name="hint_description">Description</string>
+    <string name="hint_property">Property</string>
+    <string name="hint_value">Value</string>
 </resources>

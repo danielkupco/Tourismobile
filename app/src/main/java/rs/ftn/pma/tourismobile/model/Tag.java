@@ -13,6 +13,9 @@ public class Tag {
     public static final String ID_FIELD = "id";
     public static final String NAME_FIELD = "name";
     public static final String DESCRIPTION_FIELD = "description";
+    public static final String DBP_PROPERTY_FIELD = "dbpProperty";
+    public static final String DBP_VALUE_FIELD = "dbpValue";
+    public static final String DBP_CAN_QUERY_BY_FIELD = "dbpCanQueryBy";
 
     @DatabaseField(columnName = ID_FIELD, generatedId = true)
     private int id;
@@ -23,11 +26,30 @@ public class Tag {
     @DatabaseField(columnName = DESCRIPTION_FIELD)
     private String description;
 
+    @DatabaseField(columnName = DBP_PROPERTY_FIELD)
+    private String dbpProperty;
+
+    @DatabaseField(columnName = DBP_VALUE_FIELD)
+    private String dbpValue;
+
+    @DatabaseField(columnName = DBP_CAN_QUERY_BY_FIELD)
+    private boolean dbpCanQueryBy;
+
     public Tag() {}
+
 
     public Tag(String name, String description) {
         this.name = name;
         this.description = description;
+        this.dbpCanQueryBy = false;
+    }
+
+    public Tag(String name, String description, String dbpProperty, String dbpValue, boolean dbp_can_query_by) {
+        this.name = name;
+        this.description = description;
+        this.dbpProperty = dbpProperty;
+        this.dbpValue = dbpValue;
+        this.dbpCanQueryBy = dbp_can_query_by;
     }
 
     public int getId() {
@@ -50,13 +72,39 @@ public class Tag {
         this.description = description;
     }
 
+    public String getDbpProperty() {
+        return dbpProperty;
+    }
+
+    public void setDbpProperty(String dbpProperty) {
+        this.dbpProperty = dbpProperty;
+    }
+
+    public String getDbpValue() {
+        return dbpValue;
+    }
+
+    public void setDbpValue(String dbpValue) {
+        this.dbpValue = dbpValue;
+    }
+
+    public boolean isDbpCanQueryBy() {
+        return dbpCanQueryBy;
+    }
+
+    public void setDbpCanQueryBy(boolean dbpCanQueryBy) {
+        this.dbpCanQueryBy = dbpCanQueryBy;
+    }
+
     @Override
     public String toString() {
         return "Tag{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", dbpProperty='" + dbpProperty + '\'' +
+                ", dbpValue='" + dbpValue + '\'' +
+                ", dbpCanQueryBy=" + dbpCanQueryBy +
                 '}';
     }
-
 }

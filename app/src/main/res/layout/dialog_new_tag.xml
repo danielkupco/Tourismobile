@@ -39,6 +39,42 @@
                 android:scrollbars="vertical" />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/dbpCanQuery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cb_dbp_property"
+            android:layout_marginTop="@dimen/tv_margin_large"
+            android:layout_gravity="center"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/tv_margin_small"
+            android:layout_marginTop="@dimen/tv_margin_large"
+            android:hint="@string/hint_property">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/tagProperty"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/tv_margin_small"
+            android:layout_marginTop="@dimen/tv_margin_large"
+            android:hint="@string/hint_value">
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/tagValue"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
+        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
 </ScrollView>

@@ -24,6 +24,12 @@ public class TagDetailsActivity extends AppCompatActivity {
     TextView tagName;
 
     @ViewById
+    TextView tagProperty;
+
+    @ViewById
+    TextView tagValue;
+
+    @ViewById
     TextView tagDescription;
 
     @Bean
@@ -42,6 +48,8 @@ public class TagDetailsActivity extends AppCompatActivity {
     @AfterViews
     void bindViews() {
         tagName.setText(tag.getName());
+        tagProperty.setText(tag.getDbpProperty());
+        tagValue.setText(tag.getDbpValue());
         tagDescription.setText(tag.getDescription());
     }
 

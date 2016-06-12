@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,8 @@ public class NewTagDialog extends DialogFragment {
     private View dialogLayout;
 
     private TextView firstInvalidField;
+
+    private boolean canQueryChecked = false;
 
     @NonNull
     @Override
@@ -73,23 +77,53 @@ public class NewTagDialog extends DialogFragment {
         final AlertDialog dialog = (AlertDialog) getDialog();
         if(dialog != null) {
 
+            final CheckBox cbCanQuery = (CheckBox) dialogLayout.findViewById(R.id.dbpCanQuery);
+            final EditText etTagProperty = (EditText) dialogLayout.findViewById(R.id.tagProperty);
+            final EditText etTagValue = (EditText) dialogLayout.findViewById(R.id.tagValue);
+            cbCanQuery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    canQueryChecked = ((CheckBox)v).isChecked();
+                    if(canQueryChecked) {
+                        etTagProperty.setEnabled(true);
+                        etTagValue.setEnabled(true);
+                    }
+                    else {
+                        etTagProperty.setEnabled(false);
+                        etTagValue.setEnabled(false);
+                    }
+                }
+            });
+
             Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    TextView tvName = (TextView) dialogLayout.findViewById(R.id.tagName);
-                    TextView tvDescription = (TextView) dialogLayout.findViewById(R.id.tagDescription);
+                    final TextView tvName = (TextView) dialogLayout.findViewById(R.id.tagName);
+                    final TextView tvDescription = (TextView) dialogLayout.findViewById(R.id.tagDescription);
+
                     boolean validForm = validateTextField(tvName);
                     validForm &= validateTextField(tvDescription);
+                    if(canQueryChecked) {
+                        validForm &= validateTextField(etTagProperty);
+                        validForm &= validateTextField(etTagValue);
+                    }
                     if (!validForm) {
                         firstInvalidField.requestFocus();
                         firstInvalidField = null;
                         return;
                     }
 
-                    Tag tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString());
+                    Tag tag;
+                    if(canQueryChecked) {
+                        tag = new Tag(tvName.getText().toString(), tvDescription.toString(),
+                                etTagProperty.getText().toString(), etTagValue.getText().toString(), true);
+                    }
+                    else {
+                        tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString());
+                    }
                     tagDAOWrapper.createTag(tag);
 
                     // We must dismiss dialog otherwise it stays open!

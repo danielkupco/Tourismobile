@@ -12,6 +12,16 @@
         android:layout_gravity="center" />
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tagProperty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tagValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tagDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

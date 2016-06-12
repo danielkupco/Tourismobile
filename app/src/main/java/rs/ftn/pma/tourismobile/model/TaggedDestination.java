@@ -50,4 +50,14 @@ public class TaggedDestination {
     public void setTag(Tag tag) {
         this.tag = tag;
     }
+
+    @Override
+    public String toString() {
+        return "TaggedDestination{" +
+                "id=" + id +
+                ", destination=" + destination +
+                ", tag=" + tag +
+                '}';
+    }
+
 }

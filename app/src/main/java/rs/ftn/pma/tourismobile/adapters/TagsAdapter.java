@@ -46,7 +46,7 @@ public class TagsAdapter extends RecyclerViewAdapterBase<Tag, TagItemView> imple
     @Override
     public void update(Observable observable, Object data) {
         if(observable instanceof TagDAOWrapper) {
-            items = new ArrayList<>(tagDAOWrapper.findAll());
+            setItems(tagDAOWrapper.findAll());
         }
     }
 }
