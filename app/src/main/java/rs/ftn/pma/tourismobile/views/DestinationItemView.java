@@ -3,6 +3,8 @@ package rs.ftn.pma.tourismobile.views;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ import org.androidannotations.annotations.ViewById;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.activities.DestinationDetailsActivity_;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
+import rs.ftn.pma.tourismobile.dialogs.SelectTagsDialog_;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 
@@ -129,6 +132,16 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         }
         updateIcon(destination.isFavourite());
         animateIcon();
+    }
+
+    @Click
+    void btnSelectTags() {
+        Log.e(TAG, "select tags dialog");
+        Context context = getContext();
+        if(context instanceof FragmentActivity) {
+            FragmentManager fragmentManager = ((FragmentActivity) getContext()).getSupportFragmentManager();
+            SelectTagsDialog_.builder().build().show(fragmentManager, TAG);
+        }
     }
 
     @UiThread

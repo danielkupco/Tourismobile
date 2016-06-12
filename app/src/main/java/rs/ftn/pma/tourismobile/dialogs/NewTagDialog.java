@@ -4,8 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +27,7 @@ import rs.ftn.pma.tourismobile.util.ValidationUtils;
  * Created by danex on 5/15/16.
  */
 @EFragment
-public class NewTagDialog extends DialogFragment {
+public class NewTagDialog extends AppCompatDialogFragment {
 
     public static final String TAG = NewTagDialog.class.getSimpleName();
 
@@ -118,7 +118,7 @@ public class NewTagDialog extends DialogFragment {
 
                     Tag tag;
                     if(canQueryChecked) {
-                        tag = new Tag(tvName.getText().toString(), tvDescription.toString(),
+                        tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString(),
                                 etTagProperty.getText().toString(), etTagValue.getText().toString(), true);
                     }
                     else {

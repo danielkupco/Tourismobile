@@ -92,7 +92,10 @@ public class DestinationsFragment extends Fragment {
 
     @UiThread
     void updateUIAfterQuery() {
-        progressBar.setVisibility(View.INVISIBLE);
+        // it happens sometimes that view is not injected yet when method is called
+        if(progressBar != null) {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @UiThread

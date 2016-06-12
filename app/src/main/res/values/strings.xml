@@ -26,6 +26,7 @@
     <string name="btn_create">Create</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_details">Details</string>
+    <string name="btn_select_tags">Select tags</string>
 
 
     <string name="cb_dbp_property">DBPedia property</string>

@@ -55,7 +55,6 @@ public class FavouritesFragment extends Fragment {
 
         // binding adapter to the view
         destinationsList.setAdapter(favouritesAdapter);
-//        queryDBPedia(0); // first page
     }
 
     @Background
