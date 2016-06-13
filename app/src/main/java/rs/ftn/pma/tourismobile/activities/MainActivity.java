@@ -1,4 +1,4 @@
-package rs.ftn.pma.tourismobile;
+package rs.ftn.pma.tourismobile.activities;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -9,13 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
+import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment;
@@ -26,9 +24,6 @@ import rs.ftn.pma.tourismobile.fragments.TagsFragment_;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    @ViewById
-    Button btnScroll;
 
     @AfterViews
     void init() {
@@ -137,11 +132,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Click
-    void btnScroll() {
-        ScrollingActivity_.intent(this).start();
     }
 
 }
