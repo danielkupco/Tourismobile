@@ -2,8 +2,16 @@
     <string name="app_name">Tourismobile</string>
     <string name="title_activity_navigation">NavigationActivity</string>
 
+    <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_item_map">World map</string>
+    <string name="nav_item_title_destinations">Destinations</string>
+    <string name="nav_item_title_tags">Tags</string>
+    <string name="nav_item_google_maps">Google maps</string>
+    <string name="nav_item_query">Query destinations</string>
+    <string name="nav_item_favourites">Favourite destinations</string>
+    <string name="nav_item_stored">Locally stored destinations</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
@@ -27,8 +35,6 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_details">Details</string>
     <string name="btn_select_tags">Select tags</string>
-
-
     <string name="cb_dbp_property">DBPedia property</string>
 
     <!-- Hints -->

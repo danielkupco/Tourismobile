@@ -58,6 +58,15 @@ public class DestinationDAOWrapper extends Observable {
         return null;
     }
 
+    public List<Destination> findAllForPage(int page, int limit) {
+        try {
+            return destinationDAO.queryBuilder().offset(Long.valueOf(page * limit)).limit(Long.valueOf(limit)).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Destination> findAllFavouritesForPage(int page, int limit) {
         try {
             return destinationDAO.queryBuilder().offset(Long.valueOf(page * limit)).limit(Long.valueOf(limit))

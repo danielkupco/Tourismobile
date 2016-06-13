@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +54,9 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     private boolean persisted = false;
 
     @ViewById
+    ImageView imgStored;
+
+    @ViewById
     ImageView imgFavourite;
 
     private static final float MAX_BOUNCE = 3f;
@@ -80,10 +82,12 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         if(inDatabase != null) {
             this.destination = inDatabase;
             persisted = true;
+            imgStored.setVisibility(VISIBLE);
         }
         // must rewrite persisted value because view items are recycled
         else {
             persisted = false;
+            imgStored.setVisibility(INVISIBLE);
         }
         updateIcon(this.destination.isFavourite());
     }
@@ -130,7 +134,6 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         Context context = getContext();
         if(context instanceof FragmentActivity) {
             FragmentManager fragmentManager = ((FragmentActivity) getContext()).getSupportFragmentManager();
-            Log.e(TAG, "Poslato: " + destination.getWikiPageID());
             SelectTagsDialog_.builder()
                     .destinationWikiPageID(destination.getWikiPageID())
                     .build().show(fragmentManager, TAG);
@@ -152,7 +155,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         ObjectAnimator.ofFloat(imgFavourite, "alpha", 0f, 1f, .8f, 1f, 0f, 1f).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "scaleX", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "scaleY", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
-        ObjectAnimator.ofFloat(imgFavourite, "translationX", 0f, 50f, 0f).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(imgFavourite, "translationX", 0f, -50f, 0f).setDuration(DURATION).start();
     }
 
 }

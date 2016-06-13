@@ -18,6 +18,7 @@ import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
+import rs.ftn.pma.tourismobile.fragments.StoredDestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.TagsFragment_;
 
 @EActivity(R.layout.activity_main)
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = null;
 
         switch (id) {
-            case R.id.nav_search: {
+            case R.id.nav_maps: {
                 break;
             }
             case R.id.nav_destinations: {
@@ -111,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_tags: {
                 fragment = TagsFragment_.builder().build();
+                break;
+            }
+            case R.id.nav_storage: {
+                fragment = StoredDestinationsFragment_.builder().build();
                 break;
             }
             case R.id.nav_settings: {
