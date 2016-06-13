@@ -19,7 +19,9 @@ import org.androidannotations.annotations.ViewById;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 
 /**
@@ -60,6 +62,9 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     @Bean
     DestinationDAOWrapper destinationDAOWrapper;
 
+    @Bean
+    TaggedDestinationDAOWrapper taggedDestinationDAOWrapper;
+
     private Destination destination;
 
     @AfterInject
@@ -97,6 +102,15 @@ public class DestinationDetailsActivity extends AppCompatActivity {
         tvDestinationName.setText(destination.getName());
         tvDestinationDescription.setText(destination.getDescription());
         tvWikiLink.setText(destination.getWikiLink());
+        // destination tags
+        StringBuilder stringBuilder = new StringBuilder("Tags: ");
+        for(Tag tag : taggedDestinationDAOWrapper.findAllTagsForDestination(destination)) {
+            stringBuilder.append(tag.getName()).append(", ");
+        }
+        final int length = stringBuilder.length();
+        stringBuilder.deleteCharAt(length - 1);
+        stringBuilder.deleteCharAt(length - 2);
+        tvDestinationTags.setText(stringBuilder.toString());
     }
 
     @UiThread

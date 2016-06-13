@@ -8,6 +8,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.ormlite.annotations.OrmLiteDao;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rs.ftn.pma.tourismobile.database.DatabaseHelper;
@@ -43,7 +44,7 @@ public class TaggedDestinationDAOWrapper {
         return refresh(taggedDestinationDAO.queryForId(id));
     }
 
-    public List<TaggedDestination> findAllTagsForDestination(Destination destination) {
+    public List<TaggedDestination> findAllTaggedDestinationsForDestination(Destination destination) {
         try {
             List<TaggedDestination> result = taggedDestinationDAO.queryBuilder().where()
                     .eq(TaggedDestination.DESTINATION_ID_FIELD, destination.getId())
@@ -54,6 +55,15 @@ public class TaggedDestinationDAOWrapper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<Tag> findAllTagsForDestination(Destination destination) {
+        List<TaggedDestination> taggedDestinations = findAllTaggedDestinationsForDestination(destination);
+        List<Tag> tags = new ArrayList<>();
+        for(TaggedDestination td : taggedDestinations) {
+            tags.add(td.getTag());
+        }
+        return refreshAllTags(tags);
     }
 
     public boolean create(TaggedDestination taggedDestination) {
@@ -85,6 +95,12 @@ public class TaggedDestinationDAOWrapper {
         return -1;
     }
 
+    private TaggedDestination refresh(TaggedDestination taggedDestination) {
+        destinationDAO.refresh(taggedDestination.getDestination());
+        tagDAO.refresh(taggedDestination.getTag());
+        return taggedDestination;
+    }
+
     private List<TaggedDestination> refreshAll(List<TaggedDestination> taggedDestinations) {
         for(TaggedDestination taggedDestination : taggedDestinations) {
             destinationDAO.refresh(taggedDestination.getDestination());
@@ -93,10 +109,11 @@ public class TaggedDestinationDAOWrapper {
         return taggedDestinations;
     }
 
-    private TaggedDestination refresh(TaggedDestination taggedDestination) {
-        destinationDAO.refresh(taggedDestination.getDestination());
-        tagDAO.refresh(taggedDestination.getTag());
-        return taggedDestination;
+    private List<Tag> refreshAllTags(List<Tag> tags) {
+        for(Tag tag : tags) {
+            tagDAO.refresh(tag);
+        }
+        return tags;
     }
 
 }

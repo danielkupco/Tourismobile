@@ -95,4 +95,15 @@ public class SelectTagsAdapter extends BaseAdapter {
         return selectedTags;
     }
 
+    public void setSelectedTags(List<Tag> selectedTags) {
+        for(Tag selectedTag : selectedTags) {
+            for(int i = 0; i < tags.size(); i++) {
+                if(tags.get(i).getId() == selectedTag.getId()) {
+                    selectedIndices.add(i);
+                    break;
+                }
+            }
+        }
+    }
+
 }

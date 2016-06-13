@@ -54,6 +54,8 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
 
     private ListView tagsList;
 
+    private Destination destination;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -64,6 +66,13 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
+
+        // find destination if exists locally
+        destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
+        // updating bounded tags to destination if exists
+        if(destination != null) {
+            selectTagsAdapter.setSelectedTags(taggedDestinationDAOWrapper.findAllTagsForDestination(destination));
+        }
 
         // binding adapter to the list
         tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
@@ -109,9 +118,7 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
 
     @Background
     void saveDestinationAndTags() {
-        // find destination if exists locally
-        Destination destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
-        // if it does not
+        // if it does not exists
         if(destination == null) {
             // get fully detailed destination
             destination = dbPediaUtils.queryDBPediaForDetails(destinationWikiPageID);

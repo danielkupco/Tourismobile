@@ -92,23 +92,6 @@ public class DBPediaUtils {
 
         LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
-//        String sparql = sparqlBuilder.startQuery().select().variables()
-//                .from("http://dbpedia.org")
-//                .startWhere()
-//                .triplet("destination", "a", "dbo:Park", false)
-//                .triplet("destination", "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID), false)
-//                .property("dbp:name").as(Destination.NAME_FIELD)
-//                .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
-//                .propertyChoice("geo:long", "dbp:latD").as(Destination.LONGITUDE_FIELD)
-//                .property("dbo:thumbnail").as(Destination.IMAGE_URI_FIELD)
-//                .property("foaf:isPrimaryTopicOf").as(Destination.WIKI_LINK_FIELD)
-//                .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)
-//                .property("rdfs:comment").as(Destination.COMMENT_FIELD)
-//                .property("dbo:abstract").as(Destination.ABSTRACT_FIELD)
-////                .filter("lang(?comment)=\"en\" && lang(?abstract)=\"en\"")
-//                .endWhere()
-//                .orderBy(Destination.NAME_FIELD)
-//                .build();
 
         String sparql = sparqlBuilder.startQuery()
                 .select()
