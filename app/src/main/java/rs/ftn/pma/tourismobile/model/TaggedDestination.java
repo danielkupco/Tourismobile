@@ -11,22 +11,21 @@ import com.j256.ormlite.table.DatabaseTable;
 public class TaggedDestination {
 
     public static final String ID_FIELD = "id";
-    public static final String DESTINATION_FIELD = "destination";
-    public static final String TAG_FIELD = "tag";
+    public static final String DESTINATION_ID_FIELD = "destination";
+    public static final String TAG_ID_FIELD = "tag";
 
     @DatabaseField(columnName = ID_FIELD, generatedId = true)
     private int id;
 
-    @DatabaseField(columnName = DESTINATION_FIELD, foreign = true)
+    @DatabaseField(columnName = DESTINATION_ID_FIELD, canBeNull = false, foreign = true)
     private Destination destination;
 
-    @DatabaseField(columnName = TAG_FIELD, foreign = true)
+    @DatabaseField(columnName = TAG_ID_FIELD, canBeNull = false, foreign = true)
     private Tag tag;
 
     public TaggedDestination() {}
 
-    public TaggedDestination(int id, Destination destination, Tag tag) {
-        this.id = id;
+    public TaggedDestination(Destination destination, Tag tag) {
         this.destination = destination;
         this.tag = tag;
     }

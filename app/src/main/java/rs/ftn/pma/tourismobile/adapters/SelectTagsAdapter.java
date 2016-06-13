@@ -1,7 +1,6 @@
 package rs.ftn.pma.tourismobile.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -71,21 +70,16 @@ public class SelectTagsAdapter extends BaseAdapter {
         tagCheckboxItemView.bind((Tag) getItem(position));
         tagCheckboxItemView.setChecked(selectedIndices.contains(position));
 
-        // must bind on View, not on ViewGroup
+        // must bound on View, not on ViewGroup
         tagCheckboxItemView.getTagCheckbox().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
-                Log.e(TAG, "click: " + position + " - " + cb.isChecked() + " - " + cb.getText().toString());
                 if(cb.isChecked()) {
                     selectedIndices.add(position);
                 }
                 else {
                     selectedIndices.remove(Integer.valueOf(position));
-                }
-                Log.e(TAG, "selected indices:");
-                for(Integer in : selectedIndices) {
-                    Log.e(TAG, in.toString());
                 }
             }
         });

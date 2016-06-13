@@ -6,19 +6,23 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.SelectTagsAdapter;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
-import rs.ftn.pma.tourismobile.model.Tag;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
+import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 
 /**
  * Created by Daniel Kupčo on 11.06.2016.
@@ -32,7 +36,19 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
     TagDAOWrapper tagDAOWrapper;
 
     @Bean
+    DestinationDAOWrapper destinationDAOWrapper;
+
+    @Bean
+    TaggedDestinationDAOWrapper taggedDestinationDAOWrapper;
+
+    @Bean
+    DBPediaUtils dbPediaUtils;
+
+    @Bean
     SelectTagsAdapter selectTagsAdapter;
+
+    @FragmentArg
+    int destinationWikiPageID;
 
     private View dialogLayout;
 
@@ -49,6 +65,7 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
 
+        // binding adapter to the list
         tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
         tagsList.setAdapter(selectTagsAdapter);
 
@@ -64,7 +81,7 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
                 })
                 .setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-//                        NewTagDialog.this.getDialog().cancel();
+                        SelectTagsDialog.this.getDialog().cancel();
 //                        Toast.makeText(getActivity(), "Cancel", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -83,20 +100,30 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
                 @Override
                 public void onClick(View v)
                 {
-//                    Log.e(TAG, "Count: " + tagsList.getChildCount());
-                    Log.e(TAG, "Selected are:");
-                    for(Tag t : selectTagsAdapter.getSelectedTags()) {
-                        Log.e(TAG, t.getName());
-                    }
-
-//                    for (int i = 0; i < tagsList.getChildCount(); i++) {
-//                        TagCheckboxItemView tagCheckboxItemView = (TagCheckboxItemView) tagsList.getChildAt(i);
-//                        CheckBox checkBox = tagCheckboxItemView.getTagCheckbox();
-//                        Log.e(TAG, checkBox.getText().toString() + " - " + checkBox.isChecked());
-//                    }
+                    saveDestinationAndTags();
+                    SelectTagsDialog.this.getDialog().cancel();
                 }
             });
         }
+    }
+
+    @Background
+    void saveDestinationAndTags() {
+        // find destination if exists locally
+        Destination destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
+        // if it does not
+        if(destination == null) {
+            // get fully detailed destination
+            destination = dbPediaUtils.queryDBPediaForDetails(destinationWikiPageID);
+            // save destination in database
+            destinationDAOWrapper.create(destination);
+        }
+        else {
+            // delete previous tags for destination
+            taggedDestinationDAOWrapper.deleteAllForDestination(destination.getId());
+        }
+        // bind destination to selected tags
+        taggedDestinationDAOWrapper.createAllTagsForDestination(destination, selectTagsAdapter.getSelectedTags());
     }
 
 }

@@ -90,9 +90,6 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
 
     @Click
     void btnDetails() {
-        Log.e(TAG, "details");
-        Log.e(TAG, persisted + "");
-        Log.e(TAG, destination.toString());
         DestinationDetailsActivity_.IntentBuilder_ intentBuilder =
                 DestinationDetailsActivity_.intent(this.getContext());
         if(persisted) {
@@ -107,9 +104,6 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @Click(R.id.imgFavourite)
     @Background
     void toggleFavourite() {
-        Log.e(TAG, "toggle");
-        Log.e(TAG, persisted + "");
-        Log.e(TAG, destination.toString());
         boolean favourite = destination.isFavourite();
         // if it is marked as favourite for the first time persist the destination
         if(!persisted) {
@@ -121,9 +115,6 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
             toSave.setFavourite(true);
             persisted = destinationDAOWrapper.create(toSave);
             destination = toSave;
-            Log.e(TAG, "saved");
-            Log.e(TAG, persisted + "");
-            Log.e(TAG, destination.toString());
         }
         // otherwise just update favourite state
         else {
@@ -136,11 +127,13 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
 
     @Click
     void btnSelectTags() {
-        Log.e(TAG, "select tags dialog");
         Context context = getContext();
         if(context instanceof FragmentActivity) {
             FragmentManager fragmentManager = ((FragmentActivity) getContext()).getSupportFragmentManager();
-            SelectTagsDialog_.builder().build().show(fragmentManager, TAG);
+            Log.e(TAG, "Poslato: " + destination.getWikiPageID());
+            SelectTagsDialog_.builder()
+                    .destinationWikiPageID(destination.getWikiPageID())
+                    .build().show(fragmentManager, TAG);
         }
     }
 
