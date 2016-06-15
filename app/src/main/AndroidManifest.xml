@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".activities.TagDetailsActivity_" />
         <activity android:name=".activities.DestinationDetailsActivity_" />
+        <activity android:name=".activities.DestinationFilterActivity_" />
     </application>
 
 </manifest>

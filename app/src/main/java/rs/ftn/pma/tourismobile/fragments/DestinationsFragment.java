@@ -1,9 +1,13 @@
 package rs.ftn.pma.tourismobile.fragments;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +15,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OnActivityResult;
+import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,6 +25,7 @@ import java.util.List;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.DestinationFilterActivity_;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
@@ -28,6 +35,8 @@ import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
 public class DestinationsFragment extends Fragment {
 
     private static final String TAG = DestinationsFragment.class.getSimpleName();
+
+    private static final int REQUEST_FILTERS = 1;
 
     @Bean
     DBPediaUtils dbPediaUtils;
@@ -40,6 +49,29 @@ public class DestinationsFragment extends Fragment {
 
     @ViewById
     MaterialProgressBar progressBar;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.action_bar_fragment_destination, menu);
+    }
+
+    @OptionsItem
+    void actionFilter() {
+        Log.e(TAG, "filter");
+        DestinationFilterActivity_.intent(this).startForResult(REQUEST_FILTERS);
+    }
+
+    @OnActivityResult(REQUEST_FILTERS)
+    void onFiltersSuccess() {
+        Log.e(TAG, "filters success!");
+    }
 
     @AfterViews
     void bindAdapter() {

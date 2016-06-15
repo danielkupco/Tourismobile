@@ -6,55 +6,44 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.sharedpreferences.Pref;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.SelectTagsAdapter;
-import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
-import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
-import rs.ftn.pma.tourismobile.model.Destination;
-import rs.ftn.pma.tourismobile.util.DBPediaUtils;
+import rs.ftn.pma.tourismobile.util.FilterPreferences_;
 
 /**
- * Created by Daniel Kupčo on 11.06.2016.
+ * Created by Daniel Kupčo on 15.06.2016.
  */
 @EFragment
-public class SelectTagsDialog extends AppCompatDialogFragment {
+public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
 
-    public static final String TAG = SelectTagsDialog.class.getSimpleName();
+    public static final String TAG = SelectTagsForFilterDialog.class.getSimpleName();
 
     @Bean
     TagDAOWrapper tagDAOWrapper;
 
     @Bean
-    DestinationDAOWrapper destinationDAOWrapper;
-
-    @Bean
-    TaggedDestinationDAOWrapper taggedDestinationDAOWrapper;
-
-    @Bean
-    DBPediaUtils dbPediaUtils;
-
-    @Bean
     SelectTagsAdapter selectTagsAdapter;
 
-    @FragmentArg
-    int destinationWikiPageID;
+    @Pref
+    FilterPreferences_ filterPreferences;
 
     private View dialogLayout;
 
     private ListView tagsList;
-
-    private Destination destination;
 
     @NonNull
     @Override
@@ -67,11 +56,16 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
 
-        // find destination if exists locally
-        destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
-        // updating bounded tags to destination if exists
-        if(destination != null) {
-            selectTagsAdapter.setSelectedTags(taggedDestinationDAOWrapper.findAllTagsForDestination(destination));
+        // If there are already selected tags for filters
+        // Load their positions from preferences and select them
+        if(filterPreferences.bySelectedTags().exists()) {
+            String selectedPositions = filterPreferences.bySelectedTags().get();
+            String[] positionTokens = selectedPositions.split(",");
+            List<Integer> positions = new ArrayList<>();
+            for(String position : positionTokens) {
+                positions.add(Integer.valueOf(position));
+            }
+            selectTagsAdapter.setSelectedIndices(positions);
         }
 
         // binding adapter to the list
@@ -91,7 +85,7 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
                 })
                 .setNegativeButton(getString(R.string.btn_cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        SelectTagsDialog.this.getDialog().cancel();
+                        SelectTagsForFilterDialog.this.getDialog().cancel();
                     }
                 });
         return builder.create();
@@ -109,28 +103,13 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
                 @Override
                 public void onClick(View v)
                 {
-                    saveDestinationAndTags();
-                    SelectTagsDialog.this.getDialog().cancel();
+                    // get selected positions, concatenate them and store them in preferences
+                    List<Integer> selectedPositions = selectTagsAdapter.getSelectedIndices();
+                    filterPreferences.bySelectedTags().put(TextUtils.join(",", selectedPositions));
+                    SelectTagsForFilterDialog.this.getDialog().cancel();
                 }
             });
         }
-    }
-
-    @Background
-    void saveDestinationAndTags() {
-        // if it does not exists
-        if(destination == null) {
-            // get fully detailed destination
-            destination = dbPediaUtils.queryDBPediaForDetails(destinationWikiPageID);
-            // save destination in database
-            destinationDAOWrapper.create(destination);
-        }
-        else {
-            // delete previous tags for destination
-            taggedDestinationDAOWrapper.deleteAllForDestination(destination.getId());
-        }
-        // bind destination to selected tags
-        taggedDestinationDAOWrapper.createAllTagsForDestination(destination, selectTagsAdapter.getSelectedTags());
     }
 
 }

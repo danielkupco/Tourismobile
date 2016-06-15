@@ -37,9 +37,13 @@ public class SelectTagsAdapter extends BaseAdapter {
     @RootContext
     protected Context context;
 
+    public void setItems(List<Tag> tags) {
+        this.tags = new ArrayList<>(tags);
+        notifyDataSetChanged();
+    }
+
     @AfterInject
     void initItems() {
-        this.tags = new ArrayList<>(tagDAOWrapper.findAll());
         selectedIndices = new ArrayList<>();
     }
 
@@ -104,6 +108,14 @@ public class SelectTagsAdapter extends BaseAdapter {
                 }
             }
         }
+    }
+
+    public List<Integer> getSelectedIndices() {
+        return selectedIndices;
+    }
+
+    public void setSelectedIndices(List<Integer> selectedIndices) {
+        this.selectedIndices = new ArrayList<>(selectedIndices);
     }
 
 }

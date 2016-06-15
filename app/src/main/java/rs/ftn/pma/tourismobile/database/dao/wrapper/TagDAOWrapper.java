@@ -3,6 +3,7 @@ package rs.ftn.pma.tourismobile.database.dao.wrapper;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.ormlite.annotations.OrmLiteDao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Observable;
 
@@ -27,12 +28,22 @@ public class TagDAOWrapper extends Observable {
         notifyObservers();
     }
 
+    public Tag findById(int id) {
+        return tagDAO.queryForId(id);
+    }
+
     public List<Tag> findAll() {
         return tagDAO.queryForAll();
     }
 
-    public Tag findById(int id) {
-        return tagDAO.queryForId(id);
+    public List<Tag> findAllForFilters() {
+        try {
+            return tagDAO.queryBuilder().where().eq(Tag.DBP_CAN_QUERY_BY_FIELD, true).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+
 
 }
