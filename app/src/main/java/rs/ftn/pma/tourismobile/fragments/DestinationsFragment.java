@@ -19,7 +19,9 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 
@@ -30,6 +32,7 @@ import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
+import rs.ftn.pma.tourismobile.util.FilterPreferences_;
 
 @EFragment(R.layout.fragment_destinations)
 public class DestinationsFragment extends Fragment {
@@ -50,6 +53,9 @@ public class DestinationsFragment extends Fragment {
     @ViewById
     MaterialProgressBar progressBar;
 
+    @Pref
+    FilterPreferences_ filterPreferences;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +70,15 @@ public class DestinationsFragment extends Fragment {
 
     @OptionsItem
     void actionFilter() {
-        Log.e(TAG, "filter");
         DestinationFilterActivity_.intent(this).startForResult(REQUEST_FILTERS);
     }
 
     @OnActivityResult(REQUEST_FILTERS)
     void onFiltersSuccess() {
-        Log.e(TAG, "filters success!");
+        Log.e(TAG, filterPreferences.byName().getOr("nema"));
+        Log.e(TAG, filterPreferences.byDescription().getOr("nemaa"));
+        Log.e(TAG, filterPreferences.bySelectedTags().getOr("nemaaa"));
+        Log.e(TAG, filterPreferences.sortBy().getOr("nemaaaa"));
     }
 
     @AfterViews
@@ -105,13 +113,22 @@ public class DestinationsFragment extends Fragment {
         }
         catch (HttpClientErrorException e) {
             Log.e(TAG, e.getMessage());
+            e.printStackTrace();
+            Log.e(TAG, "http client");
             updateUIAfterQuery();
             if(e.getStatusCode().is4xxClientError()) {
                 toast("Sorry! It seems that request isn't valid...");
             }
         }
-        catch (Exception e) {
+        catch (ResourceAccessException e) {
             Log.e(TAG, e.getMessage());
+            toast("Sorry! DBPedia service is unavailable at the moment!\nPlease try again later...");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "Uncaught exception!");
+        }
+        finally {
             updateUIAfterQuery();
         }
     }
@@ -132,7 +149,9 @@ public class DestinationsFragment extends Fragment {
 
     @UiThread
     void toast(String message) {
-        Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
+        if(this.getContext() != null) {
+            Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

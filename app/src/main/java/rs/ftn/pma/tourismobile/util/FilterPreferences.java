@@ -14,4 +14,8 @@ public interface FilterPreferences {
 
     String bySelectedTags();
 
+    String sortBy();
+
+    boolean sortOrder();
+
 }

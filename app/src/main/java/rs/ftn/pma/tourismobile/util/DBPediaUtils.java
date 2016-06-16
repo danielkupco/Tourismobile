@@ -80,7 +80,7 @@ public class DBPediaUtils {
         Log.e(TAG, sparqlBuilder.prettify());
 
         // this is to avoid connection reset error from server:
-        // recvfrom failed: ECONNRESET (Connection reset by peer)
+//         recvfrom failed: ECONNRESET (Connection reset by peer)
 //        System.setProperty("http.keepAlive", "false");
 
         Object result = serviceDBPedia.queryDBPedia(params);

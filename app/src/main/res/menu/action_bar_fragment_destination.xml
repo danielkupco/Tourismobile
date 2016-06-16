@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="rs.ftn.pma.tourismobile.MainActivity_">
+    tools:context="rs.ftn.pma.tourismobile.activities.MainActivity">
     <item
         android:id="@+id/actionFilter"
         android:orderInCategory="100"

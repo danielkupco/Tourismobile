@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,6 +8,10 @@
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/font_medium"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/tv_margin_large"
         android:text="@string/action_filters"/>
 
     <android.support.design.widget.TextInputLayout
@@ -40,6 +45,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_select_tags" />
+
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerSortBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/tv_margin_medium"
+        android:layout_marginRight="@dimen/tv_margin_medium"
+        app:ms_hint="@string/hint_select_sort_param"
+        app:ms_hintColor="@color/accent"
+        app:ms_floatingLabelText="@string/hint_sort_by"
+        app:ms_floatingLabelColor="@color/accent"
+        app:ms_multiline="false" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton android:id="@+id/rbAscending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/rb_asc" />
+        <RadioButton android:id="@+id/rbDescending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rb_desc" />
+    </RadioGroup>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnClearFilters"

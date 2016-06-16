@@ -10,7 +10,7 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 
 /**
- * HTTP client for DBPedia SPARQL service using Jena (SPARQL query engine)
+ * HTTP client for DBPedia SPARQL service (SPARQL query engine)
  * Created by Daniel Kupčo on 04.06.2016.
  */
 @Rest(rootUrl = APIServiceConstants.ROOT_URL, converters = {FormHttpMessageConverter.class, GsonHttpMessageConverter.class, StringHttpMessageConverter.class})

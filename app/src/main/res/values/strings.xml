@@ -40,6 +40,8 @@
     <string name="btn_clear_filters">Clear filters</string>
     <string name="btn_apply_filters">Apply filters</string>
     <string name="cb_dbp_property">DBPedia property</string>
+    <string name="rb_asc">Ascending</string>
+    <string name="rb_desc">Descending</string>
 
     <!-- Hints -->
     <string name="hint_name">Name</string>
@@ -48,4 +50,6 @@
     <string name="hint_by_description">By description</string>
     <string name="hint_property">Property</string>
     <string name="hint_value">Value</string>
+    <string name="hint_sort_by">Sort by</string>
+    <string name="hint_select_sort_param">Select sort parameter</string>
 </resources>

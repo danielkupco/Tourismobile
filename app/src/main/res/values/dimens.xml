@@ -50,6 +50,6 @@
     <dimen name="layout_paddings">8dp</dimen>
 
     <!-- Font sizes -->
-    <dimen name="font_medium">20dp</dimen>
+    <dimen name="font_medium">20sp</dimen>
 
 </resources>
