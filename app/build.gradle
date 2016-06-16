@@ -36,6 +36,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
+    // Android support
+    compile "com.android.support:appcompat-v7:$ASVersion"
+    compile "com.android.support:design:$ASVersion"
+    compile "com.android.support:cardview-v7:$ASVersion"
+    compile "com.android.support:recyclerview-v7:$ASVersion"
+    compile "com.android.support:support-v4:$ASVersion"
     // Android annotations
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
@@ -46,8 +52,8 @@ dependencies {
     // REST
     compile "org.androidannotations:rest-spring-api:$AAVersion"
     apt "org.androidannotations:rest-spring:$AAVersion"
-    // JSON
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    // JSON
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
     // Not working
     // Jena (SPARQL query engine)
@@ -60,14 +66,11 @@ dependencies {
     // Material design progress bar
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.6'
     // Material design spinner
-    compile ('com.github.ganfra:material-spinner:1.1.1'){
+    compile('com.github.ganfra:material-spinner:1.1.1') {
 //        exclude group: 'com.nineoldandroids', module: 'library'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    // Android support
-    compile "com.android.support:appcompat-v7:$ASVersion"
-    compile "com.android.support:design:$ASVersion"
-    compile "com.android.support:cardview-v7:$ASVersion"
-    compile "com.android.support:recyclerview-v7:$ASVersion"
-    compile "com.android.support:support-v4:$ASVersion"
+
+    // Google services
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
 }
