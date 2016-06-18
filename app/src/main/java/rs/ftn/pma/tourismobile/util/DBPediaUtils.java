@@ -9,14 +9,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.network.ServiceDBPedia;
 
 /**
@@ -31,7 +35,90 @@ public class DBPediaUtils {
     @RestService
     ServiceDBPedia serviceDBPedia;
 
+    @Pref
+    FilterPreferences_ filterPreferences;
+
+    @Bean
+    TagDAOWrapper tagDAOWrapper;
+
     public List<Destination> queryDBPediaForList(int page) {
+        final int queryLimit = 10;
+        final String VARIABLE = "Destination";
+
+        final boolean tagFiltersSelected = filterPreferences.bySelectedTags().exists();
+        final String[] tagPositions = filterPreferences.bySelectedTags().getOr("").split(",");
+        final String[] predicates = new String[tagPositions.length];
+        final String[] objects = new String[tagPositions.length];
+
+        List<Tag> filterTags = tagDAOWrapper.findAllForFilters();
+
+        if(tagFiltersSelected && filterTags.size() >= tagPositions.length) {
+            for (int i = 0; i < tagPositions.length; i++) {
+                Tag tag = filterTags.get(i);
+                predicates[i] = tag.getDbpProperty();
+                objects[i] = tag.getDbpValue();
+            }
+        }
+
+        SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
+        String sparql = sparqlBuilder.startQuery()
+                .select()
+                .var(VARIABLE).var(Destination.NAME_FIELD).var(Destination.WIKI_PAGE_ID_FIELD)
+                .var(Destination.IMAGE_URI_FIELD).var(Destination.COMMENT_FIELD)
+                .aggregateVarAs("AVG", Destination.LATITUDE_FIELD, Destination.LATITUDE_FIELD)
+                .aggregateVarAs("AVG", Destination.LONGITUDE_FIELD, Destination.LONGITUDE_FIELD)
+                .from("http://dbpedia.org")
+                .startWhere()
+                    .startSubquery()
+                        .select()
+                        .variables() // all
+                        .startWhere()
+                            .triplet(VARIABLE, "a", "dbo:City", false).andIf(tagFiltersSelected)
+                            .triplet(VARIABLE, predicates, objects) // arrays of parameters
+                            .property("rdfs:label").as(Destination.NAME_FIELD)
+                            .property("rdfs:comment").as(Destination.COMMENT_FIELD)
+                            .startFilter()
+                                .varFunction("lang", Destination.COMMENT_FIELD).eqAsString("en").and()
+                                .varFunction("lang", Destination.NAME_FIELD).eqAsString("en").andIf(filterPreferences.byName().exists())
+                                .functionWithParams("CONTAINS", String.format("LCASE(?%s)", Destination.NAME_FIELD),
+                                        String.format("LCASE(\"%s\")", filterPreferences.byName().get())).andIf(filterPreferences.byDescription().exists())
+                                .functionWithParams("CONTAINS", String.format("LCASE(?%s)", Destination.COMMENT_FIELD),
+                                        String.format("LCASE(\"%s\")", filterPreferences.byDescription().get()))
+                            .endFilter()
+                        .endWhere()
+                    .endSubquery()
+                    // must continue with triplet
+                    .triplet(VARIABLE, "dbo:wikiPageID", Destination.WIKI_PAGE_ID_FIELD, true)
+                    .property("dbo:thumbnail").as(Destination.IMAGE_URI_FIELD)
+                    .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
+                    .propertyChoice("geo:long", "dbp:longD").as(Destination.LONGITUDE_FIELD)
+                .endWhere()
+                .groupBy(VARIABLE, Destination.NAME_FIELD, Destination.WIKI_PAGE_ID_FIELD,
+                        Destination.IMAGE_URI_FIELD, Destination.COMMENT_FIELD)
+                // order by name and use ascending order by default
+                .orderByWithDirection(filterPreferences.sortBy().getOr(Destination.NAME_FIELD),
+                        filterPreferences.sortOrder().getOr(true) ? "ASC" : "DESC")
+                .limit(queryLimit)
+                .offset(queryLimit * page)
+                .build();
+
+        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.set("query", sparql);
+        params.set("format", "json");
+
+        Log.e(TAG, "sparql list");
+        Log.e(TAG, sparql);
+        Log.e(TAG, sparqlBuilder.prettify());
+
+        // this is to avoid connection reset error from server:
+//         recvfrom failed: ECONNRESET (Connection reset by peer)
+//        System.setProperty("http.keepAlive", "false");
+
+        Object result = serviceDBPedia.queryDBPedia(params);
+        return extractDestinationsForList(result);
+    }
+
+    public List<Destination> queryDBPediaForList2(int page) {
         final int queryLimit = 10;
         final String VARIABLE = "Destination";
 

@@ -253,6 +253,28 @@ public class SPARQLBuilder {
             return this;
         }
 
+        /**
+         * Function that adds ordering parameters.<br>
+         * You must use pairs of variable and order direction ("ASC" or "DESC") for query to be valid.<br>
+         * For example, orderByWithDirection("name", "ASC", "price", "DESC").
+         * @param variables
+         * @return
+         */
+        public SPARQLSelectPart orderByWithDirection(String... variables) {
+            if(variables.length % 2 != 0) {
+                throw new RuntimeException("Number of order parameters must be even!");
+            }
+            if(variables.length > 0) {
+                queryPart.append(" ORDER BY");
+                for (int i = 0; i < variables.length; i++) {
+                    String variable = variables[i++]; // moving index to next element (direction)
+                    String direction = variables[i];
+                    queryPart.append(String.format(" %s(?%s)", direction, variable));
+                }
+            }
+            return this;
+        }
+
         public SPARQLSelectPart groupBy(String... variables) {
             if(variables.length > 0) {
                 queryPart.append(" GROUP BY");
@@ -281,6 +303,8 @@ public class SPARQLBuilder {
 
     public static class SPARQLWherePart extends SPARQLPart {
 
+        private boolean evaluate = true;
+
         public SPARQLWherePart(SPARQLSelectPart creator) {
             super(creator, " WHERE {");
         }
@@ -299,12 +323,41 @@ public class SPARQLBuilder {
         }
 
         public SPARQLWherePart triplet(String subject, String predicate, String object, boolean isObjectVariable) {
-            char lastChar = lastChar(queryPart);
-            if(!(lastChar == '{' || lastChar == '.' || lastChar == '}')) {
-                queryPart.append(" .");
+            if(evaluate) {
+                char lastChar = lastChar(queryPart);
+                if (!(lastChar == '{' || lastChar == '.' || lastChar == '}')) {
+                    queryPart.append(" .");
+                }
+                final String format = isObjectVariable ? " ?%s %s ?%s" : " ?%s %s %s";
+                queryPart.append(String.format(format, subject, predicate, object));
             }
-            final String format = isObjectVariable ? " ?%s %s ?%s" : " ?%s %s %s";
-            queryPart.append(String.format(format, subject, predicate, object));
+            return this;
+        }
+
+        public SPARQLWherePart triplet(String subject, String[] predicates, String[] objects) {
+            if(evaluate) {
+                for (int i = 0; i < predicates.length; i++) {
+                    triplet(subject, predicates[i], objects[i], false);
+                }
+            }
+            return this;
+        }
+
+        public SPARQLWherePart triplet(String[] subjects, String[] predicates, String[] objects) {
+            if(evaluate) {
+                for (int i = 0; i < subjects.length; i++) {
+                    triplet(subjects[i], predicates[i], objects[i], false);
+                }
+            }
+            return this;
+        }
+
+        public SPARQLWherePart triplet(String[] subjects, String[] predicates, String[] objects, boolean[] isObjectVariables) {
+            if(evaluate) {
+                for (int i = 0; i < subjects.length; i++) {
+                    triplet(subjects[i], predicates[i], objects[i], isObjectVariables[i]);
+                }
+            }
             return this;
         }
 
@@ -328,7 +381,16 @@ public class SPARQLBuilder {
         }
 
         public SPARQLWherePart and() {
+            evaluate = true;
             queryPart.append(" .");
+            return this;
+        }
+
+        public SPARQLWherePart andIf(boolean value) {
+            evaluate = value;
+            if(evaluate) {
+                queryPart.append(" .");
+            }
             return this;
         }
 
@@ -341,36 +403,71 @@ public class SPARQLBuilder {
 
     public static class SPARQLFilterPart extends SPARQLPart {
 
+        private boolean evaluate = true;
+
         public SPARQLFilterPart(SPARQLWherePart creator) {
             super(creator, " . FILTER(");
         }
 
         public SPARQLFilterPart var(String name) {
-            queryPart.append(String.format("?%s", name));
+            if(evaluate) {
+                queryPart.append(String.format("?%s", name));
+            }
             return this;
         }
 
         public SPARQLFilterPart varFunction(String function, String name) {
-            queryPart.append(String.format("%s(?%s)", function, name));
+            if(evaluate) {
+                queryPart.append(String.format("%s(?%s)", function, name));
+            }
+            return this;
+        }
+
+
+        public SPARQLFilterPart functionWithParams(String function, String... params) {
+            if(evaluate) {
+                queryPart.append(String.format("%s(", function));
+                for(String param : params) {
+                    queryPart.append(String.format("%s, ", param));
+                }
+                queryPart.deleteCharAt(queryPart.length() - 1);
+                queryPart.deleteCharAt(queryPart.length() - 1);
+                queryPart.append(")");
+            }
             return this;
         }
 
         public SPARQLFilterPart eq(String value) {
-            queryPart.append(String.format("=%s", value));
+            if(evaluate) {
+                queryPart.append(String.format("=%s", value));
+            }
             return this;
         }
 
         public SPARQLFilterPart eqAsString(String value) {
-            queryPart.append(String.format("=\"%s\"", value));
+            if(evaluate) {
+                queryPart.append(String.format("=\"%s\"", value));
+            }
             return this;
         }
 
         public SPARQLFilterPart eqAsType(String value, String type) {
-            queryPart.append(String.format("=%s^^%s", value, type));
+            if(evaluate) {
+                queryPart.append(String.format("=%s^^%s", value, type));
+            }
+            return this;
+        }
+
+        public SPARQLFilterPart andIf(boolean value) {
+            evaluate = value;
+            if(evaluate) {
+                queryPart.append(" && ");
+            }
             return this;
         }
 
         public SPARQLFilterPart and() {
+            evaluate = true;
             queryPart.append(" && ");
             return this;
         }
