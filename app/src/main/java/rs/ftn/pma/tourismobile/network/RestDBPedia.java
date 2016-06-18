@@ -14,7 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
  * Created by Daniel Kupčo on 04.06.2016.
  */
 @Rest(rootUrl = APIServiceConstants.ROOT_URL, converters = {FormHttpMessageConverter.class, GsonHttpMessageConverter.class, StringHttpMessageConverter.class})
-public interface ServiceDBPedia {
+public interface RestDBPedia {
 
     @Header(name = "Content-Type", value = "application/x-www-form-urlencoded")
     @Post(value = APIServiceConstants.PARAMS)

@@ -43,10 +43,6 @@ public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
     @Pref
     FilterPreferences_ filterPreferences;
 
-    private View dialogLayout;
-
-    private ListView tagsList;
-
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -56,7 +52,7 @@ public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
+        View dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
 
         // If there are already selected tags for filters
         // Load their positions from preferences and select them
@@ -74,7 +70,7 @@ public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
         }
 
         // binding adapter to the list
-        tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
+        ListView tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
         selectTagsAdapter.setItems(tagDAOWrapper.findAllForFilters());
         tagsList.setAdapter(selectTagsAdapter);
 

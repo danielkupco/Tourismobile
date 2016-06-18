@@ -28,6 +28,7 @@ import java.util.List;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.activities.DestinationFilterActivity_;
+import rs.ftn.pma.tourismobile.activities.MainActivity;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
@@ -108,7 +109,7 @@ public class DestinationsFragment extends Fragment {
     @Background
     public void queryDBPedia(int page) {
         try {
-            List<Destination> destinationList = dbPediaUtils.queryDBPediaForList(page);
+            List<Destination> destinationList = ((MainActivity)getActivity()).getDBPediaService().queryDestinationsWithFilters(page);
             queryDBPediaSuccess(destinationList);
         }
         catch (HttpClientErrorException e) {

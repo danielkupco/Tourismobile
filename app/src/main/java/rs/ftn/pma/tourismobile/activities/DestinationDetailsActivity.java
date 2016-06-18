@@ -1,6 +1,11 @@
 package rs.ftn.pma.tourismobile.activities;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,13 +27,15 @@ import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.model.Tag;
-import rs.ftn.pma.tourismobile.util.DBPediaUtils;
+import rs.ftn.pma.tourismobile.services.DBPediaService;
+import rs.ftn.pma.tourismobile.services.DBPediaService_;
+import rs.ftn.pma.tourismobile.services.IServiceActivity;
 
 /**
  * Created by Daniel Kupčo on 08.06.2016.
  */
 @EActivity(R.layout.activity_destination_details)
-public class DestinationDetailsActivity extends AppCompatActivity {
+public class DestinationDetailsActivity extends AppCompatActivity implements IServiceActivity {
 
     private static final String TAG = DestinationDetailsActivity.class.getSimpleName();
 
@@ -57,9 +64,6 @@ public class DestinationDetailsActivity extends AppCompatActivity {
     int wikiPageID;
 
     @Bean
-    DBPediaUtils dbPediaUtils;
-
-    @Bean
     DestinationDAOWrapper destinationDAOWrapper;
 
     @Bean
@@ -67,22 +71,70 @@ public class DestinationDetailsActivity extends AppCompatActivity {
 
     private Destination destination;
 
-    @AfterInject
-    @Background
+    private DBPediaService mService;
+
+    private boolean mBound = false;
+
+    /** Defines callbacks for mService binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've mBound to LocalService, cast the IBinder and get LocalService instance
+            DBPediaService.ServiceBinder binder = (DBPediaService.ServiceBinder) service;
+            DestinationDetailsActivity.this.mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to the mService
+        Intent intent = new Intent(this, DBPediaService_.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the mService
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    @Override
+    public DBPediaService getDBPediaService() {
+        return mService;
+    }
+
+    @AfterInject // because we are starting this thread
+    @Background(delay = 500) // we must delay because it takes some time for service to bind
     void loadDestination() {
         try {
-            if(destinationID > 0) {
-                this.destination = destinationDAOWrapper.findById(destinationID);
-            }
-            else {
-                this.destination = dbPediaUtils.queryDBPediaForDetails(wikiPageID);
+            if(mBound) {
+                if (destinationID > 0) {
+                    this.destination = destinationDAOWrapper.findById(destinationID);
+                } else {
+                    this.destination = mService.queryDestinationDetails(wikiPageID);
+                }
             }
             queryDBPediaSuccess(destination);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
+        }
+        finally {
             updateUIAfterQuery();
         }
+
     }
 
     @UiThread

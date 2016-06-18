@@ -24,7 +24,7 @@ import rs.ftn.pma.tourismobile.activities.DestinationDetailsActivity_;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.dialogs.SelectTagsDialog_;
 import rs.ftn.pma.tourismobile.model.Destination;
-import rs.ftn.pma.tourismobile.util.DBPediaUtils;
+import rs.ftn.pma.tourismobile.services.IServiceActivity;
 
 /**
  * Created by danex on 5/12/16.
@@ -36,9 +36,6 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
 
     @Bean
     DestinationDAOWrapper destinationDAOWrapper;
-
-    @Bean
-    DBPediaUtils dbPediaUtils;
 
     @ViewById
     SimpleDraweeView image;
@@ -111,14 +108,16 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         boolean favourite = destination.isFavourite();
         // if it is marked as favourite for the first time persist the destination
         if(!persisted) {
-            Destination toSave = dbPediaUtils.queryDBPediaForDetails(destination.getWikiPageID());
-            if(toSave == null) {
-                showToast(String.format("Sorry! Destination '%s' could not be loaded from DBPedia!", destination.getName()));
-                return;
+            if(getContext() instanceof IServiceActivity) {
+                Destination toSave = ((IServiceActivity) getContext()).getDBPediaService().queryDestinationDetails(destination.getWikiPageID());
+                if (toSave == null) {
+                    showToast(String.format("Sorry! Destination '%s' could not be loaded from DBPedia!", destination.getName()));
+                    return;
+                }
+                toSave.setFavourite(true);
+                persisted = destinationDAOWrapper.create(toSave);
+                destination = toSave;
             }
-            toSave.setFavourite(true);
-            persisted = destinationDAOWrapper.create(toSave);
-            destination = toSave;
         }
         // otherwise just update favourite state
         else {

@@ -1,5 +1,10 @@
 package rs.ftn.pma.tourismobile.activities;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -20,11 +25,60 @@ import rs.ftn.pma.tourismobile.fragments.HomeFragment;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
 import rs.ftn.pma.tourismobile.fragments.StoredDestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.TagsFragment_;
+import rs.ftn.pma.tourismobile.services.DBPediaService;
+import rs.ftn.pma.tourismobile.services.DBPediaService_;
+import rs.ftn.pma.tourismobile.services.IServiceActivity;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements IServiceActivity,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private DBPediaService mService;
+
+    private boolean mBound = false;
+
+    /** Defines callbacks for mService binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've mBound to LocalService, cast the IBinder and get LocalService instance
+            DBPediaService.ServiceBinder binder = (DBPediaService.ServiceBinder) service;
+            MainActivity.this.mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to the mService
+        Intent intent = new Intent(this, DBPediaService_.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the mService
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    @Override
+    public DBPediaService getDBPediaService() {
+        return mService;
+    }
 
     @AfterViews
     void init() {
