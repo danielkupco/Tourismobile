@@ -46,6 +46,11 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_select_tags" />
 
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvSelectedTagsNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <fr.ganfra.materialspinner.MaterialSpinner
         android:id="@+id/spinnerSortBy"
         android:layout_width="match_parent"

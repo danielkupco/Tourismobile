@@ -40,6 +40,12 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
         this.notifyItemRangeInserted(curSize, this.items.size() - 1);
     }
 
+    public T getItem(int position) {
+        if(hasHeader)
+            position--;
+        return items.get(position);
+    }
+
     @Override
     public int getItemCount() {
         int totalCount = 0;

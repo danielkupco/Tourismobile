@@ -1,5 +1,6 @@
 package rs.ftn.pma.tourismobile.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.DestinationFilterActivity;
 import rs.ftn.pma.tourismobile.adapters.SelectTagsAdapter;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
 import rs.ftn.pma.tourismobile.util.FilterPreferences_;
@@ -58,19 +60,22 @@ public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
 
         // If there are already selected tags for filters
         // Load their positions from preferences and select them
-        if(filterPreferences.bySelectedTags().exists()) {
+        List<Integer> positions = new ArrayList<>();
+        if(filterPreferences.bySelectedTags().exists() && filterPreferences.bySelectedTags().get().length() > 0) {
             String selectedPositions = filterPreferences.bySelectedTags().get();
             String[] positionTokens = selectedPositions.split(",");
-            List<Integer> positions = new ArrayList<>();
             for(String position : positionTokens) {
                 positions.add(Integer.valueOf(position));
             }
             selectTagsAdapter.setSelectedIndices(positions);
         }
+        else {
+            selectTagsAdapter.setSelectedIndices(positions);
+        }
 
         // binding adapter to the list
         tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
-        selectTagsAdapter.setItems(tagDAOWrapper.findAll());
+        selectTagsAdapter.setItems(tagDAOWrapper.findAllForFilters());
         tagsList.setAdapter(selectTagsAdapter);
 
         builder.setView(dialogLayout)
@@ -105,7 +110,17 @@ public class SelectTagsForFilterDialog extends AppCompatDialogFragment {
                 {
                     // get selected positions, concatenate them and store them in preferences
                     List<Integer> selectedPositions = selectTagsAdapter.getSelectedIndices();
-                    filterPreferences.bySelectedTags().put(TextUtils.join(",", selectedPositions));
+                    if(selectedPositions.size() > 0) {
+                        filterPreferences.bySelectedTags().put(TextUtils.join(",", selectedPositions));
+                    }
+                    else {
+                        filterPreferences.bySelectedTags().remove();
+                    }
+                    Activity parentActivity = getActivity();
+                    if (parentActivity != null && parentActivity instanceof DestinationFilterActivity) {
+                        ((DestinationFilterActivity) parentActivity).setSelectedTagsNumber(selectedPositions.size());
+                    }
+
                     SelectTagsForFilterDialog.this.getDialog().cancel();
                 }
             });

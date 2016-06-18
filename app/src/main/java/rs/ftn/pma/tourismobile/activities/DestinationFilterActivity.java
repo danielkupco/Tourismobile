@@ -43,6 +43,9 @@ public class DestinationFilterActivity extends AppCompatActivity {
     @ViewById
     RadioButton rbDescending;
 
+    @ViewById
+    TextView tvSelectedTagsNumber;
+
     @Bean
     DestinationSortAdapter destinationSortAdapter;
 
@@ -59,6 +62,12 @@ public class DestinationFilterActivity extends AppCompatActivity {
             rbAscending.setChecked(filterPreferences.sortOrder().get());
             rbDescending.setChecked(!filterPreferences.sortOrder().get());
         }
+        if(filterPreferences.bySelectedTags().exists()) {
+            setSelectedTagsNumber(filterPreferences.bySelectedTags().get().split(",").length);
+        }
+        else {
+            setSelectedTagsNumber(0);
+        }
     }
 
     @Click
@@ -68,31 +77,45 @@ public class DestinationFilterActivity extends AppCompatActivity {
 
     @Click
     void btnClearFilters() {
-        filterPreferences.edit()
-                .byName().remove()
-                .byDescription().remove()
-                .bySelectedTags().remove()
-                .sortBy().remove()
-                .sortOrder().remove();
+        filterPreferences.byName().remove();
+        filterPreferences.byDescription().remove();
+        filterPreferences.bySelectedTags().remove();
+        filterPreferences.sortBy().remove();
+        filterPreferences.sortOrder().remove();
         byName.setText("");
         byDescription.setText("");
         spinnerSortBy.setSelection(0);
         rbAscending.setChecked(true);
         rbDescending.setChecked(false);
+        setSelectedTagsNumber(0);
     }
 
     @Click
     void btnApplyFilters() {
         String nameFilter = byName.getText().toString().trim();
         String descriptionFilter = byDescription.getText().toString().trim();
-        filterPreferences.byName().put(nameFilter);
-        filterPreferences.byDescription().put(descriptionFilter);
+        if(nameFilter.length() > 0) {
+            filterPreferences.byName().put(nameFilter);
+        }
+        else {
+            filterPreferences.byName().remove();
+        }
+        if(descriptionFilter.length() > 0) {
+            filterPreferences.byDescription().put(descriptionFilter);
+        }
+        else {
+            filterPreferences.byDescription().remove();
+        }
         if(spinnerSortBy.getSelectedItemPosition() > 0) {
             String sortByFilter = (String) spinnerSortBy.getSelectedItem();
             filterPreferences.sortBy().put(sortByFilter);
         }
         filterPreferences.sortOrder().put(rbAscending.isChecked());
         finish();
+    }
+
+    public void setSelectedTagsNumber(int number) {
+        tvSelectedTagsNumber.setText(String.format("Tags selected: %d", number));
     }
 
 }
