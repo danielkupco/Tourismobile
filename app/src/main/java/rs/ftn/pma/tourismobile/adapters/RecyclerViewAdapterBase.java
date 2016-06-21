@@ -33,11 +33,14 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     }
 
     public void addItems(List<T> items) {
-        this.items.addAll(items);
-        // For efficiency purposes, notify the adapter of only the elements that got changed
-        // curSize will equal to the index of the first element inserted because the list is 0-indexed
-        int curSize = this.getItemCount();
-        this.notifyItemRangeInserted(curSize, this.items.size() - 1);
+        // must check if list is not empty to avoid exception to be thrown
+        if(!items.isEmpty()) {
+            this.items.addAll(items);
+            // For efficiency purposes, notify the adapter of only the elements that got changed
+            // curSize will equal to the index of the first element inserted because the list is 0-indexed
+            int curSize = this.getItemCount();
+            this.notifyItemRangeInserted(curSize, this.items.size() - 1);
+        }
     }
 
     public T getItem(int position) {

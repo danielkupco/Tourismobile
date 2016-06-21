@@ -1,6 +1,5 @@
 package rs.ftn.pma.tourismobile.fragments;
 
-
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,6 +54,7 @@ public class FavouritesFragment extends Fragment {
 
         // binding adapter to the view
         destinationsList.setAdapter(favouritesAdapter);
+        loadItemsForPage(0);
     }
 
     @Background

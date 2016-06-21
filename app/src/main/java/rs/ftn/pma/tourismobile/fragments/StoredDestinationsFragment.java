@@ -56,6 +56,7 @@ public class StoredDestinationsFragment extends Fragment {
 
         // binding adapter to the view
         destinationsList.setAdapter(storedDestinationsAdapter);
+        loadItemsForPage(0);
     }
 
     @Background
