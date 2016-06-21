@@ -3,6 +3,7 @@ package rs.ftn.pma.tourismobile.activities;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -83,4 +84,17 @@ public class TagDetailsActivity extends AppCompatActivity {
             tagValue.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // making home (up) button acts like back button is pressed
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return(super.onOptionsItemSelected(item));
+    }
+
 }
