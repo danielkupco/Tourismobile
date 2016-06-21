@@ -32,10 +32,9 @@ public class FavouritesAdapter extends RecyclerViewAdapterBase<Destination, Dest
     @RootContext
     Context context;
 
-    // It is important to set data after injection
+    // We do not set data after injection because we make query from fragment
     @AfterInject
     void initData() {
-        setItems(destinationDAOWrapper.findAllFavouritesForPage(0, pageLimit));
         hasFooter = true;
         destinationDAOWrapper.addObserver(this);
     }

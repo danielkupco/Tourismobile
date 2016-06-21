@@ -55,7 +55,7 @@ public class StoredDestinationsFragment extends Fragment {
         });
 
         // binding adapter to the view
-        destinationsList.setAdapter(storedDestinationsAdapter);
+        storedDestinationsAdapter.bindAdapterToRecyclerView(destinationsList);
         loadItemsForPage(0);
     }
 

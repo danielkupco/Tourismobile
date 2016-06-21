@@ -102,7 +102,7 @@ public class DestinationsFragment extends Fragment {
         });
 
         // binding adapter to the view
-        destinationsList.setAdapter(destinationsAdapter);
+        destinationsAdapter.bindAdapterToRecyclerView(destinationsList);
         queryDBPedia(0); // first page
     }
 

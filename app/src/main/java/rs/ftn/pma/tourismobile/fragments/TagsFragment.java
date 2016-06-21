@@ -39,7 +39,7 @@ public class TagsFragment extends Fragment {
         tagsList.setLayoutManager(layoutManager);
 
         // binding adapter to the view
-        tagsList.setAdapter(tagsAdapter);
+        tagsAdapter.bindAdapterToRecyclerView(tagsList);
     }
 
     @Click

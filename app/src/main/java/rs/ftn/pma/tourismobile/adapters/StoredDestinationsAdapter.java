@@ -32,10 +32,9 @@ public class StoredDestinationsAdapter extends RecyclerViewAdapterBase<Destinati
     @RootContext
     Context context;
 
-    // It is important to set data after injection
+    // We do not set data after injection because we make query from fragment
     @AfterInject
     void initData() {
-        setItems(destinationDAOWrapper.findAllForPage(0, pageLimit));
         hasFooter = true;
         destinationDAOWrapper.addObserver(this);
     }
@@ -49,12 +48,12 @@ public class StoredDestinationsAdapter extends RecyclerViewAdapterBase<Destinati
     @Override
     public void update(Observable observable, Object data) {
         if(observable instanceof DestinationDAOWrapper) {
-            setItems(destinationDAOWrapper.findAllFavouritesForPage(0, pageLimit));
+            setItems(destinationDAOWrapper.findAllForPage(0, pageLimit));
         }
     }
 
     public void loadItemsForPage(int page) {
-        addItems(destinationDAOWrapper.findAllFavouritesForPage(page, pageLimit));
+        addItems(destinationDAOWrapper.findAllForPage(page, pageLimit));
     }
 
 }

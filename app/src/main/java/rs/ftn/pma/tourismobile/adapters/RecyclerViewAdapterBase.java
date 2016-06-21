@@ -18,6 +18,8 @@ import rs.ftn.pma.tourismobile.views.ViewWrapper;
  */
 public abstract class RecyclerViewAdapterBase<T, V extends View> extends RecyclerView.Adapter<ViewWrapper<V>> {
 
+    private static final String TAG = RecyclerViewAdapterBase.class.getSimpleName();
+
     protected static final int TYPE_HEADER = 0;
     protected static final int TYPE_ITEM = 1;
     protected static final int TYPE_FOOTER = 2;
@@ -25,7 +27,8 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     protected boolean hasHeader = false;
     protected boolean hasFooter = false;
 
-    protected List<T> items;
+    protected RecyclerView recyclerView;
+    protected List<T> items = new ArrayList<>();
 
     public void setItems(List<T> items) {
         this.items = new ArrayList<>(items);
@@ -33,13 +36,20 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     }
 
     public void addItems(List<T> items) {
-        // must check if list is not empty to avoid exception to be thrown
         if(!items.isEmpty()) {
             this.items.addAll(items);
             // For efficiency purposes, notify the adapter of only the elements that got changed
             // curSize will equal to the index of the first element inserted because the list is 0-indexed
-            int curSize = this.getItemCount();
-            this.notifyItemRangeInserted(curSize, this.items.size() - 1);
+            int curSize = this.items.size() - items.size();
+            // must check if layout is not yet computed to avoid exception to be thrown
+            while (recyclerView.isComputingLayout()) {
+                try {
+                    Thread.sleep(100L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            this.notifyItemRangeInserted(curSize, items.size());
         }
     }
 
@@ -108,18 +118,30 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
 
     @Override
     public void onBindViewHolder(ViewWrapper<V> viewHolder, int position) {
-        if((hasHeader && position == 0) || (hasFooter && position == getItemCount() - 1))
+        if ((hasHeader && position == 0) || (hasFooter && position == getItemCount() - 1))
             return;
 
-        if(hasHeader)
+        if (hasHeader)
             position--;
 
         V view = viewHolder.getView();
         T item = items.get(position);
 
-        if(view instanceof IViewHolder) {
+        if (view instanceof IViewHolder) {
             ((IViewHolder) view).bind(item);
         }
+    }
+
+    /**
+     * Inverse logic method for binding adapter to a recycler view.<br>
+     * Use this method instead of <code>RecyclerView.setAdapter()</code> because this way we keep
+     * a reference of the <code>RecyclerView</code> which is used to prevent throwing exception when updating
+     * newly added items.
+     * @param recyclerView
+     */
+    public void bindAdapterToRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        recyclerView.setAdapter(this);
     }
 
 }
