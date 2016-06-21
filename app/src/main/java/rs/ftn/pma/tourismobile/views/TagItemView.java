@@ -3,6 +3,7 @@ package rs.ftn.pma.tourismobile.views;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import org.androidannotations.annotations.ViewById;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.activities.TagDetailsActivity_;
 import rs.ftn.pma.tourismobile.model.Tag;
+import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 
 /**
  * Created by danex on 5/12/16.
@@ -24,6 +26,9 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
 
     @ViewById
     TextView description;
+
+    @ViewById
+    TextView footer_note;
 
     private Tag tag;
 
@@ -44,6 +49,14 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
     public void bind(Tag item) {
         tag = item;
         name.setText(item.getName());
-        description.setText(item.getDescription());
+        description.setText(DBPediaUtils.shortenString(item.getDescription(), 100));
+        if(!item.isDbpCanQueryBy()) {
+            footer_note.setText(getContext().getString(R.string.label_users_tag));
+            footer_note.setGravity(Gravity.START | Gravity.LEFT);
+        }
+        else {
+            footer_note.setText(getContext().getString(R.string.label_dbpedia_tag));
+            footer_note.setGravity(Gravity.END | Gravity.RIGHT);
+        }
     }
 }

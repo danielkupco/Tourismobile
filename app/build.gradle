@@ -21,9 +21,9 @@ android {
         }
     }
     packagingOptions {
+        // Must exclude when using rest libraries
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
-        exclude 'META-INF/services/org.apache.jena.system.JenaSubsystemLifecycle'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/license.txt'
@@ -55,12 +55,6 @@ dependencies {
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     // JSON
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
-    // Not working
-    // Jena (SPARQL query engine)
-//    compile (group: 'org.apache.jena', name: 'jena-arq', version: '2.13.0') {
-//        // Already provided by Android Studio
-//        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-//    }
     // Fresco image caching library
     compile 'com.facebook.fresco:fresco:0.10.0'
     // Material design progress bar

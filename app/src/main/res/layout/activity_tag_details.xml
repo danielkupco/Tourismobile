@@ -5,25 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/toolbar" />
+
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/tv_margin_large"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tagDbpCanQueryBy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_dbp_can_query_by_true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_marginTop="@dimen/tv_margin_large"
+        android:layout_marginLeft="@dimen/tv_margin_small"
+        android:layout_marginStart="@dimen/tv_margin_small" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_thickness"
+        android:background="@color/primary" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tagProperty"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_marginTop="@dimen/tv_margin_medium"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tagValue"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:layout_marginTop="@dimen/tv_margin_medium"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_description"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_marginTop="@dimen/tv_margin_large"
+        android:layout_marginLeft="@dimen/tv_margin_small"
+        android:layout_marginStart="@dimen/tv_margin_small" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_thickness"
+        android:background="@color/primary" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tagDescription"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:layout_marginTop="@dimen/tv_margin_medium"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin" />
 
 </android.support.v7.widget.LinearLayoutCompat>

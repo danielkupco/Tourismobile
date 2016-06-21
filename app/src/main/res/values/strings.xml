@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Tourismobile</string>
     <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_tag_details">Tag details</string>
 
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -53,4 +54,14 @@
     <string name="hint_sort_by">Sort by</string>
     <string name="hint_select_sort_param">Select sort parameter</string>
     <string name="title_activity_maps">Map</string>
+
+    <!-- Tag details activity -->
+    <string name="label_description">Description</string>
+    <string name="label_dbp_can_query_by_true">Parameters used to query DBPedia</string>
+    <string name="label_dbp_can_query_by_false">Can not be used to query DBPedia</string>
+    <string name="label_property_name">Property name</string>
+    <string name="label_property_value">Property value</string>
+    <string name="label_users_tag">User defined tag</string>
+    <string name="label_dbpedia_tag">Supports DBPedia query</string>
+
 </resources>

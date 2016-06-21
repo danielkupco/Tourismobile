@@ -20,7 +20,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".activities.MainActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.TagDetailsActivity_" />
+        <activity android:name=".activities.TagDetailsActivity_"
+            android:parentActivityName=".activities.MainActivity_">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity_" />
+
+        </activity>
         <activity android:name=".activities.DestinationDetailsActivity_" />
         <activity android:name=".activities.DestinationFilterActivity_" />
         <!--

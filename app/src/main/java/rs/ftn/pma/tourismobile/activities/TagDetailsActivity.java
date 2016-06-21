@@ -1,6 +1,9 @@
 package rs.ftn.pma.tourismobile.activities;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterExtras;
@@ -20,6 +23,8 @@ import rs.ftn.pma.tourismobile.model.Tag;
 @EActivity(R.layout.activity_tag_details)
 public class TagDetailsActivity extends AppCompatActivity {
 
+    private static final String TAG = TagDetailsActivity.class.getSimpleName();
+
     @ViewById
     TextView tagName;
 
@@ -32,13 +37,32 @@ public class TagDetailsActivity extends AppCompatActivity {
     @ViewById
     TextView tagDescription;
 
+    @ViewById
+    TextView tagDbpCanQueryBy;
+
     @Bean
     TagDAOWrapper tagDAOWrapper;
 
     @Extra
     int tagId;
 
+    @ViewById
+    Toolbar toolbar;
+
     private Tag tag;
+
+    // must set toolbar after view layout is initialized
+    @AfterViews
+    void initViews() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(getString(R.string.title_tag_details));
+            }
+        }
+    }
 
     @AfterExtras
     void injectExtra() {
@@ -48,9 +72,15 @@ public class TagDetailsActivity extends AppCompatActivity {
     @AfterViews
     void bindViews() {
         tagName.setText(tag.getName());
-        tagProperty.setText(tag.getDbpProperty());
-        tagValue.setText(tag.getDbpValue());
         tagDescription.setText(tag.getDescription());
+        if (tag.isDbpCanQueryBy()) {
+            tagProperty.setText(String.format("%s:  %s", getString(R.string.label_property_name), tag.getDbpProperty()));
+            tagValue.setText(String.format("%s:  %s", getString(R.string.label_property_value), tag.getDbpValue()));
+        }
+        else {
+            tagDbpCanQueryBy.setText(getString(R.string.label_dbp_can_query_by_false));
+            tagProperty.setVisibility(View.GONE);
+            tagValue.setVisibility(View.GONE);
+        }
     }
-
 }

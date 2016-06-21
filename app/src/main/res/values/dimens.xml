@@ -6,7 +6,7 @@
     <dimen name="app_bar_height">180dp</dimen>
 
     <!-- Dividers -->
-    <dimen name="divider_thickness">0.8dp</dimen>
+    <dimen name="divider_thickness">1.2dp</dimen>
     <dimen name="divider_margin">4dp</dimen>
 
     <!-- Floating action button -->
@@ -49,7 +49,13 @@
     <dimen name="layout_margins">8dp</dimen>
     <dimen name="layout_paddings">8dp</dimen>
 
-    <!-- Font sizes -->
-    <dimen name="font_medium">20sp</dimen>
+    <!-- Toolbar -->
+    <dimen name="tb_elevation">4dp</dimen>
+
+    <!-- Material design font sizes -->
+    <dimen name="font_size_micro">12sp</dimen>
+    <dimen name="font_size_small">14sp</dimen>
+    <dimen name="font_size_medium">18sp</dimen>
+    <dimen name="font_size_large">22sp</dimen>
 
 </resources>
