@@ -1,9 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true">
+
+        <!--
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="64dp"
+            -->
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary"
+            app:titleEnabled="true"
+            app:title="@string/title_destination_details"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            android:fitsSystemWindows="true" >
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/destinationImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:viewAspectRatio="1.78"
+                android:scaleType="fitCenter"
+                app:failureImage="@drawable/no_image_available"
+                app:failureImageScaleType="centerInside"
+                app:progressBarImage="@drawable/loading_circle"
+                app:progressBarImageScaleType="centerInside"
+                app:progressBarAutoRotateInterval="3000"
+                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:fitsSystemWindows="true"
+                android:minHeight="?attr/actionBarSize"
+                android:title="@string/title_destination_details"
+                android:titleTextColor="@color/icons"
+                app:titleTextColor="@color/icons"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
 
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         android:id="@+id/progressBar"
@@ -16,62 +71,81 @@
         app:mpb_showTrack="true"
         style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvDestinationName"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.LinearLayoutCompat
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDestinationName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/tv_margin_large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <Button
+                android:id="@+id/btnWikiLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/tv_margin_small"
+                style="?android:borderlessButtonStyle"
+                android:text="@string/label_wikipedia_link"
+                android:textColor="@color/accent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDestinationDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tv_margin_medium"
+                android:layout_marginBottom="@dimen/tv_margin_medium"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDestinationLatitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDestinationLongitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvDestinationTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tv_margin_large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:text="Tags: tag1, tag2, tag3"/>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabFavourite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:src="@drawable/ic_star_white_24dp"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:layout_anchor="@id/appBarLayout"
+        app:layout_anchorGravity="bottom|right|end" />
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvWikiLink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/destinationImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:viewAspectRatio="1.78"
-        android:scaleType="fitCenter"
-        app:failureImage="@drawable/no_image_available"
-        app:failureImageScaleType="centerInside"
-        app:progressBarImage="@drawable/loading_circle"
-        app:progressBarImageScaleType="centerInside"
-        app:progressBarAutoRotateInterval="3000" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvDestinationDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvDestinationLatitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tvDestinationLongitude"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tvDestinationTags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tags: tag1, tag2, tag3"/>
-
-        <Button
-            android:id="@+id/btnFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Favourite"/>
-
-    </android.support.v7.widget.LinearLayoutCompat>
-
-</android.support.v7.widget.LinearLayoutCompat>
+</android.support.design.widget.CoordinatorLayout>

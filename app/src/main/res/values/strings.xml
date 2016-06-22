@@ -2,6 +2,7 @@
     <string name="app_name">Tourismobile</string>
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_tag_details">Tag details</string>
+    <string name="title_destination_details">Destination details</string>
 
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -63,5 +64,6 @@
     <string name="label_property_value">Property value</string>
     <string name="label_users_tag">User defined tag</string>
     <string name="label_dbpedia_tag">Supports DBPedia query</string>
+    <string name="label_wikipedia_link"><b><i><u>Wikipedia link</u></i></b></string>
 
 </resources>

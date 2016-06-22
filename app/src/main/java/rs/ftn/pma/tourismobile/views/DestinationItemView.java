@@ -154,7 +154,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         ObjectAnimator.ofFloat(imgFavourite, "alpha", 0f, 1f, .8f, 1f, 0f, 1f).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "scaleX", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "scaleY", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
-        ObjectAnimator.ofFloat(imgFavourite, "translationX", 0f, -50f, 0f).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(imgFavourite, "translationX", 0f, -100f, 0f).setDuration(DURATION).start();
     }
 
 }

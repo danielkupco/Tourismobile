@@ -11,7 +11,7 @@
     app:cardCornerRadius="@dimen/card_corner_radius"
     android:background="?android:attr/selectableItemBackground">
 
-    <LinearLayout
+    <android.support.v7.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -32,17 +32,18 @@
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/tv_margin_medium"
+            android:layout_marginBottom="@dimen/tv_margin_medium">
 
             <ImageView
                 android:id="@+id/imgStored"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="@dimen/card_primary_text_top_padding"
                 android:src="@drawable/ic_database_black_36dp"
                 android:layout_gravity="center_vertical"/>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +51,6 @@
                 android:gravity="center_horizontal"
                 android:layout_weight="1"
                 android:textSize="@dimen/card_primary_text_size"
-                android:layout_marginTop="@dimen/card_primary_text_top_padding"
                 android:layout_marginLeft="@dimen/card_primary_text_padding"
                 android:layout_marginRight="@dimen/card_primary_text_padding" />
 
@@ -58,14 +58,13 @@
                 android:id="@+id/imgFavourite"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="@dimen/card_primary_text_top_padding"
                 android:src="@drawable/ic_star_outline_black_36dp"
                 android:tint="@color/accent"
                 android:layout_gravity="center_vertical"/>
 
         </android.support.v7.widget.LinearLayoutCompat>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_tag_multiple_black_36dp"
                 android:drawableStart="@drawable/ic_tag_multiple_black_36dp"
+                style="@style/TextAppearance.AppCompat.Widget.Button.Inverse"
                 android:text="@string/btn_select_tags" />
 
             <!-- Space between the buttons -->
@@ -115,5 +115,5 @@
 
         </android.support.v7.widget.LinearLayoutCompat>
 
-    </LinearLayout>
+    </android.support.v7.widget.LinearLayoutCompat>
 </android.support.v7.widget.CardView>
