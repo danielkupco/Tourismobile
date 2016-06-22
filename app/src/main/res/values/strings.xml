@@ -2,7 +2,7 @@
     <string name="app_name">Tourismobile</string>
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_tag_details">Tag details</string>
-    <string name="title_destination_details">Destination details</string>
+    <string name="title_destination_details">Destination</string>
 
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

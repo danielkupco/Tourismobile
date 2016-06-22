@@ -154,10 +154,7 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.title_destination_details));
-
-        collapsingToolbar.setTitle(getString(R.string.title_destination_details));
     }
 
     @AfterInject // because we are starting this thread
