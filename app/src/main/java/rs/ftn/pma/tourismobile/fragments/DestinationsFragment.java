@@ -57,6 +57,8 @@ public class DestinationsFragment extends Fragment {
     @Pref
     FilterPreferences_ filterPreferences;
 
+    private boolean firstTime = true;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,15 @@ public class DestinationsFragment extends Fragment {
         destinationsList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                progressBar.setVisibility(View.VISIBLE);
-                queryDBPedia(page);
+                if(!firstTime) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    queryDBPedia(page);
+                }
+                else {
+                    firstTime = false;
+                    destinationsList.scrollToPosition(0);
+                    this.movePageUp();
+                }
             }
         });
 

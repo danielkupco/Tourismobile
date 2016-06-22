@@ -97,6 +97,11 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         }
     }
 
+    public void movePageUp() {
+        currentPage--;
+        previousTotalItemCount -= visibleThreshold;
+    }
+
     // Defines the process for actually loading more data based on page
     public abstract void onLoadMore(int page, int totalItemsCount);
 

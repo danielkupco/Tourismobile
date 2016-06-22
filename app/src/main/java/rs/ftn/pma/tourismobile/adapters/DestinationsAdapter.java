@@ -7,8 +7,6 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
-import java.util.ArrayList;
-
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.views.DestinationItemView;
 import rs.ftn.pma.tourismobile.views.DestinationItemView_;
@@ -24,10 +22,8 @@ public class DestinationsAdapter extends RecyclerViewAdapterBase<Destination, De
     @RootContext
     Context context;
 
-    // It is important to set data after injection
     @AfterInject
     void initData() {
-        setItems(new ArrayList<Destination>());
         hasFooter = true;
     }
 
