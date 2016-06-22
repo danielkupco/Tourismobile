@@ -8,11 +8,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.androidannotations.annotations.EActivity;
 
+import java.util.List;
+
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.util.MapUtils;
 
 @EActivity
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -43,9 +48,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        if(MapUtils.isUpdated()) {
+            List<Destination> destinations = MapUtils.getDestinations();
+            if(!destinations.isEmpty()) {
+                LatLngBounds.Builder latLngBoundsBuilder = LatLngBounds.builder();
+                for(Destination destination : destinations) {
+                    LatLng position = new LatLng(destination.getLatitude(), destination.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(position).title(destination.getName()));
+                    latLngBoundsBuilder.include(position);
+                }
+
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBoundsBuilder.build(), width, height, padding));
+            }
+        }
     }
 }

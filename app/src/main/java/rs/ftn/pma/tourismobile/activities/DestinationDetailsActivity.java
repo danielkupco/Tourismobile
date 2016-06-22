@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
+import rs.ftn.pma.tourismobile.util.MapUtils;
 
 /**
  * Created by Daniel Kupčo on 08.06.2016.
@@ -97,6 +100,9 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
 
     private boolean mBound = false;
 
+    private static final String DESTINATION_ID_STATE = "destination_id";
+    private static final String DESTINATION_WIKI_PAGE_STATE = "destination_wiki_page";
+
     /** Defines callbacks for mService binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -152,7 +158,6 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         getSupportActionBar().setTitle(getString(R.string.title_destination_details));
 
         collapsingToolbar.setTitle(getString(R.string.title_destination_details));
-        Log.e(TAG, "titleeee");
     }
 
     @AfterInject // because we are starting this thread
@@ -211,15 +216,51 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.action_bar_destination_details, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // making home (up) button acts like back button is pressed
-            case android.R.id.home:
+            case android.R.id.home: {
                 onBackPressed();
                 return true;
+            }
+            case R.id.action_map: {
+                MapUtils.setDestinations(destination);
+                MapsActivity_.intent(this).start();
+                return true;
+            }
+            case R.id.action_settings: {
+                return true;
+            }
         }
 
         return(super.onOptionsItemSelected(item));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(DESTINATION_ID_STATE, destinationID);
+        outState.putInt(DESTINATION_WIKI_PAGE_STATE, wikiPageID);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            destinationID = savedInstanceState.getInt(DESTINATION_ID_STATE);
+            wikiPageID = savedInstanceState.getInt(DESTINATION_WIKI_PAGE_STATE);
+        }
     }
 
 }

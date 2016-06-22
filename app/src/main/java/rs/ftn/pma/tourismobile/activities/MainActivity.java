@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.action_bar, menu);
+        getMenuInflater().inflate(R.menu.action_bar_main, menu);
         return true;
     }
 
@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
         switch (id) {
             case R.id.nav_maps: {
+                MapsActivity_.intent(this).start();
                 break;
             }
             case R.id.nav_destinations: {
