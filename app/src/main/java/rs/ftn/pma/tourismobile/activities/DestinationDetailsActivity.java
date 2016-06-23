@@ -13,21 +13,20 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -46,6 +45,7 @@ import rs.ftn.pma.tourismobile.util.MapUtils;
  * Created by Daniel Kupčo on 08.06.2016.
  */
 @EActivity(R.layout.activity_destination_details)
+@OptionsMenu(R.menu.action_bar_destination_details)
 public class DestinationDetailsActivity extends AppCompatActivity implements IServiceActivity {
 
     private static final String TAG = DestinationDetailsActivity.class.getSimpleName();
@@ -114,6 +114,8 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
             DBPediaService.ServiceBinder binder = (DBPediaService.ServiceBinder) service;
             DestinationDetailsActivity.this.mService = binder.getService();
             mBound = true;
+            // loading destination only when we make sure that service is connected
+            loadDestination();
         }
 
         @Override
@@ -158,8 +160,7 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         getSupportActionBar().setTitle(getString(R.string.title_destination_details));
     }
 
-    @AfterInject // because we are starting this thread
-    @Background(delay = 500) // we must delay because it takes some time for service to bind
+    @Background
     void loadDestination() {
         try {
             if(mBound) {
@@ -182,7 +183,7 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
     @UiThread
     void queryDBPediaSuccess(Destination destination) {
         if(destination == null) {
-            tvDestinationName.setText("Destination not found!");
+            tvDestinationName.setText(R.string.error_dst_not_found);
         }
         else {
             bind(destination);
@@ -206,7 +207,6 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         stringBuilder.deleteCharAt(length - 1);
         stringBuilder.deleteCharAt(length - 2);
         tvDestinationTags.setText(stringBuilder.toString());
-        Log.e(TAG, this.destination.toString());
     }
 
     @UiThread
@@ -214,32 +214,16 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.action_bar_destination_details, menu);
-        return true;
+    // must set explicitly because home ID is not part of our menu layout
+    @OptionsItem(android.R.id.home)
+    void home() {
+        onBackPressed();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // making home (up) button acts like back button is pressed
-            case android.R.id.home: {
-                onBackPressed();
-                return true;
-            }
-            case R.id.action_map: {
-                MapUtils.setDestinations(destination);
-                MapsActivity_.intent(this).start();
-                return true;
-            }
-            case R.id.action_settings: {
-                return true;
-            }
-        }
-
-        return(super.onOptionsItemSelected(item));
+    @OptionsItem
+    void actionMap() {
+        MapUtils.setDestinations(destination);
+        MapsActivity_.intent(this).start();
     }
 
     @Override

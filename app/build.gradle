@@ -68,3 +68,12 @@ dependencies {
     // Google services
     compile 'com.google.android.gms:play-services-maps:9.0.2'
 }
+
+apt {
+    arguments {
+        // you can set annotation processing options here
+        trace 'true'
+        logLevel 'TRACE'
+        logAppenderConsole 'true'
+    }
+}

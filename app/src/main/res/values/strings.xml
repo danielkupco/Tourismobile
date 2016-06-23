@@ -33,6 +33,7 @@
     <string name="error_not_same_password">The passwords are not same</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_spinner_type">You must select some type</string>
+    <string name="error_dst_not_found">Destination not found!</string>
 
     <!-- Buttons -->
     <string name="btn_create">Create</string>
