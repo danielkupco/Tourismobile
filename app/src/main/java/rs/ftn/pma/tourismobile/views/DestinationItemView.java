@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
+import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -89,8 +91,8 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         updateIcon(this.destination.isFavourite());
     }
 
-    @Click
-    void btnDetails() {
+    @Click({R.id.btnDetails, R.id.image})
+    void openDetails() {
         DestinationDetailsActivity_.IntentBuilder_ intentBuilder =
                 DestinationDetailsActivity_.intent(this.getContext());
         if(persisted) {
@@ -155,6 +157,11 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         ObjectAnimator.ofFloat(imgFavourite, "scaleX", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "scaleY", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(imgFavourite, "translationX", 0f, -100f, 0f).setDuration(DURATION).start();
+    }
+
+    @LongClick({R.id.cardView, R.id.image})
+    void selectMode() {
+        Log.e(TAG, "Long click: " + destination.getName());
     }
 
 }

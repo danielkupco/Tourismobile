@@ -25,6 +25,7 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
@@ -205,6 +206,7 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         stringBuilder.deleteCharAt(length - 1);
         stringBuilder.deleteCharAt(length - 2);
         tvDestinationTags.setText(stringBuilder.toString());
+        Log.e(TAG, this.destination.toString());
     }
 
     @UiThread
@@ -258,6 +260,16 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
             destinationID = savedInstanceState.getInt(DESTINATION_ID_STATE);
             wikiPageID = savedInstanceState.getInt(DESTINATION_WIKI_PAGE_STATE);
         }
+    }
+
+    @Click
+    void btnWikiLink() {
+        Uri wikiUri = Uri.parse(destination.getWikiLink());
+        if(!wikiUri.toString().startsWith("http://") && !wikiUri.toString().startsWith("https://")) {
+            wikiUri = Uri.parse(String.format("http://%s", wikiUri.toString()));
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, wikiUri);
+        startActivity(intent);
     }
 
 }

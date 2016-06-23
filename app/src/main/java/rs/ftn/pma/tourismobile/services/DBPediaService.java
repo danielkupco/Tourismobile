@@ -145,8 +145,9 @@ public class DBPediaService extends Service {
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
         String sparql = sparqlBuilder.startQuery()
                 .select()
-                .var(VARIABLE).var(Destination.NAME_FIELD).var(Destination.WIKI_PAGE_ID_FIELD)
-                .var(Destination.IMAGE_URI_FIELD).var(Destination.COMMENT_FIELD).var(Destination.ABSTRACT_FIELD)
+                .var(VARIABLE).var(Destination.NAME_FIELD).var(Destination.IMAGE_URI_FIELD)
+                .var(Destination.WIKI_PAGE_ID_FIELD).var(Destination.WIKI_LINK_FIELD)
+                .var(Destination.COMMENT_FIELD).var(Destination.ABSTRACT_FIELD)
                 .aggregateVarAs("AVG", Destination.LATITUDE_FIELD, Destination.LATITUDE_FIELD)
                 .aggregateVarAs("AVG", Destination.LONGITUDE_FIELD, Destination.LONGITUDE_FIELD)
                 .from("http://dbpedia.org")
@@ -159,6 +160,7 @@ public class DBPediaService extends Service {
                             .triplet(VARIABLE, "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
                             .property("rdfs:label").as(Destination.NAME_FIELD)
                             .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)
+                            .property("foaf:isPrimaryTopicOf").as(Destination.WIKI_LINK_FIELD)
                             .property("rdfs:comment").as(Destination.COMMENT_FIELD)
                             .property("dbo:abstract").as(Destination.ABSTRACT_FIELD)
                             .startFilter()
@@ -173,8 +175,9 @@ public class DBPediaService extends Service {
                     .propertyChoice("geo:lat", "dbp:latD").as(Destination.LATITUDE_FIELD)
                     .propertyChoice("geo:long", "dbp:longD").as(Destination.LONGITUDE_FIELD)
                 .endWhere()
-                .groupBy(VARIABLE, Destination.NAME_FIELD, Destination.WIKI_PAGE_ID_FIELD,
-                        Destination.IMAGE_URI_FIELD, Destination.COMMENT_FIELD, Destination.ABSTRACT_FIELD)
+                .groupBy(VARIABLE, Destination.NAME_FIELD, Destination.IMAGE_URI_FIELD,
+                        Destination.WIKI_PAGE_ID_FIELD, Destination.WIKI_LINK_FIELD,
+                        Destination.COMMENT_FIELD, Destination.ABSTRACT_FIELD)
                 .orderBy(Destination.NAME_FIELD)
                 .limit(1)
                 .build();
