@@ -1,6 +1,7 @@
 package rs.ftn.pma.tourismobile.activities;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.Trace;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -36,6 +38,7 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
+import rs.ftn.pma.tourismobile.dialogs.SelectTagsDialog_;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
@@ -202,23 +205,17 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         updateUIAfterQuery();
     }
 
+    @SuppressLint("DefaultLocale")
     public void bind(Destination destination) {
         this.destination = destination;
         destinationImage.setImageURI(Uri.parse(destination.getImageURI()));
         tvDestinationName.setText(destination.getName());
         tvDestinationDescription.setText(destination.getDescription());
         tvDestinationLatitude.setText(String.format("Latitude:  %.2f", destination.getLatitude()));
-        tvDestinationLongitude.setText(String.format("Latitude:  %.2f", destination.getLongitude()));
+        tvDestinationLongitude.setText(String.format("Longitude:  %.2f", destination.getLongitude()));
         updateIcon(destination.isFavourite());
         // destination tags
-        StringBuilder stringBuilder = new StringBuilder("Tags: ");
-        for(Tag tag : taggedDestinationDAOWrapper.findAllTagsForDestination(destination)) {
-            stringBuilder.append(tag.getName()).append(", ");
-        }
-        final int length = stringBuilder.length();
-        stringBuilder.deleteCharAt(length - 1);
-        stringBuilder.deleteCharAt(length - 2);
-        tvDestinationTags.setText(stringBuilder.toString());
+        updateTags();
     }
 
     @UiThread
@@ -268,6 +265,13 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         startActivity(intent);
     }
 
+    @Click
+    void btnSelectTags() {
+            SelectTagsDialog_.builder()
+                    .destinationWikiPageID(destination.getWikiPageID())
+                    .build().show(getSupportFragmentManager(), TAG);
+    }
+
     @Click(R.id.fabFavourite)
     void toogleFavourite() {
         destination.setFavourite(!destination.isFavourite());
@@ -290,6 +294,20 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         ObjectAnimator.ofFloat(fabFavourite, "translationX", 0f, 0f -70f, -70f, 0f).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(fabFavourite, "translationY", 0f, -50f -50f, 0f, 0f).setDuration(DURATION).start();
         ObjectAnimator.ofFloat(fabFavourite, "rotation", 0f, -360f).setDuration(DURATION).start();
+    }
+
+    @Trace
+    @UiThread
+    public void updateTags() {
+        StringBuilder stringBuilder = new StringBuilder("Tags: ");
+        for(Tag tag : taggedDestinationDAOWrapper.findAllTagsForDestination(destination)) {
+            stringBuilder.append(tag.getName()).append(", ");
+        }
+        final int length = stringBuilder.length();
+        stringBuilder.deleteCharAt(length - 1);
+        stringBuilder.deleteCharAt(length - 2);
+        tvDestinationTags.setText(stringBuilder.toString());
+        tvDestinationTags.refreshDrawableState();
     }
 
 }

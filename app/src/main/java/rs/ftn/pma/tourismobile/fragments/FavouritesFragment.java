@@ -3,7 +3,6 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -56,10 +55,6 @@ public class FavouritesFragment extends Fragment {
         // binding adapter to the view
         favouritesAdapter.bindAdapterToRecyclerView(destinationsList);
         loadItemsForPage(0);
-
-        for(int i = 0; i < favouritesAdapter.getItemCount() - 1; i++) {
-            Log.e(TAG, favouritesAdapter.getItem(i).getName());
-        }
 
     }
 

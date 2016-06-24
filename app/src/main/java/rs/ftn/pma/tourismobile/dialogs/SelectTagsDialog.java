@@ -1,5 +1,6 @@
 package rs.ftn.pma.tourismobile.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,8 +16,10 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.Trace;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.DestinationDetailsActivity;
 import rs.ftn.pma.tourismobile.adapters.SelectTagsAdapter;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.TagDAOWrapper;
@@ -47,6 +50,9 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
     @FragmentArg
     int destinationWikiPageID;
 
+    @FragmentArg
+    int destinationId = 0;
+
     private Destination destination;
 
     @NonNull
@@ -60,17 +66,23 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         View dialogLayout = inflater.inflate(R.layout.dialog_select_tags, null);
 
-        // find destination if exists locally
-        destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
-        // updating bounded tags to destination if exists
-        if(destination != null) {
-            selectTagsAdapter.setSelectedTags(taggedDestinationDAOWrapper.findAllTagsForDestination(destination));
-        }
-
         // binding adapter to the list
         ListView tagsList = (ListView) dialogLayout.findViewById(R.id.lvTags);
         selectTagsAdapter.setItems(tagDAOWrapper.findAll());
         tagsList.setAdapter(selectTagsAdapter);
+
+        // find destination if exists locally
+        if(destinationId > 0) {
+            destination = destinationDAOWrapper.findById(destinationId);
+        }
+        else {
+            destination = destinationDAOWrapper.findByWikiPageID(destinationWikiPageID);
+        }
+
+        // updating bounded tags to destination if exists
+        if(destination != null) {
+            selectTagsAdapter.setSelectedTags(taggedDestinationDAOWrapper.findAllTagsForDestination(destination));
+        }
 
         builder.setView(dialogLayout)
                 // Add action buttons
@@ -102,21 +114,24 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
                 @Override
                 public void onClick(View v)
                 {
-                    saveDestinationAndTags();
+                    // must pass activity because that is background thread
+                    // and it is possible to cancel the dialog before the thread is completed
+                    // so references to activity are no longer valid
+                    saveDestinationAndTags(getDialog().getOwnerActivity());
                     SelectTagsDialog.this.getDialog().cancel();
                 }
             });
         }
     }
 
+    @Trace
     @Background
-    void saveDestinationAndTags() {
+    void saveDestinationAndTags(Activity parentActivity) {
         // if it does not exists
         if(destination == null) {
             if (getActivity() instanceof IServiceActivity) {
                 // get fully detailed destination
                 destination = ((IServiceActivity) getActivity()).getDBPediaService().queryDestinationDetails(destinationWikiPageID);
-//            destination = getF.queryDBPediaForDetails(destinationWikiPageID);
                 // save destination in database
                 destinationDAOWrapper.create(destination);
             }
@@ -127,6 +142,10 @@ public class SelectTagsDialog extends AppCompatDialogFragment {
         }
         // bind destination to selected tags
         taggedDestinationDAOWrapper.createAllTagsForDestination(destination, selectTagsAdapter.getSelectedTags());
+
+        if(parentActivity instanceof DestinationDetailsActivity) {
+            ((DestinationDetailsActivity) parentActivity).updateTags();
+        }
     }
 
 }
