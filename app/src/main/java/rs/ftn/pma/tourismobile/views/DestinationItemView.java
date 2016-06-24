@@ -58,12 +58,10 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @ViewById
     ImageView imgFavourite;
 
+    // animation constants
     private static final float MAX_BOUNCE = 3f;
-
     private static final float MIDDLE_BOUNCE = 2f;
-
     private static final float END_BOUNCE = 1f;
-
     private static final int DURATION = 800;
 
     public DestinationItemView(Context context) {

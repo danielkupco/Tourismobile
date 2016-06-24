@@ -1,5 +1,6 @@
 package rs.ftn.pma.tourismobile.activities;
 
+import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -83,6 +85,9 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
     @ViewById
     Button btnWikiLink;
 
+    @ViewById
+    FloatingActionButton fabFavourite;
+
     @Extra
     int destinationID = 0;
 
@@ -103,6 +108,12 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
 
     private static final String DESTINATION_ID_STATE = "destination_id";
     private static final String DESTINATION_WIKI_PAGE_STATE = "destination_wiki_page";
+
+    // animation constants
+    private static final float MAX_BOUNCE = 3f;
+    private static final float MIDDLE_BOUNCE = 2f;
+    private static final float END_BOUNCE = 1f;
+    private static final int DURATION = 800;
 
     /** Defines callbacks for mService binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -198,6 +209,7 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         tvDestinationDescription.setText(destination.getDescription());
         tvDestinationLatitude.setText(String.format("Latitude:  %.2f", destination.getLatitude()));
         tvDestinationLongitude.setText(String.format("Latitude:  %.2f", destination.getLongitude()));
+        updateIcon(destination.isFavourite());
         // destination tags
         StringBuilder stringBuilder = new StringBuilder("Tags: ");
         for(Tag tag : taggedDestinationDAOWrapper.findAllTagsForDestination(destination)) {
@@ -254,6 +266,30 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         }
         Intent intent = new Intent(Intent.ACTION_VIEW, wikiUri);
         startActivity(intent);
+    }
+
+    @Click(R.id.fabFavourite)
+    void toogleFavourite() {
+        destination.setFavourite(!destination.isFavourite());
+        destinationDAOWrapper.update(destination);
+
+        updateIcon(destination.isFavourite());
+        animateIcon();
+    }
+
+    @UiThread
+    void updateIcon(boolean favourited) {
+        fabFavourite.setImageResource(favourited ? R.drawable.ic_star_white_36dp : R.drawable.ic_star_outline_white_36dp);
+    }
+
+    @UiThread
+    void animateIcon() {
+        ObjectAnimator.ofFloat(fabFavourite, "alpha", 0f, 1f, .8f, 1f, 0f, 1f).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(fabFavourite, "scaleX", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(fabFavourite, "scaleY", END_BOUNCE, MAX_BOUNCE, MIDDLE_BOUNCE, MAX_BOUNCE, END_BOUNCE).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(fabFavourite, "translationX", 0f, 0f -70f, -70f, 0f).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(fabFavourite, "translationY", 0f, -50f -50f, 0f, 0f).setDuration(DURATION).start();
+        ObjectAnimator.ofFloat(fabFavourite, "rotation", 0f, -360f).setDuration(DURATION).start();
     }
 
 }

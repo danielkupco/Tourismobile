@@ -1,5 +1,8 @@
 package rs.ftn.pma.tourismobile.fragments;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,9 +31,9 @@ import java.util.List;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.activities.DestinationFilterActivity_;
-import rs.ftn.pma.tourismobile.activities.MainActivity;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
 import rs.ftn.pma.tourismobile.model.Destination;
+import rs.ftn.pma.tourismobile.services.IServiceActivity;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
 import rs.ftn.pma.tourismobile.util.FilterPreferences_;
@@ -118,21 +121,33 @@ public class DestinationsFragment extends Fragment {
     @Background
     public void queryDBPedia(int page) {
         try {
-            List<Destination> destinationList = ((MainActivity)getActivity()).getDBPediaService().queryDestinationsWithFilters(page);
+            List<Destination> destinationList = ((IServiceActivity) getContext()).getDBPediaService().queryDestinationsWithFilters(page);
             queryDBPediaSuccess(destinationList);
         }
         catch (HttpClientErrorException e) {
-            Log.e(TAG, e.getMessage());
-            e.printStackTrace();
             Log.e(TAG, "http client");
+            e.printStackTrace();
             updateUIAfterQuery();
             if(e.getStatusCode().is4xxClientError()) {
                 toast("Sorry! It seems that request isn't valid...");
             }
         }
         catch (ResourceAccessException e) {
-            Log.e(TAG, e.getMessage());
-            toast("Sorry! DBPedia service is unavailable at the moment!\nPlease try again later...");
+            e.printStackTrace();
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(connectivityManager != null) {
+                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                if(!(activeNetworkInfo != null && activeNetworkInfo.isConnected())) {
+                    toast("It seems that you are not connected to internet!\nPlease check your connection and try again...");
+                }
+                else {
+                    toast("Sorry! DBPedia service is unavailable at the moment!\nPlease try again later...");
+                }
+            }
+            else {
+                toast("It seems that you are not connected to internet!\nPlease check your connection and try again...");
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
