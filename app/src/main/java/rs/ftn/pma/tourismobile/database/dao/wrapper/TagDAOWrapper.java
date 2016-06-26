@@ -45,5 +45,22 @@ public class TagDAOWrapper extends Observable {
         return null;
     }
 
+    public List<Tag> findAllDefaults() {
+        try {
+            return tagDAO.queryBuilder().where().eq(Tag.DEFAULT, true).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Tag> findAllUserDefined() {
+        try {
+            return tagDAO.queryBuilder().where().eq(Tag.DEFAULT, false).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

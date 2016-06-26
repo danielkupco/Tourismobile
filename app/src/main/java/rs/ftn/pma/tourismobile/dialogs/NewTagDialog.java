@@ -119,7 +119,7 @@ public class NewTagDialog extends AppCompatDialogFragment {
                     Tag tag;
                     if(canQueryChecked) {
                         tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString(),
-                                etTagProperty.getText().toString(), etTagValue.getText().toString(), true);
+                                etTagProperty.getText().toString(), etTagValue.getText().toString(), true, false);
                     }
                     else {
                         tag = new Tag(tvName.getText().toString(), tvDescription.getText().toString());

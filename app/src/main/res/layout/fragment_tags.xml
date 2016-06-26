@@ -13,7 +13,6 @@
         android:padding="@dimen/recycler_view_padding"
         android:background="@color/primary" />
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="@dimen/fab_size"

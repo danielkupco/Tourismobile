@@ -24,7 +24,7 @@ import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
 import rs.ftn.pma.tourismobile.fragments.StoredDestinationsFragment_;
-import rs.ftn.pma.tourismobile.fragments.TagsFragment_;
+import rs.ftn.pma.tourismobile.fragments.TagsTabFragment;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
@@ -166,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 break;
             }
             case R.id.nav_tags: {
-                fragment = TagsFragment_.builder().build();
+//                fragment = TagsFragment_.builder().build();
+                fragment = new TagsTabFragment();
                 break;
             }
             case R.id.nav_storage: {

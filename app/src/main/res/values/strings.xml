@@ -64,7 +64,7 @@
     <string name="label_dbp_can_query_by_false">Can not be used to query DBPedia</string>
     <string name="label_property_name">Property name</string>
     <string name="label_property_value">Property value</string>
-    <string name="label_users_tag">User defined tag</string>
+    <string name="label_users_tag">Custom tag</string>
     <string name="label_dbpedia_tag">Supports DBPedia query</string>
     <string name="label_wikipedia_link"><b><i><u>Wikipedia link</u></i></b></string>
 

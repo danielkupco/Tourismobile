@@ -16,6 +16,7 @@ public class Tag {
     public static final String DBP_PROPERTY_FIELD = "dbpProperty";
     public static final String DBP_VALUE_FIELD = "dbpValue";
     public static final String DBP_CAN_QUERY_BY_FIELD = "dbpCanQueryBy";
+    public static final String DEFAULT = "default";
 
     @DatabaseField(columnName = ID_FIELD, generatedId = true)
     private int id;
@@ -35,6 +36,9 @@ public class Tag {
     @DatabaseField(columnName = DBP_CAN_QUERY_BY_FIELD)
     private boolean dbpCanQueryBy;
 
+    @DatabaseField(columnName = DEFAULT)
+    private boolean isDefault;
+
     public Tag() {}
 
 
@@ -42,14 +46,16 @@ public class Tag {
         this.name = name;
         this.description = description;
         this.dbpCanQueryBy = false;
+        this.isDefault = false;
     }
 
-    public Tag(String name, String description, String dbpProperty, String dbpValue, boolean dbp_can_query_by) {
+    public Tag(String name, String description, String dbpProperty, String dbpValue, boolean dbp_can_query_by, boolean isDefault) {
         this.name = name;
         this.description = description;
         this.dbpProperty = dbpProperty;
         this.dbpValue = dbpValue;
         this.dbpCanQueryBy = dbp_can_query_by;
+        this.isDefault = isDefault;
     }
 
     public int getId() {
@@ -96,6 +102,14 @@ public class Tag {
         this.dbpCanQueryBy = dbpCanQueryBy;
     }
 
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
     @Override
     public String toString() {
         return "Tag{" +
@@ -105,6 +119,7 @@ public class Tag {
                 ", dbpProperty='" + dbpProperty + '\'' +
                 ", dbpValue='" + dbpValue + '\'' +
                 ", dbpCanQueryBy=" + dbpCanQueryBy +
+                ", default=" + isDefault +
                 '}';
     }
 }
