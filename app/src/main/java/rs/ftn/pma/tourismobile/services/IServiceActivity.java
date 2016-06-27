@@ -7,4 +7,6 @@ public interface IServiceActivity {
 
     public DBPediaService getDBPediaService();
 
+    public void notifyWhenServiceIsBinded(IServiceBindingNotification iServiceBindingNotification);
+
 }

@@ -28,6 +28,7 @@ import rs.ftn.pma.tourismobile.fragments.TagsTabFragment;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
+import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements IServiceActivity,
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
     private boolean mBound = false;
 
+    private IServiceBindingNotification serviceBindingNotification;
+
     /** Defines callbacks for mService binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -49,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             DBPediaService.ServiceBinder binder = (DBPediaService.ServiceBinder) service;
             MainActivity.this.mService = binder.getService();
             mBound = true;
+            if(serviceBindingNotification != null) {
+                serviceBindingNotification.notifyWhenBinded();
+            }
         }
 
         @Override
@@ -78,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     @Override
     public DBPediaService getDBPediaService() {
         return mService;
+    }
+
+    @Override
+    public void notifyWhenServiceIsBinded(IServiceBindingNotification iServiceBindingNotification) {
+        serviceBindingNotification = iServiceBindingNotification;
     }
 
     @AfterViews

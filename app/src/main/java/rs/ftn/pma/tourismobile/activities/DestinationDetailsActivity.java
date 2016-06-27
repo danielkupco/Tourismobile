@@ -44,6 +44,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
+import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
 import rs.ftn.pma.tourismobile.util.MapUtils;
 
 /**
@@ -159,6 +160,11 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
     @Override
     public DBPediaService getDBPediaService() {
         return mService;
+    }
+
+    @Override
+    public void notifyWhenServiceIsBinded(IServiceBindingNotification iServiceBindingNotification) {
+
     }
 
 

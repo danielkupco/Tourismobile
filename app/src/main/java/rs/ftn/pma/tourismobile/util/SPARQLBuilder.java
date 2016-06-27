@@ -334,7 +334,7 @@ public class SPARQLBuilder {
             return this;
         }
 
-        public SPARQLWherePart triplet(String subject, String[] predicates, String[] objects) {
+        public SPARQLWherePart triplets(String subject, String[] predicates, String[] objects) {
             if(evaluate) {
                 for (int i = 0; i < predicates.length; i++) {
                     triplet(subject, predicates[i], objects[i], false);

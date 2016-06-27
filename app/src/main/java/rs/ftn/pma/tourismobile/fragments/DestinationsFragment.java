@@ -1,11 +1,13 @@
 package rs.ftn.pma.tourismobile.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,12 +36,13 @@ import rs.ftn.pma.tourismobile.activities.DestinationFilterActivity_;
 import rs.ftn.pma.tourismobile.adapters.DestinationsAdapter;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
+import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
 import rs.ftn.pma.tourismobile.util.FilterPreferences_;
 
 @EFragment(R.layout.fragment_destinations)
-public class DestinationsFragment extends Fragment {
+public class DestinationsFragment extends Fragment implements IServiceBindingNotification {
 
     private static final String TAG = DestinationsFragment.class.getSimpleName();
 
@@ -81,10 +84,8 @@ public class DestinationsFragment extends Fragment {
 
     @OnActivityResult(REQUEST_FILTERS)
     void onFiltersSuccess() {
-        Log.e(TAG, filterPreferences.byName().getOr("nema"));
-        Log.e(TAG, filterPreferences.byDescription().getOr("nemaa"));
-        Log.e(TAG, filterPreferences.bySelectedTags().getOr("nemaaa"));
-        Log.e(TAG, filterPreferences.sortBy().getOr("nemaaaa"));
+        updateUIForQuery(true);
+        queryDBPedia(0);
     }
 
     @AfterViews
@@ -102,7 +103,7 @@ public class DestinationsFragment extends Fragment {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if(!firstTime) {
-                    progressBar.setVisibility(View.VISIBLE);
+                    updateUIForQuery(true);
                     queryDBPedia(page);
                 }
                 else {
@@ -120,14 +121,27 @@ public class DestinationsFragment extends Fragment {
 
     @Background
     public void queryDBPedia(int page) {
+        updateUIForQuery(true);
+        if(!hasSelectedTagsNumber()) {
+            updateUIForQuery(false);
+            openFilterErrorDialog();
+            return;
+        }
+
         try {
-            List<Destination> destinationList = ((IServiceActivity) getContext()).getDBPediaService().queryDestinationsWithFilters(page);
-            queryDBPediaSuccess(destinationList);
+            updateUIForQuery(true);
+            IServiceActivity serviceActivity = ((IServiceActivity) getContext());
+            if(serviceActivity.getDBPediaService() == null) {
+                serviceActivity.notifyWhenServiceIsBinded(this);
+            }
+            else {
+                List<Destination> destinationList = serviceActivity.getDBPediaService().queryDestinationsWithFilters(page);
+                queryDBPediaSuccess(destinationList);
+            }
         }
         catch (HttpClientErrorException e) {
             Log.e(TAG, "http client");
             e.printStackTrace();
-            updateUIAfterQuery();
             if(e.getStatusCode().is4xxClientError()) {
                 toast("Sorry! It seems that request isn't valid...");
             }
@@ -154,21 +168,24 @@ public class DestinationsFragment extends Fragment {
             Log.e(TAG, "Uncaught exception!");
         }
         finally {
-            updateUIAfterQuery();
+            updateUIForQuery(false);
         }
     }
 
     @UiThread
     void queryDBPediaSuccess(List<Destination> destinationList) {
         destinationsAdapter.addItems(destinationList);
-        updateUIAfterQuery();
     }
 
     @UiThread
-    void updateUIAfterQuery() {
+    void updateUIForQuery(boolean success) {
         // it happens sometimes that view is not injected yet when method is called
         if(progressBar != null) {
-            progressBar.setVisibility(View.INVISIBLE);
+            if (success) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -179,4 +196,37 @@ public class DestinationsFragment extends Fragment {
         }
     }
 
+    private boolean hasSelectedTagsNumber() {
+        return filterPreferences.bySelectedTags().exists() &&
+                filterPreferences.bySelectedTags().get().split(",").length > 0;
+    }
+
+    @UiThread
+    void openFilterErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getActivity().getString(R.string.dialog_filter_error_title))
+                .setMessage(getActivity().getString(R.string.dialog_filter_error_message));
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.btn_yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                actionFilter();
+            }
+        });
+        builder.setNegativeButton(R.string.btn_no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        // Set other dialog properties
+
+        // Create the AlertDialog
+        builder.create().show();
+    }
+
+    @Override
+    public void notifyWhenBinded() {
+        queryDBPedia(0);
+    }
 }

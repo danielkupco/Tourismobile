@@ -74,9 +74,10 @@ public class DBPediaService extends Service {
         List<Tag> filterTags = tagDAOWrapper.findAllForFilters();
         if(tagFiltersSelected && filterTags.size() >= tagPositions.length) {
             for (int i = 0; i < tagPositions.length; i++) {
-                Tag tag = filterTags.get(i);
+                Tag tag = filterTags.get(Integer.valueOf(tagPositions[i]));
                 predicates[i] = tag.getDbpProperty();
                 objects[i] = tag.getDbpValue();
+                Log.e(TAG, tag.toString());
             }
         }
 
@@ -94,8 +95,8 @@ public class DBPediaService extends Service {
                         .select()
                         .variables() // all
                         .startWhere()
-                            .triplet(VARIABLE, "a", "dbo:City", false).andIf(tagFiltersSelected)
-                            .triplet(VARIABLE, predicates, objects) // arrays of parameters
+//                            .triplet(VARIABLE, "a", "dbo:City", false).andIf(tagFiltersSelected)
+                            .triplets(VARIABLE, predicates, objects) // arrays of parameters
                             .property("rdfs:label").as(Destination.NAME_FIELD)
                             .property("rdfs:comment").as(Destination.COMMENT_FIELD)
                             .startFilter()

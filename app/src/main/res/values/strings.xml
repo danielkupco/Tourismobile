@@ -36,6 +36,8 @@
     <string name="error_dst_not_found">Destination not found!</string>
 
     <!-- Buttons -->
+    <string name="btn_yes">Yes</string>
+    <string name="btn_no">No</string>
     <string name="btn_create">Create</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_details">Details</string>
@@ -67,5 +69,10 @@
     <string name="label_users_tag">Custom tag</string>
     <string name="label_dbpedia_tag">Supports DBPedia query</string>
     <string name="label_wikipedia_link"><b><i><u>Wikipedia link</u></i></b></string>
+
+    <!-- Dialog -->
+    <string name="dialog_filter_error_title">No selected tags</string>
+    <string name="dialog_filter_error_message">You must select at least one tag as a filter.
+        Do you want to open filter options and set them?</string>
 
 </resources>
