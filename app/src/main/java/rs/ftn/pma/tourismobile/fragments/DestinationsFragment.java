@@ -40,6 +40,7 @@ import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
 import rs.ftn.pma.tourismobile.util.FilterPreferences_;
+import rs.ftn.pma.tourismobile.util.PreferenceUtil;
 
 @EFragment(R.layout.fragment_destinations)
 public class DestinationsFragment extends Fragment implements IServiceBindingNotification {
@@ -136,7 +137,12 @@ public class DestinationsFragment extends Fragment implements IServiceBindingNot
             }
             else {
                 List<Destination> destinationList = serviceActivity.getDBPediaService().queryDestinationsWithFilters(page);
-                queryDBPediaSuccess(destinationList);
+                if(destinationList != null) {
+                    queryDBPediaSuccess(destinationList);
+                }
+                else {
+                    toast("Sorry! There has been an error when querying DBPedia...");
+                }
             }
         }
         catch (HttpClientErrorException e) {
@@ -197,8 +203,7 @@ public class DestinationsFragment extends Fragment implements IServiceBindingNot
     }
 
     private boolean hasSelectedTagsNumber() {
-        return filterPreferences.bySelectedTags().exists() &&
-                filterPreferences.bySelectedTags().get().split(",").length > 0;
+        return !PreferenceUtil.isCommaArrayEmpty(filterPreferences.bySelectedTags().getOr(""));
     }
 
     @UiThread

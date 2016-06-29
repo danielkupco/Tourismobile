@@ -80,6 +80,9 @@ public class DBPediaService extends Service {
                 Log.e(TAG, tag.toString());
             }
         }
+        else {
+            return null;
+        }
 
         // build SPARQL query
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
@@ -143,6 +146,25 @@ public class DBPediaService extends Service {
     public Destination queryDestinationDetails(int wikiPageID) {
         final String VARIABLE = "Destination";
 
+        final boolean tagFiltersSelected = filterPreferences.bySelectedTags().exists();
+        final String[] tagPositions = filterPreferences.bySelectedTags().getOr("").split(",");
+        final String[] predicates = new String[tagPositions.length];
+        final String[] objects = new String[tagPositions.length];
+
+        // get filter attributes for selected tags
+        List<Tag> filterTags = tagDAOWrapper.findAllForFilters();
+        if(tagFiltersSelected && filterTags.size() >= tagPositions.length) {
+            for (int i = 0; i < tagPositions.length; i++) {
+                Tag tag = filterTags.get(Integer.valueOf(tagPositions[i]));
+                predicates[i] = tag.getDbpProperty();
+                objects[i] = tag.getDbpValue();
+                Log.e(TAG, tag.toString());
+            }
+        }
+        else {
+            return null;
+        }
+
         SPARQLBuilder sparqlBuilder = new SPARQLBuilder();
         String sparql = sparqlBuilder.startQuery()
                 .select()
@@ -157,7 +179,7 @@ public class DBPediaService extends Service {
                         .select()
                         .variables() // all
                         .startWhere()
-                            .triplet(VARIABLE, "a", "dbo:City", false)
+                            .triplets(VARIABLE, predicates, objects) // arrays of parameters
                             .triplet(VARIABLE, "dbo:wikiPageID", String.format("\"%d\"^^xsd:integer", wikiPageID))
                             .property("rdfs:label").as(Destination.NAME_FIELD)
                             .property("dbo:wikiPageID").as(Destination.WIKI_PAGE_ID_FIELD)

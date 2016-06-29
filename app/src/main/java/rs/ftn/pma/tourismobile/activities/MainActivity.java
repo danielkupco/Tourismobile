@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
@@ -29,6 +30,7 @@ import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
 import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
+import rs.ftn.pma.tourismobile.util.SelectionPreference_;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements IServiceActivity,
@@ -37,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private DBPediaService mService;
+
+    @Pref
+    SelectionPreference_ selectionPreference;
+
+    private boolean allowSelection = false;
 
     private boolean mBound = false;
 
@@ -170,19 +177,24 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             }
             case R.id.nav_destinations: {
                 fragment = DestinationsFragment_.builder().build();
+                selectionPreference.selectionMode().put(false);
+                allowSelection = false;
                 break;
             }
             case R.id.nav_favourites: {
                 fragment = FavouritesFragment_.builder().build();
-                break;
-            }
-            case R.id.nav_tags: {
-//                fragment = TagsFragment_.builder().build();
-                fragment = new TagsTabFragment();
+                selectionPreference.selectionMode().put(false);
+                allowSelection = true;
                 break;
             }
             case R.id.nav_storage: {
                 fragment = StoredDestinationsFragment_.builder().build();
+                selectionPreference.selectionMode().put(false);
+                allowSelection = true;
+                break;
+            }
+            case R.id.nav_tags: {
+                fragment = new TagsTabFragment();
                 break;
             }
             case R.id.nav_settings: {
@@ -206,4 +218,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         return true;
     }
 
+    public boolean isAllowSelection() {
+        return allowSelection;
+    }
 }

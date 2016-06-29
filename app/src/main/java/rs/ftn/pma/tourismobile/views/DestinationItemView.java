@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,18 +18,23 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.activities.DestinationDetailsActivity_;
+import rs.ftn.pma.tourismobile.activities.MainActivity;
 import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.dialogs.SelectTagsDialog_;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
+import rs.ftn.pma.tourismobile.util.PreferenceUtil;
+import rs.ftn.pma.tourismobile.util.SelectionPreference_;
 
 /**
  * Created by danex on 5/12/16.
@@ -48,15 +56,21 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @ViewById
     TextView description;
 
-    private Destination destination;
-
-    private boolean persisted = false;
-
     @ViewById
     ImageView imgStored;
 
     @ViewById
     ImageView imgFavourite;
+
+    @ViewById
+    CheckBox cbSelect;
+
+    private Destination destination;
+
+    private boolean persisted = false;
+
+    @Pref
+    SelectionPreference_ selectionPreference;
 
     // animation constants
     private static final float MAX_BOUNCE = 3f;
@@ -87,6 +101,10 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
             imgStored.setVisibility(INVISIBLE);
         }
         updateIcon(this.destination.isFavourite());
+        //noinspection WrongConstant
+        cbSelect.setVisibility(PreferenceUtil.getSelectionModeVisibility(selectionPreference.selectionMode().getOr(false)));
+        Log.e(TAG, selectionPreference.selectionMode().getOr(false) + "");
+        Log.e(TAG, cbSelect.isChecked() + "");
     }
 
     @Click({R.id.btnDetails, R.id.image})
@@ -159,7 +177,24 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
 
     @LongClick({R.id.cardView, R.id.image})
     void selectMode() {
-        Log.e(TAG, "Long click: " + destination.getName());
+        Context context = getContext();
+        if (context instanceof MainActivity && ((MainActivity) context).isAllowSelection()) {
+            cbSelect.setVisibility(VISIBLE);
+            cbSelect.setChecked(true);
+            selectionPreference.selectionMode().put(true);
+            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+            // notifying RecyclerView to redraw all items when selection mode is changed
+            if(getParent() instanceof RecyclerView) {
+                ((RecyclerView) getParent()).getAdapter().notifyDataSetChanged();
+            }
+        }
+    }
+
+    @CheckedChange(R.id.cbSelect)
+    void selectionChange(CompoundButton cb, boolean isChecked) {
+        Log.e(TAG, destination.getName() + " - " + isChecked);
+        Log.e(TAG, getParent().toString());
     }
 
 }

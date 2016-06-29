@@ -72,7 +72,6 @@
             android:textSize="@dimen/card_secondary_text_size"
             android:layout_margin="@dimen/card_secondary_text_padding"/>
 
-
         <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,10 +83,11 @@
                 android:id="@+id/btnSelectTags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_tag_multiple_black_36dp"
-                android:drawableStart="@drawable/ic_tag_multiple_black_36dp"
-                style="@style/TextAppearance.AppCompat.Widget.Button.Inverse"
-                android:text="@string/btn_select_tags" />
+                android:drawableLeft="@drawable/ic_tag_multiple_white_36dp"
+                android:drawableStart="@drawable/ic_tag_multiple_white_36dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Inverse"
+                android:background="@color/primary_dark"
+                android:text="@string/nav_item_title_tags" />
 
             <!-- Space between the buttons -->
             <View
@@ -99,6 +99,7 @@
                 android:id="@+id/cbSelect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:visibility="invisible"/>
 
             <!-- Space between the buttons -->
