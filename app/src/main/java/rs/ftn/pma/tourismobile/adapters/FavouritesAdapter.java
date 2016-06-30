@@ -24,7 +24,7 @@ public class FavouritesAdapter extends RecyclerViewAdapterBase<Destination, Dest
 
     private static final String TAG = FavouritesAdapter.class.getSimpleName();
 
-    private int pageLimit = 3;
+    private int pageLimit = 10;
 
     @Bean
     DestinationDAOWrapper destinationDAOWrapper;

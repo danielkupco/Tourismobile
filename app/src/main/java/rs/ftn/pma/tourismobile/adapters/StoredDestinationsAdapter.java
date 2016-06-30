@@ -24,7 +24,7 @@ public class StoredDestinationsAdapter extends RecyclerViewAdapterBase<Destinati
 
     private static final String TAG = StoredDestinationsAdapter.class.getSimpleName();
 
-    private int pageLimit = 3;
+    private int pageLimit = 10;
 
     @Bean
     DestinationDAOWrapper destinationDAOWrapper;

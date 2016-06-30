@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.roughike.bottombar.BottomBar;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -30,6 +32,7 @@ import rs.ftn.pma.tourismobile.services.DBPediaService;
 import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
 import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
+import rs.ftn.pma.tourismobile.util.IBottomBarView;
 import rs.ftn.pma.tourismobile.util.SelectionPreference_;
 
 @EActivity(R.layout.activity_main)
@@ -40,10 +43,16 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
     private DBPediaService mService;
 
+    private Fragment activeFragment;
+
     @Pref
     SelectionPreference_ selectionPreference;
 
     private boolean allowSelection = false;
+
+    private boolean bottomBarShowing = false;
+
+    private BottomBar bottomBar;
 
     private boolean mBound = false;
 
@@ -88,6 +97,63 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         }
     }
 
+//    @Override
+//    protected void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//        bottomBar = BottomBar.attach(this, savedInstanceState);
+//        // Show all titles even when there's more than three tabs.
+//        // This BottomBar already has items! You must call the forceFixedMode() method before specifying any items.
+////        bottomBar.useFixedMode();
+////        bottomBar.setMaxFixedTabs(4);
+//        bottomBar.setItems(R.menu.bottom_bar_menu);
+//        bottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
+//            @Override
+//            public void onMenuTabSelected(@IdRes int menuItemId) {
+//                switch (menuItemId) {
+//                    case R.id.bbSelectAll: {
+//                        Log.e(TAG, "Select all");
+//                        break;
+//                    }
+//                    case R.id.bbClearSelection: {
+//                        Log.e(TAG, "Clear selection");
+//                        break;
+//                    }
+////                    case R.id.bbShowOnMap: {
+////                        Log.e(TAG, "Show on map");
+////                        break;
+////                    }
+//                    case R.id.bbDelete: {
+//                        Log.e(TAG, "Delete");
+//                        break;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onMenuTabReSelected(@IdRes int menuItemId) {
+//                switch (menuItemId) {
+//                    case R.id.bbSelectAll: {
+//                        Log.e(TAG, "Select all");
+//                        break;
+//                    }
+//                    case R.id.bbClearSelection: {
+//                        Log.e(TAG, "Clear selection");
+//                        break;
+//                    }
+////                    case R.id.bbShowOnMap: {
+////                        Log.e(TAG, "Show on map");
+////                        break;
+////                    }
+//                    case R.id.bbDelete: {
+//                        Log.e(TAG, "Delete");
+//                        break;
+//                    }
+//                }
+//            }
+//        });
+//    }
+
     @Override
     public DBPediaService getDBPediaService() {
         return mService;
@@ -119,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             if(getSupportFragmentManager().findFragmentByTag(TAG) == null) {
                 // Create a new Fragment to be placed in the activity layout
                 HomeFragment fragment = HomeFragment_.builder().build();
+                activeFragment = fragment;
 
                 // In case this activity was started with special instructions from an
                 // Intent, pass the Intent's extras to the fragment as arguments
@@ -136,7 +203,14 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if(bottomBarShowing && activeFragment instanceof IBottomBarView) {
+            // must first set flag to false
+            selectionPreference.selectionMode().put(false);
+            // and then call fragment code where adapter triggers items to redraw
+            bottomBarShowing = ((IBottomBarView) activeFragment).hideBottomBar();
+        }
+        else {
             super.onBackPressed();
         }
     }
@@ -207,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 fragment = HomeFragment_.builder().build();
             }
         }
+        activeFragment = fragment;
 
         if(fragment != null) {
             getSupportFragmentManager().beginTransaction()
@@ -221,4 +296,19 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     public boolean isAllowSelection() {
         return allowSelection;
     }
+
+    public void showBottomBar() {
+        if(activeFragment instanceof IBottomBarView) {
+            bottomBarShowing = ((IBottomBarView) activeFragment).showBottomBar();
+        }
+    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        // Necessary to restore the BottomBar's state, otherwise we would
+//        // lose the current tab on orientation change.
+//        bottomBar.onSaveInstanceState(outState);
+//    }
 }

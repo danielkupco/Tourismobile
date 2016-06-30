@@ -7,9 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +16,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.LongClick;
@@ -101,10 +98,16 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
             imgStored.setVisibility(INVISIBLE);
         }
         updateIcon(this.destination.isFavourite());
+
         //noinspection WrongConstant
-        cbSelect.setVisibility(PreferenceUtil.getSelectionModeVisibility(selectionPreference.selectionMode().getOr(false)));
-        Log.e(TAG, selectionPreference.selectionMode().getOr(false) + "");
-        Log.e(TAG, cbSelect.isChecked() + "");
+        cbSelect.setVisibility(PreferenceUtil.getSelectionModeVisibility(
+                selectionPreference.selectionMode().getOr(false)));
+
+        // can change checked state only if visible
+        if(cbSelect.getVisibility() == VISIBLE) {
+            cbSelect.setChecked(PreferenceUtil.isNumberInCommaArray(
+                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+        }
     }
 
     @Click({R.id.btnDetails, R.id.image})
@@ -179,6 +182,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     void selectMode() {
         Context context = getContext();
         if (context instanceof MainActivity && ((MainActivity) context).isAllowSelection()) {
+            ((MainActivity) context).showBottomBar();
             cbSelect.setVisibility(VISIBLE);
             cbSelect.setChecked(true);
             selectionPreference.selectionMode().put(true);
@@ -191,10 +195,16 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         }
     }
 
-    @CheckedChange(R.id.cbSelect)
-    void selectionChange(CompoundButton cb, boolean isChecked) {
-        Log.e(TAG, destination.getName() + " - " + isChecked);
-        Log.e(TAG, getParent().toString());
+    @Click(R.id.cbSelect)
+    void selectionChange() {
+        if(cbSelect.isChecked()) {
+            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+        }
+        else {
+            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.removeNumberFromCommaArray(
+                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+        }
     }
 
 }

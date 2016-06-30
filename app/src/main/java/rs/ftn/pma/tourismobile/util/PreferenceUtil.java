@@ -1,5 +1,6 @@
 package rs.ftn.pma.tourismobile.util;
 
+import android.text.TextUtils;
 import android.view.View;
 
 /**
@@ -13,6 +14,22 @@ public class PreferenceUtil {
         } else {
             return String.format("%s, %d", array, number);
         }
+    }
+
+    public static String removeNumberFromCommaArray(String array, int number) {
+        if(array.length() == 0) {
+            return "";
+        }
+        int length = getCommaArrayLength(array);
+        String[] values = array.split(",");
+        String[] retVal = new String[length - 1];
+        for (int i = 0, j = 0; i < length; i++) {
+            if(Integer.valueOf(values[i].trim()) != number) {
+                retVal[j] = values[i];
+                j++;
+            }
+        }
+        return TextUtils.join(",", retVal);
     }
 
     public static boolean isCommaArrayEmpty(String array) {
@@ -31,6 +48,20 @@ public class PreferenceUtil {
             numbers[i] = Integer.valueOf(values[i]);
         }
         return numbers;
+    }
+
+    public static boolean isNumberInCommaArray(String array, int number) {
+        if(array.length() == 0) {
+            return false;
+        }
+        int length = getCommaArrayLength(array);
+        String[] values = array.split(",");
+        for (int i = 0; i < length; i++) {
+            if(Integer.valueOf(values[i].trim()) == number) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int getSelectionModeVisibility(boolean mode) {

@@ -30,6 +30,10 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
     protected RecyclerView recyclerView;
     protected List<T> items = new ArrayList<>();
 
+    public List<T> getItems() {
+        return items;
+    }
+
     public void setItems(List<T> items) {
         this.items = new ArrayList<>(items);
         notifyDataSetChanged();
