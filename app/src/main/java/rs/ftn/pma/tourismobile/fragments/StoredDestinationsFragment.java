@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -58,6 +59,9 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
     @ViewById
     MaterialProgressBar progressBar;
 
+    @ViewById
+    LinearLayoutCompat container;
+
     @Pref
     SelectionPreference_ selectionPreference;
 
@@ -94,7 +98,8 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
         storedDestinationsAdapter.bindAdapterToRecyclerView(destinationsList);
         loadItemsForPage(0);
 
-        bottomBar = BottomBar.attach(getActivity().findViewById(R.id.container), savedInstanceState);
+        // must attach to activity in order to be visible even after fragment replacing
+        bottomBar = BottomBar.attach(getActivity(), savedInstanceState);
         // Show all titles even when there's more than three tabs.
         // This BottomBar already has items! You must call the forceFixedMode() method before specifying any items.
         bottomBar.useFixedMode();
@@ -166,18 +171,15 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.savedInstanceState = savedInstanceState;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         // Necessary to restore the BottomBar's state, otherwise we would
         // lose the current tab on orientation change.
         bottomBar.onSaveInstanceState(outState);
-
         outState.putBoolean(BOTTOM_BAR_SHOWING, bottomBar.isShown());
         outState.putBoolean(FIRST_TIME_LOADING, firstTimeLoading);
     }

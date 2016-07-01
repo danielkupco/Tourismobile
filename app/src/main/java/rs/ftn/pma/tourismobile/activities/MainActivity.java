@@ -97,63 +97,6 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         }
     }
 
-//    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        bottomBar = BottomBar.attach(this, savedInstanceState);
-//        // Show all titles even when there's more than three tabs.
-//        // This BottomBar already has items! You must call the forceFixedMode() method before specifying any items.
-////        bottomBar.useFixedMode();
-////        bottomBar.setMaxFixedTabs(4);
-//        bottomBar.setItems(R.menu.bottom_bar_menu);
-//        bottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
-//            @Override
-//            public void onMenuTabSelected(@IdRes int menuItemId) {
-//                switch (menuItemId) {
-//                    case R.id.bbSelectAll: {
-//                        Log.e(TAG, "Select all");
-//                        break;
-//                    }
-//                    case R.id.bbClearSelection: {
-//                        Log.e(TAG, "Clear selection");
-//                        break;
-//                    }
-////                    case R.id.bbShowOnMap: {
-////                        Log.e(TAG, "Show on map");
-////                        break;
-////                    }
-//                    case R.id.bbDelete: {
-//                        Log.e(TAG, "Delete");
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onMenuTabReSelected(@IdRes int menuItemId) {
-//                switch (menuItemId) {
-//                    case R.id.bbSelectAll: {
-//                        Log.e(TAG, "Select all");
-//                        break;
-//                    }
-//                    case R.id.bbClearSelection: {
-//                        Log.e(TAG, "Clear selection");
-//                        break;
-//                    }
-////                    case R.id.bbShowOnMap: {
-////                        Log.e(TAG, "Show on map");
-////                        break;
-////                    }
-//                    case R.id.bbDelete: {
-//                        Log.e(TAG, "Delete");
-//                        break;
-//                    }
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public DBPediaService getDBPediaService() {
         return mService;
@@ -304,13 +247,4 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             bottomBarShowing = ((IBottomBarView) activeFragment).showBottomBar();
         }
     }
-
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        // Necessary to restore the BottomBar's state, otherwise we would
-//        // lose the current tab on orientation change.
-//        bottomBar.onSaveInstanceState(outState);
-//    }
 }
