@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bbSelectAll"
-        android:icon="@drawable/ic_star_white_36dp"
-        android:title="Select all" />
+        android:icon="@drawable/ic_checkbox_marked_outline_white_24dp"
+        android:title="@string/bb_btn_select_all" />
     <item
         android:id="@+id/bbClearSelection"
-        android:icon="@drawable/ic_star_white_36dp"
-        android:title="Clear selection" />
+        android:icon="@drawable/ic_checkbox_blank_outline_white_24dp"
+        android:title="@string/bb_btn_clear_selection" />
     <item
         android:id="@+id/bbDelete"
-        android:icon="@drawable/ic_star_white_36dp"
-        android:title="Delete" />
+        android:icon="@drawable/ic_delete_white_24dp"
+        android:title="@string/bb_btn_delete" />
 </menu>

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,9 +27,12 @@ import java.util.List;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.adapters.StoredDestinationsAdapter;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.DestinationDAOWrapper;
+import rs.ftn.pma.tourismobile.database.dao.wrapper.TaggedDestinationDAOWrapper;
 import rs.ftn.pma.tourismobile.model.Destination;
 import rs.ftn.pma.tourismobile.util.EndlessRecyclerViewScrollListener;
 import rs.ftn.pma.tourismobile.util.IBottomBarView;
+import rs.ftn.pma.tourismobile.util.PreferenceUtil;
 import rs.ftn.pma.tourismobile.util.SelectionPreference_;
 
 /**
@@ -43,6 +45,12 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
 
     @Bean
     StoredDestinationsAdapter storedDestinationsAdapter;
+
+    @Bean
+    DestinationDAOWrapper destinationDAOWrapper;
+
+    @Bean
+    TaggedDestinationDAOWrapper taggedDestinationDAOWrapper;
 
     @ViewById
     RecyclerView destinationsList;
@@ -195,7 +203,7 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
             firstTimeLoading = false;
             return;
         }
-        selectionPreference.selectionMode().put(true);
+//        selectionPreference.selectionMode().put(true);
         List<Integer> ids = new ArrayList<>();
         for(Destination dst : storedDestinationsAdapter.getItems()) {
             ids.add(dst.getId());
@@ -210,6 +218,13 @@ public class StoredDestinationsFragment extends Fragment implements IBottomBarVi
     }
 
     private void deleteBarBtn() {
-        Log.e(TAG, selectionPreference.selectedDestinationIDs().getOr("blaa"));
+        int[] selectedIDs = PreferenceUtil.getCommaArrayNumbers(selectionPreference.selectedDestinationIDs().getOr(""));
+        // delete referenced tags first
+        taggedDestinationDAOWrapper.deleteAllForDestinations(selectedIDs);
+        // DAO notifies adapter of changed destinations
+        destinationDAOWrapper.delete(selectedIDs);
+        // clear selection
+        selectionPreference.selectedDestinationIDs().remove();
+        Toast.makeText(this.getContext(), getString(R.string.msg_destinations_delete), Toast.LENGTH_SHORT).show();
     }
 }

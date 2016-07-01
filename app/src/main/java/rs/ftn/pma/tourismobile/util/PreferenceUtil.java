@@ -41,11 +41,14 @@ public class PreferenceUtil {
     }
 
     public static int[] getCommaArrayNumbers(String array) {
+        if(array.length() == 0) {
+            return new int[0];
+        }
         int length = getCommaArrayLength(array);
         String[] values = array.split(",");
         int[] numbers = new int[length];
         for (int i = 0; i < length; i++) {
-            numbers[i] = Integer.valueOf(values[i]);
+            numbers[i] = Integer.valueOf(values[i].trim());
         }
         return numbers;
     }

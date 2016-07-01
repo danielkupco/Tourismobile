@@ -20,6 +20,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
 import rs.ftn.pma.tourismobile.network.RestDBPedia;
 import rs.ftn.pma.tourismobile.util.DBPediaUtils;
 import rs.ftn.pma.tourismobile.util.FilterPreferences_;
+import rs.ftn.pma.tourismobile.util.PreferenceUtil;
 import rs.ftn.pma.tourismobile.util.SPARQLBuilder;
 
 /**
@@ -66,7 +67,7 @@ public class DBPediaService extends Service {
         final String VARIABLE = "Destination";
 
         final boolean tagFiltersSelected = filterPreferences.bySelectedTags().exists();
-        final String[] tagPositions = filterPreferences.bySelectedTags().getOr("").split(",");
+        final int[] tagPositions = PreferenceUtil.getCommaArrayNumbers(filterPreferences.bySelectedTags().getOr(""));
         final String[] predicates = new String[tagPositions.length];
         final String[] objects = new String[tagPositions.length];
 
@@ -74,7 +75,7 @@ public class DBPediaService extends Service {
         List<Tag> filterTags = tagDAOWrapper.findAllForFilters();
         if(tagFiltersSelected && filterTags.size() >= tagPositions.length) {
             for (int i = 0; i < tagPositions.length; i++) {
-                Tag tag = filterTags.get(Integer.valueOf(tagPositions[i]));
+                Tag tag = filterTags.get(tagPositions[i]);
                 predicates[i] = tag.getDbpProperty();
                 objects[i] = tag.getDbpValue();
                 Log.e(TAG, tag.toString());

@@ -1,5 +1,9 @@
 package rs.ftn.pma.tourismobile.database.dao.wrapper;
 
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedDelete;
+import com.j256.ormlite.stmt.SelectArg;
+
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.ormlite.annotations.OrmLiteDao;
 
@@ -75,6 +79,44 @@ public class DestinationDAOWrapper extends Observable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int delete(int destinationId) {
+        try {
+            DeleteBuilder<Destination, Integer> deleteBuilder = destinationDAO.deleteBuilder();
+            deleteBuilder.where().eq(Destination.ID_FIELD, destinationId);
+            setChanged();
+            notifyObservers();
+            return deleteBuilder.delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private PreparedDelete<Destination> preparedDeleteStatement;
+    public int delete(int[] destinationIds) {
+        try {
+            if (preparedDeleteStatement == null) {
+                final DeleteBuilder<Destination, Integer> deleteBuilder = destinationDAO.deleteBuilder();
+                final SelectArg destinationId = new SelectArg();
+
+                deleteBuilder.where().eq(Destination.ID_FIELD, destinationId);
+                preparedDeleteStatement = deleteBuilder.prepare();
+            }
+
+            for (int i = 0; i < destinationIds.length; i++) {
+                preparedDeleteStatement.setArgumentHolderValue(0, destinationIds[i]);
+                destinationDAO.delete(preparedDeleteStatement);
+            }
+
+            setChanged();
+            notifyObservers();
+            return destinationIds.length;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
 }

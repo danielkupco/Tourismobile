@@ -23,6 +23,9 @@
     <string name="tag_name">Tag name</string>
     <string name="tag_description">Tag description</string>
 
+    <!-- Messages -->
+    <string name="msg_destinations_delete">Destinations deleted successfully!</string>
+
     <!-- Error messages -->
     <string name="error_text_not_alphanum">Text can contain only letters and digits</string>
     <string name="error_invalid_name">Name can consist only letters</string>
@@ -48,6 +51,10 @@
     <string name="cb_dbp_property">DBPedia property</string>
     <string name="rb_asc">Ascending</string>
     <string name="rb_desc">Descending</string>
+    <string name="bb_btn_select_all">Select all</string>
+    <string name="bb_btn_clear_selection">Clear selection</string>
+    <string name="bb_btn_delete">Delete</string>
+
 
     <!-- Hints -->
     <string name="hint_name">Name</string>

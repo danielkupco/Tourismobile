@@ -3,6 +3,8 @@ package rs.ftn.pma.tourismobile.database.dao.wrapper;
 import android.util.Log;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.PreparedDelete;
+import com.j256.ormlite.stmt.SelectArg;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.ormlite.annotations.OrmLiteDao;
@@ -89,6 +91,28 @@ public class TaggedDestinationDAOWrapper {
             DeleteBuilder<TaggedDestination, Integer> deleteBuilder = taggedDestinationDAO.deleteBuilder();
             deleteBuilder.where().eq(TaggedDestination.DESTINATION_ID_FIELD, destinationId);
             return deleteBuilder.delete();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private PreparedDelete<TaggedDestination> preparedDeleteStatement;
+    public int deleteAllForDestinations(int[] destinationIds) {
+        try {
+            if (preparedDeleteStatement == null) {
+                final DeleteBuilder<TaggedDestination, Integer> deleteBuilder = taggedDestinationDAO.deleteBuilder();
+                final SelectArg destinationId = new SelectArg();
+
+                deleteBuilder.where().eq(TaggedDestination.DESTINATION_ID_FIELD, destinationId);
+                preparedDeleteStatement = deleteBuilder.prepare();
+            }
+
+            for (int i = 0; i < destinationIds.length; i++) {
+                preparedDeleteStatement.setArgumentHolderValue(0, destinationIds[i]);
+                taggedDestinationDAO.delete(preparedDeleteStatement);
+            }
+            return destinationIds.length;
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -299,6 +299,8 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
     public void showBottomBar() {
         if(activeFragment instanceof IBottomBarView) {
+            // removing previously selected destinations if any
+            selectionPreference.selectedDestinationIDs().remove();
             bottomBarShowing = ((IBottomBarView) activeFragment).showBottomBar();
         }
     }
