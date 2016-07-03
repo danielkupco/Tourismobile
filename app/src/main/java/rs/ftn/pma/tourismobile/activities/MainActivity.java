@@ -139,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                         .add(R.id.fragment_container, fragment, TAG).commit();
             }
         }
+
+        selectionPreference.selectionMode().put(false);
+        selectionPreference.selectedItemIDs().remove();
     }
 
     @Override
@@ -283,11 +286,6 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SELECTION_ALLOWED, selectionAllowed);
-        if(bottomBar != null)
-            bottomBar.onSaveInstanceState(outState);
     }
 
-    public void setBottomBar(BottomBar bottomBar) {
-        this.bottomBar = bottomBar;
-    }
 }

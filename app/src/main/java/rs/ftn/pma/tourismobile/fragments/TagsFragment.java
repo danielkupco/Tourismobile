@@ -134,8 +134,10 @@ public class TagsFragment extends BottomBarFragment {
     public boolean hideBottomBar() {
         Log.e(TAG, "hide bb: " + firstTimeLoading + " - " + defaults);
         selectionPreference.selectionMode().put(false);
-        bottomBar.hide();
-        tagsAdapter.notifyDataSetChanged();
+        if(bottomBar != null) {
+            bottomBar.hide();
+            tagsAdapter.notifyDataSetChanged();
+        }
         return true;
     }
 

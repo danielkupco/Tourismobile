@@ -112,15 +112,16 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
 
     @Click({R.id.btnDetails, R.id.image})
     void openDetails() {
-        DestinationDetailsActivity_.IntentBuilder_ intentBuilder =
-                DestinationDetailsActivity_.intent(this.getContext());
-        if(persisted) {
-            intentBuilder.destinationID(destination.getId());
+        if(!selectionPreference.selectionMode().getOr(false)) {
+            DestinationDetailsActivity_.IntentBuilder_ intentBuilder =
+                    DestinationDetailsActivity_.intent(this.getContext());
+            if (persisted) {
+                intentBuilder.destinationID(destination.getId());
+            } else {
+                intentBuilder.wikiPageID(destination.getWikiPageID());
+            }
+            intentBuilder.start();
         }
-        else {
-            intentBuilder.wikiPageID(destination.getWikiPageID());
-        }
-        intentBuilder.start();
     }
 
     @Click(R.id.imgFavourite)

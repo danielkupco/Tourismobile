@@ -96,7 +96,7 @@ public class FavouritesFragment extends BottomBarFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && bottomBar != null) {
             if(savedInstanceState.getBoolean(BOTTOM_BAR_SHOWING)) {
                 bottomBar.show();
             }
@@ -116,14 +116,15 @@ public class FavouritesFragment extends BottomBarFragment {
 
     @Override
     public boolean showBottomBar() {
+        super.showBottomBar();
         bottomBar.show();
         return true;
     }
 
     protected void selectAllBarBtn() {
-        if(savedInstanceState != null) {
-            firstTimeLoading = savedInstanceState.getBoolean(FIRST_TIME_LOADING);
-        }
+//        if(savedInstanceState != null) {
+//            firstTimeLoading = savedInstanceState.getBoolean(FIRST_TIME_LOADING);
+//        }
         if(firstTimeLoading) {
             firstTimeLoading = false;
             return;
