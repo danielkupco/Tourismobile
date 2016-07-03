@@ -10,7 +10,6 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
 import rs.ftn.pma.tourismobile.R;
-import rs.ftn.pma.tourismobile.activities.MainActivity;
 import rs.ftn.pma.tourismobile.util.IBottomBarView;
 
 /**
@@ -56,15 +55,13 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
         // lose the current tab on orientation change.
         if(bottomBar == null) {
             Log.e(TAG, "bottom je null");
+//            attachBottomBar();
             return;
         }
         bottomBar.onSaveInstanceState(outState);
         outState.putBoolean(BOTTOM_BAR_SHOWING, bottomBar.isShown());
         outState.putBoolean(FIRST_TIME_LOADING, firstTimeLoading);
         outState.putBoolean(BOTTOM_BAR_ATTACHED, bottomBarAttached);
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).setBottomBar(bottomBar);
-        }
         Log.e(TAG, "save instance from bb fragment.");
     }
 
@@ -94,14 +91,19 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
         bottomBar.setItems(R.menu.bottom_bar_menu);
 
         // only show bottom bar if it was previously shown
-        if (savedInstanceState == null || !savedInstanceState.getBoolean(BOTTOM_BAR_SHOWING)) {
-            bottomBar.hide();
-        }
+//        if (savedInstanceState == null || !savedInstanceState.getBoolean(BOTTOM_BAR_SHOWING)) {
+//            bottomBar.hide();
+//        }
 
         bottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
                 Log.e(TAG, "select with: " + firstTimeLoading + " - " + bottomBar);
+                if(firstTimeLoading) {
+                    Log.e(TAG, "FTL: " + firstTimeLoading);
+                    firstTimeLoading = false;
+                    return;
+                }
                 switch (menuItemId) {
                     case R.id.bbSelectAll: {
                         Log.e(TAG, "selected all");
@@ -124,6 +126,7 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
             @Override
             public void onMenuTabReSelected(@IdRes int menuItemId) {
                 Log.e(TAG, "reselect with: " + firstTimeLoading + " - " + bottomBar);
+
                 switch (menuItemId) {
                     case R.id.bbSelectAll: {
                         Log.e(TAG, "reselected all");
@@ -145,9 +148,9 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
         });
         Log.e(TAG, "create from bb fragment.");
 
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).setBottomBar(bottomBar);
-        }
+//        if (getActivity() instanceof MainActivity) {
+//            ((MainActivity) getActivity()).setBottomBar(bottomBar);
+//        }
         bottomBarAttached = true;
     }
 

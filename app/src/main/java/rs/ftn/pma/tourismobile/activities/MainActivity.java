@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
     private Fragment activeFragment;
 
-    private static final String ACTIVE_FRAGMENT_TAG = "ACTIVE_FRAGMENT_TAG";
-
     @Pref
     SelectionPreference_ selectionPreference;
 
@@ -256,11 +254,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     }
 
     public void showBottomBar() {
-        if(activeFragment == null) {
-            return;
-        }
-        Log.e(TAG, "show in main bb: " + (activeFragment instanceof IBottomBarView));
-        if(activeFragment instanceof IBottomBarView) {
+        if(activeFragment != null && activeFragment instanceof IBottomBarView) {
             // removing previously selected destinations if any
             selectionPreference.selectedItemIDs().remove();
             bottomBarShowing = ((IBottomBarView) activeFragment).showBottomBar();
@@ -278,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 activeFragment = lastFragment;
                 if(activeFragment instanceof BottomBarFragment) {
                     Log.e(TAG, "bb fragment");
-                    ((BottomBarFragment)activeFragment).attachBottomBar();
+//                    ((BottomBarFragment)activeFragment).attachBottomBar();
                 }
             }
         }
@@ -288,8 +282,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SELECTION_ALLOWED, selectionAllowed);
-        Log.e(TAG, "save inst");
-        if (bottomBar != null)
+        if(bottomBar != null)
             bottomBar.onSaveInstanceState(outState);
     }
 
