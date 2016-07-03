@@ -15,8 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.roughike.bottombar.BottomBar;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -24,8 +22,6 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 import rs.ftn.pma.tourismobile.R;
 import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
-import rs.ftn.pma.tourismobile.fragments.HomeFragment;
-import rs.ftn.pma.tourismobile.fragments.HomeFragment_;
 import rs.ftn.pma.tourismobile.fragments.StoredDestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.TagsTabFragment;
 import rs.ftn.pma.tourismobile.services.DBPediaService;
@@ -51,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
     private boolean allowSelection = false;
 
     private boolean bottomBarShowing = false;
-
-    private BottomBar bottomBar;
 
     private boolean mBound = false;
 
@@ -127,7 +121,8 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             // set HomeFragment at the beginning
             if(getSupportFragmentManager().findFragmentByTag(TAG) == null) {
                 // Create a new Fragment to be placed in the activity layout
-                HomeFragment fragment = HomeFragment_.builder().build();
+//                HomeFragment fragment = HomeFragment_.builder().build();
+                Fragment fragment = new TagsTabFragment();
                 activeFragment = fragment;
 
                 // In case this activity was started with special instructions from an
@@ -226,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 System.exit(0);
                 break;
             }
-            default: {
-                fragment = HomeFragment_.builder().build();
-            }
+//            default: {
+//                fragment = HomeFragment_.builder().build();
+//            }
         }
         activeFragment = fragment;
 

@@ -26,6 +26,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         boolean splashOn = SP.getBoolean(getString(R.string.pref_turn_splash_key), true);
         if(!splashOn) {
             startMainActivity();
+            return;
         }
 
         String splashDuration = SP.getString(getString(R.string.pref_splash_duration_key),
