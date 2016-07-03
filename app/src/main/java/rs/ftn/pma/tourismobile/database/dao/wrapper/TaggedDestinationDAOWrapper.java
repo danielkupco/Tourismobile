@@ -97,20 +97,42 @@ public class TaggedDestinationDAOWrapper {
         return -1;
     }
 
-    private PreparedDelete<TaggedDestination> preparedDeleteStatement;
+    private PreparedDelete<TaggedDestination> preparedDeleteForTagsStatement;
+    public int deleteAllForTags(int[] tagIds) {
+        try {
+            if (preparedDeleteForTagsStatement == null) {
+                final DeleteBuilder<TaggedDestination, Integer> deleteBuilder = taggedDestinationDAO.deleteBuilder();
+                final SelectArg tagId = new SelectArg();
+
+                deleteBuilder.where().eq(TaggedDestination.TAG_ID_FIELD, tagId);
+                preparedDeleteForTagsStatement = deleteBuilder.prepare();
+            }
+
+            for (int i = 0; i < tagIds.length; i++) {
+                preparedDeleteForTagsStatement.setArgumentHolderValue(0, tagIds[i]);
+                taggedDestinationDAO.delete(preparedDeleteForTagsStatement);
+            }
+            return tagIds.length;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    private PreparedDelete<TaggedDestination> preparedDeleteForDestinationsStatement;
     public int deleteAllForDestinations(int[] destinationIds) {
         try {
-            if (preparedDeleteStatement == null) {
+            if (preparedDeleteForDestinationsStatement == null) {
                 final DeleteBuilder<TaggedDestination, Integer> deleteBuilder = taggedDestinationDAO.deleteBuilder();
                 final SelectArg destinationId = new SelectArg();
 
                 deleteBuilder.where().eq(TaggedDestination.DESTINATION_ID_FIELD, destinationId);
-                preparedDeleteStatement = deleteBuilder.prepare();
+                preparedDeleteForDestinationsStatement = deleteBuilder.prepare();
             }
 
             for (int i = 0; i < destinationIds.length; i++) {
-                preparedDeleteStatement.setArgumentHolderValue(0, destinationIds[i]);
-                taggedDestinationDAO.delete(preparedDeleteStatement);
+                preparedDeleteForDestinationsStatement.setArgumentHolderValue(0, destinationIds[i]);
+                taggedDestinationDAO.delete(preparedDeleteForDestinationsStatement);
             }
             return destinationIds.length;
         } catch (SQLException e) {

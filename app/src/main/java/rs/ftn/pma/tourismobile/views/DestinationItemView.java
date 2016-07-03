@@ -106,7 +106,7 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
         // can change checked state only if visible
         if(cbSelect.getVisibility() == VISIBLE) {
             cbSelect.setChecked(PreferenceUtil.isNumberInCommaArray(
-                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+                    selectionPreference.selectedItemIDs().getOr(""), destination.getId()));
         }
     }
 
@@ -181,13 +181,13 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @LongClick({R.id.cardView, R.id.image})
     void selectMode() {
         Context context = getContext();
-        if (context instanceof MainActivity && ((MainActivity) context).isAllowSelection()) {
+        if (context instanceof MainActivity && ((MainActivity) context).isSelectionAllowed()) {
             ((MainActivity) context).showBottomBar();
             cbSelect.setVisibility(VISIBLE);
             cbSelect.setChecked(true);
             selectionPreference.selectionMode().put(true);
-            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.addNumberToCommaArray(
-                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), destination.getId()));
             // notifying RecyclerView to redraw all items when selection mode is changed
             if(getParent() instanceof RecyclerView) {
                 ((RecyclerView) getParent()).getAdapter().notifyDataSetChanged();
@@ -198,12 +198,12 @@ public class DestinationItemView extends CardView implements IViewHolder<Destina
     @Click(R.id.cbSelect)
     void selectionChange() {
         if(cbSelect.isChecked()) {
-            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.addNumberToCommaArray(
-                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), destination.getId()));
         }
         else {
-            selectionPreference.selectedDestinationIDs().put(PreferenceUtil.removeNumberFromCommaArray(
-                    selectionPreference.selectedDestinationIDs().getOr(""), destination.getId()));
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.removeNumberFromCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), destination.getId()));
         }
     }
 

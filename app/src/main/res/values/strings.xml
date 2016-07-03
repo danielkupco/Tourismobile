@@ -24,6 +24,7 @@
     <string name="tag_description">Tag description</string>
 
     <!-- Messages -->
+    <string name="msg_tags_delete">Tags deleted successfully!</string>
     <string name="msg_destinations_delete">Destinations deleted successfully!</string>
 
     <!-- Error messages -->

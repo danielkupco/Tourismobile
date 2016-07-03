@@ -4,7 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -45,10 +48,13 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
     private Fragment activeFragment;
 
+    private static final String ACTIVE_FRAGMENT_TAG = "ACTIVE_FRAGMENT_TAG";
+
     @Pref
     SelectionPreference_ selectionPreference;
 
-    private boolean allowSelection = false;
+    private boolean selectionAllowed = false;
+    private static final String SELECTION_ALLOWED = "SELECTION_ALLOWED";
 
     private boolean bottomBarShowing = false;
 
@@ -195,23 +201,26 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             case R.id.nav_destinations: {
                 fragment = DestinationsFragment_.builder().build();
                 selectionPreference.selectionMode().put(false);
-                allowSelection = false;
+                selectionAllowed = false;
                 break;
             }
             case R.id.nav_favourites: {
                 fragment = FavouritesFragment_.builder().build();
                 selectionPreference.selectionMode().put(false);
-                allowSelection = true;
+                selectionAllowed = true;
                 break;
             }
             case R.id.nav_storage: {
                 fragment = StoredDestinationsFragment_.builder().build();
                 selectionPreference.selectionMode().put(false);
-                allowSelection = true;
+                selectionAllowed = true;
                 break;
             }
             case R.id.nav_tags: {
+                // uses Tab inside to switch between default and custom tags
                 fragment = new TagsTabFragment();
+                selectionPreference.selectionMode().put(false);
+                selectionAllowed = true;
                 break;
             }
             case R.id.nav_settings: {
@@ -236,15 +245,45 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         return true;
     }
 
-    public boolean isAllowSelection() {
-        return allowSelection;
+    public boolean isSelectionAllowed() {
+        if(activeFragment instanceof TagsTabFragment) {
+            Log.e(TAG, "allow tab sel: " + ((TagsTabFragment)activeFragment).getCurrentTabAllowsSelectMode());
+            return ((TagsTabFragment)activeFragment).getCurrentTabAllowsSelectMode();
+        }
+        Log.e(TAG, "allow sel: " + selectionAllowed);
+        return selectionAllowed;
     }
 
     public void showBottomBar() {
+        if(activeFragment == null) {
+            return;
+        }
+        Log.e(TAG, "show in main bb: " + (activeFragment instanceof IBottomBarView));
+        Log.e(TAG, activeFragment.toString());
         if(activeFragment instanceof IBottomBarView) {
             // removing previously selected destinations if any
-            selectionPreference.selectedDestinationIDs().remove();
+            selectionPreference.selectedItemIDs().remove();
             bottomBarShowing = ((IBottomBarView) activeFragment).showBottomBar();
         }
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            selectionAllowed = savedInstanceState.getBoolean(SELECTION_ALLOWED);
+            Log.e(TAG, "on create");
+            Fragment lastFragment = getSupportFragmentManager().findFragmentByTag(TAG);
+            if(lastFragment != null) {
+                activeFragment = lastFragment;
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SELECTION_ALLOWED, selectionAllowed);
+        Log.e(TAG, "save inst");
     }
 }

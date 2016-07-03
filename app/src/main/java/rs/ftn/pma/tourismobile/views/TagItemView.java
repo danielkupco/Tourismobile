@@ -6,12 +6,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.ViewById;
@@ -52,15 +50,15 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
 
     public TagItemView(final Context context) {
         super(context);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TagDetailsActivity_.intent(context)
-                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .tagId(tag.getId())
-                        .start();
-            }
-        });
+//        setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TagDetailsActivity_.intent(context)
+//                        .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        .tagId(tag.getId())
+//                        .start();
+//            }
+//        });
     }
 
     @Override
@@ -77,21 +75,29 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
             footer_note.setGravity(Gravity.END | Gravity.RIGHT);
         }
         //noinspection WrongConstant
-        cbSelect.setVisibility(PreferenceUtil.getSelectionModeVisibility(selectionPreference.selectionMode().getOr(false)));
-        Log.e(TAG, selectionPreference.selectionMode().getOr(false) + "");
-        Log.e(TAG, cbSelect.isChecked() + "");
+        cbSelect.setVisibility(PreferenceUtil.getSelectionModeVisibility(
+                selectionPreference.selectionMode().getOr(false)));
+
+        // can change checked state only if visible
+        if(cbSelect.getVisibility() == VISIBLE) {
+            cbSelect.setChecked(PreferenceUtil.isNumberInCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), tag.getId()));
+        }
     }
 
-    @LongClick({R.id.cardView, R.id.image})
+    @LongClick({R.id.cardView})
     void selectMode() {
         Context context = getContext();
-        if (context instanceof MainActivity && ((MainActivity) context).isAllowSelection()) {
+        if (context instanceof MainActivity && ((MainActivity) context).isSelectionAllowed()) {
+            Log.e(TAG, "show bb");
+            Log.e(TAG, selectionPreference.selectedItemIDs().getOr("nemaa"));
+            ((MainActivity) context).showBottomBar();
             cbSelect.setVisibility(VISIBLE);
             cbSelect.setChecked(true);
             selectionPreference.selectionMode().put(true);
-            selectionPreference.selectedTagIDs().put(PreferenceUtil.addNumberToCommaArray(
-                    selectionPreference.selectedTagIDs().getOr(""), tag.getId()));
-            childDrawableStateChanged(cbSelect);
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), tag.getId()));
+//            childDrawableStateChanged(cbSelect);
             // notifying RecyclerView to redraw all items when selection mode is changed
             if(getParent() instanceof RecyclerView) {
                 ((RecyclerView) getParent()).getAdapter().notifyDataSetChanged();
@@ -100,9 +106,25 @@ public class TagItemView extends CardView implements IViewHolder<Tag> {
 
     }
 
-    @CheckedChange(R.id.cbSelect)
-    void selectionChange(CompoundButton cb, boolean isChecked) {
-        Log.e(TAG, tag.getName() + " - " + isChecked);
-        Log.e(TAG, getParent().toString());
+    @Click(R.id.cbSelect)
+    void selectionChange() {
+        if(cbSelect.isChecked()) {
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.addNumberToCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), tag.getId()));
+        }
+        else {
+            selectionPreference.selectedItemIDs().put(PreferenceUtil.removeNumberFromCommaArray(
+                    selectionPreference.selectedItemIDs().getOr(""), tag.getId()));
+        }
+    }
+
+    @Click(R.id.cardView)
+    void openDetails() {
+        if(!selectionPreference.selectionMode().getOr(false)) {
+            TagDetailsActivity_.intent(getContext())
+                    .flags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .tagId(tag.getId())
+                    .start();
+        }
     }
 }

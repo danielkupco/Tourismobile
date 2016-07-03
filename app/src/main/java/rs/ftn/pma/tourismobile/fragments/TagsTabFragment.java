@@ -3,16 +3,18 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.util.IBottomBarView;
 
 /**
  * Created by Daniel Kupčo on 26.06.2016.
  */
-public class TagsTabFragment extends Fragment {
+public class TagsTabFragment extends Fragment implements IBottomBarView {
 
     private FragmentTabHost tabHost;
 
@@ -34,4 +36,34 @@ public class TagsTabFragment extends Fragment {
         return tabHost;
     }
 
+    public int getCurrentTabIndex() {
+        return tabHost.getCurrentTab();
+    }
+
+    public boolean getCurrentTabAllowsSelectMode() {
+        Log.e("tth", tabHost.getCurrentTabTag());
+        Log.e("tth", getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag()).toString());
+
+        Log.e("tth", "ibb: " + (getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag()) instanceof IBottomBarView));
+
+        return tabHost.getCurrentTab() == 1;
+    }
+
+    @Override
+    public boolean hideBottomBar() {
+        Fragment currentFragment = getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag());
+        if (currentFragment instanceof IBottomBarView) {
+            return ((IBottomBarView) currentFragment).hideBottomBar();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean showBottomBar() {
+        Fragment currentFragment = getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag());
+        if (currentFragment instanceof IBottomBarView) {
+            return ((IBottomBarView) currentFragment).showBottomBar();
+        }
+        return false;
+    }
 }
