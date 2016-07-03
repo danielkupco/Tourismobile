@@ -33,6 +33,7 @@ import rs.ftn.pma.tourismobile.services.DBPediaService_;
 import rs.ftn.pma.tourismobile.services.IServiceActivity;
 import rs.ftn.pma.tourismobile.services.IServiceBindingNotification;
 import rs.ftn.pma.tourismobile.util.IBottomBarView;
+import rs.ftn.pma.tourismobile.util.MapUtils;
 import rs.ftn.pma.tourismobile.util.SelectionPreference_;
 
 @EActivity(R.layout.activity_main)
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 // Create a new Fragment to be placed in the activity layout
 //                HomeFragment fragment = HomeFragment_.builder().build();
                 Fragment fragment = new TagsTabFragment();
+                selectionAllowed = true;
                 activeFragment = fragment;
 
                 // In case this activity was started with special instructions from an
@@ -194,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
 
         switch (id) {
             case R.id.nav_maps: {
+                MapUtils.clearDestinations();
                 MapsActivity_.intent(this).start();
                 break;
             }

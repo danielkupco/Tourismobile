@@ -34,4 +34,8 @@ public class MapUtils {
         destinations = new ArrayList<>(newDestinations);
     }
 
+    public static void clearDestinations() {
+        destinations.clear();
+    }
+
 }
