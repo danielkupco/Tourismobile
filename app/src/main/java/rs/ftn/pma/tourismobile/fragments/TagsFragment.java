@@ -119,7 +119,7 @@ public class TagsFragment extends BottomBarFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && !defaults) {
+        if (savedInstanceState != null && !defaults && bottomBar != null) {
             if(savedInstanceState.getBoolean(BOTTOM_BAR_SHOWING)) {
                 bottomBar.show();
             }
@@ -140,6 +140,7 @@ public class TagsFragment extends BottomBarFragment {
 
     @Override
     public boolean showBottomBar() {
+        super.showBottomBar();
         Log.e(TAG, "show bb: " + firstTimeLoading + " - " + defaults);
         if(!defaults) {
             bottomBar.show();
@@ -149,9 +150,9 @@ public class TagsFragment extends BottomBarFragment {
     }
 
     protected void selectAllBarBtn() {
-        if(savedInstanceState != null) {
-            firstTimeLoading = savedInstanceState.getBoolean(FIRST_TIME_LOADING);
-        }
+//        if(savedInstanceState != null) {
+//            firstTimeLoading = savedInstanceState.getBoolean(FIRST_TIME_LOADING);
+//        }
         if(firstTimeLoading) {
             firstTimeLoading = false;
             return;

@@ -8,8 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.roughike.bottombar.BottomBar;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
@@ -52,15 +50,8 @@ public class FavouritesFragment extends BottomBarFragment {
     @ViewById
     MaterialProgressBar progressBar;
 
-    // selection and bottom bar
     @Pref
     SelectionPreference_ selectionPreference;
-    private BottomBar bottomBar;
-    private Bundle savedInstanceState;
-    // first bottom bar button is called initially so we need to ignore that
-    private boolean firstTimeLoading = true;
-    private static final String BOTTOM_BAR_SHOWING = "bottom_bar_showing";
-    private static final String FIRST_TIME_LOADING = "first_time_loading";
 
     @AfterViews
     void bindAdapter() {

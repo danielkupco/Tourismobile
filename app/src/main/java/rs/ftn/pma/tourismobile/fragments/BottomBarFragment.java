@@ -10,6 +10,7 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.activities.MainActivity;
 import rs.ftn.pma.tourismobile.util.IBottomBarView;
 
 /**
@@ -23,14 +24,65 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
     protected Bundle savedInstanceState;
     // first bottom bar button is called initially so we need to ignore that
     protected boolean firstTimeLoading = true;
+    protected boolean bottomBarAttached = false;
+    protected static final String BOTTOM_BAR_ATTACHED = "BOTTOM_BAR_ATTACHED";
     protected static final String BOTTOM_BAR_SHOWING = "bottom_bar_showing";
     protected static final String FIRST_TIME_LOADING = "first_time_loading";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.savedInstanceState = savedInstanceState;
 
+        //
+        if(savedInstanceState != null) {
+            this.savedInstanceState = savedInstanceState;
+            Log.e(TAG, "bb attached: " + savedInstanceState.getBoolean(BOTTOM_BAR_ATTACHED));
+            if(bottomBar == null) {
+                Log.e(TAG, "attach from create");
+//                attachBottomBar();
+            }
+            else {
+                Log.e(TAG, "gone");
+//                bottomBar.setVisibility(View.GONE);
+//                attachBottomBar();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Necessary to restore the BottomBar's state, otherwise we would
+        // lose the current tab on orientation change.
+        if(bottomBar == null) {
+            Log.e(TAG, "bottom je null");
+            return;
+        }
+        bottomBar.onSaveInstanceState(outState);
+        outState.putBoolean(BOTTOM_BAR_SHOWING, bottomBar.isShown());
+        outState.putBoolean(FIRST_TIME_LOADING, firstTimeLoading);
+        outState.putBoolean(BOTTOM_BAR_ATTACHED, bottomBarAttached);
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setBottomBar(bottomBar);
+        }
+        Log.e(TAG, "save instance from bb fragment.");
+    }
+
+    protected abstract void selectAllBarBtn();
+    protected abstract void clearSelectionBarBtn();
+    protected abstract void deleteBarBtn();
+
+    public boolean showBottomBar() {
+        if(bottomBar == null) {
+            Log.e(TAG, "bb attach on show!");
+            attachBottomBar();
+            return true;
+        }
+        return false;
+    }
+    public abstract boolean hideBottomBar();
+
+    public void attachBottomBar() {
         // must attach to activity in order to be visible even after fragment replacing
         bottomBar = BottomBar.attach(getActivity(), savedInstanceState);
         // Show all titles even when there's more than three tabs.
@@ -91,23 +143,12 @@ public abstract class BottomBarFragment extends Fragment implements IBottomBarVi
                 }
             }
         });
+        Log.e(TAG, "create from bb fragment.");
+
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).setBottomBar(bottomBar);
+        }
+        bottomBarAttached = true;
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // Necessary to restore the BottomBar's state, otherwise we would
-        // lose the current tab on orientation change.
-        bottomBar.onSaveInstanceState(outState);
-        outState.putBoolean(BOTTOM_BAR_SHOWING, bottomBar.isShown());
-        outState.putBoolean(FIRST_TIME_LOADING, firstTimeLoading);
-    }
-
-    protected abstract void selectAllBarBtn();
-    protected abstract void clearSelectionBarBtn();
-    protected abstract void deleteBarBtn();
-
-    public abstract boolean showBottomBar();
-    public abstract boolean hideBottomBar();
 
 }

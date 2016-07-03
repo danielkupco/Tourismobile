@@ -3,7 +3,6 @@ package rs.ftn.pma.tourismobile.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +40,6 @@ public class TagsTabFragment extends Fragment implements IBottomBarView {
     }
 
     public boolean getCurrentTabAllowsSelectMode() {
-        Log.e("tth", tabHost.getCurrentTabTag());
-        Log.e("tth", getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag()).toString());
-
-        Log.e("tth", "ibb: " + (getChildFragmentManager().findFragmentByTag(tabHost.getCurrentTabTag()) instanceof IBottomBarView));
-
         return tabHost.getCurrentTab() == 1;
     }
 

@@ -25,6 +25,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import rs.ftn.pma.tourismobile.R;
+import rs.ftn.pma.tourismobile.fragments.BottomBarFragment;
 import rs.ftn.pma.tourismobile.fragments.DestinationsFragment_;
 import rs.ftn.pma.tourismobile.fragments.FavouritesFragment_;
 import rs.ftn.pma.tourismobile.fragments.HomeFragment;
@@ -259,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             return;
         }
         Log.e(TAG, "show in main bb: " + (activeFragment instanceof IBottomBarView));
-        Log.e(TAG, activeFragment.toString());
         if(activeFragment instanceof IBottomBarView) {
             // removing previously selected destinations if any
             selectionPreference.selectedItemIDs().remove();
@@ -276,6 +276,10 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             Fragment lastFragment = getSupportFragmentManager().findFragmentByTag(TAG);
             if(lastFragment != null) {
                 activeFragment = lastFragment;
+                if(activeFragment instanceof BottomBarFragment) {
+                    Log.e(TAG, "bb fragment");
+                    ((BottomBarFragment)activeFragment).attachBottomBar();
+                }
             }
         }
     }
@@ -285,5 +289,11 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
         super.onSaveInstanceState(outState);
         outState.putBoolean(SELECTION_ALLOWED, selectionAllowed);
         Log.e(TAG, "save inst");
+        if (bottomBar != null)
+            bottomBar.onSaveInstanceState(outState);
+    }
+
+    public void setBottomBar(BottomBar bottomBar) {
+        this.bottomBar = bottomBar;
     }
 }
