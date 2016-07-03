@@ -12,8 +12,6 @@ public interface SelectionPreference {
     @DefaultBoolean(false)
     boolean selectionMode();
 
-    String selectedDestinationIDs();
-
-    String selectedTagIDs();
+    String selectedItemIDs();
 
 }
