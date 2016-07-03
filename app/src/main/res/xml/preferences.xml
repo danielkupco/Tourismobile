@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Splash screen settings">
+
+        <SwitchPreference
+            android:key="@string/pref_turn_splash_key"
+            android:title="Turn splash screen"
+            android:defaultValue="@string/pref_turn_splash_default"/>
+
+        <ListPreference
+            android:key="@string/pref_splash_duration_key"
+            android:title="Splash duration (sec)"
+            android:summary="%s"
+            android:defaultValue="@string/pref_splash_duration_default"
+            android:entries="@array/splash_duration_array"
+            android:entryValues="@array/splash_duration_array"
+            android:dialogTitle="Choose splash screen duration" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="DBPedia settings">
+
+        <ListPreference
+            android:key="@string/pref_destinations_per_page_key"
+            android:title="Destinations per page"
+            android:summary="%s"
+            android:defaultValue="@string/pref_destinations_per_page_default"
+            android:entries="@array/destinations_per_page"
+            android:entryValues="@array/destinations_per_page"
+            android:dialogTitle="Destinations per page" />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

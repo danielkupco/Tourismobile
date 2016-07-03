@@ -82,4 +82,12 @@
     <string name="dialog_filter_error_message">You must select at least one tag as a filter.
         Do you want to open filter options and set them?</string>
 
+    <!-- Preferences -->
+    <string name="pref_turn_splash_key">turn_splash</string>
+    <string name="pref_turn_splash_default">true</string>
+    <string name="pref_splash_duration_key">splash_duration</string>
+    <string name="pref_splash_duration_default">3</string>
+    <string name="pref_destinations_per_page_key">destinations_per_page</string>
+    <string name="pref_destinations_per_page_default">5</string>
+
 </resources>
