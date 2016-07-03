@@ -3,6 +3,10 @@
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_tag_details">Tag details</string>
     <string name="title_destination_details">Destination</string>
+    <string name="title_destinations">Destinations</string>
+    <string name="title_favourites">Favourites</string>
+    <string name="title_stored">Locally stored</string>
+    <string name="title_tags">Tags</string>
 
     <!-- Navigation drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

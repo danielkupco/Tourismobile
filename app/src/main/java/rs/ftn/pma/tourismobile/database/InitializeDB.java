@@ -30,12 +30,12 @@ public class InitializeDB {
             tagDAOWrapper.createTag(tag);
 
             // custom
-            tag = new Tag("Tag1", "Tag number one.");
-            tagDAOWrapper.createTag(tag);
-            tag = new Tag("Tag2", "Tag number two.");
-            tagDAOWrapper.createTag(tag);
-            tag = new Tag("Tag3", "Tag number three.");
-            tagDAOWrapper.createTag(tag);
+//            tag = new Tag("Tag1", "Tag number one.");
+//            tagDAOWrapper.createTag(tag);
+//            tag = new Tag("Tag2", "Tag number two.");
+//            tagDAOWrapper.createTag(tag);
+//            tag = new Tag("Tag3", "Tag number three.");
+//            tagDAOWrapper.createTag(tag);
         }
     }
 

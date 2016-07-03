@@ -129,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 // Create a new Fragment to be placed in the activity layout
 //                HomeFragment fragment = HomeFragment_.builder().build();
                 Fragment fragment = new TagsTabFragment();
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_tags));
+                }
                 selectionAllowed = true;
                 activeFragment = fragment;
 
@@ -202,18 +205,27 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             }
             case R.id.nav_destinations: {
                 fragment = DestinationsFragment_.builder().build();
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_destinations));
+                }
                 selectionPreference.selectionMode().put(false);
                 selectionAllowed = false;
                 break;
             }
             case R.id.nav_favourites: {
                 fragment = FavouritesFragment_.builder().build();
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_favourites));
+                }
                 selectionPreference.selectionMode().put(false);
                 selectionAllowed = true;
                 break;
             }
             case R.id.nav_storage: {
                 fragment = StoredDestinationsFragment_.builder().build();
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_stored));
+                }
                 selectionPreference.selectionMode().put(false);
                 selectionAllowed = true;
                 break;
@@ -221,6 +233,9 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
             case R.id.nav_tags: {
                 // uses Tab inside to switch between default and custom tags
                 fragment = new TagsTabFragment();
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.title_tags));
+                }
                 selectionPreference.selectionMode().put(false);
                 selectionAllowed = true;
                 break;

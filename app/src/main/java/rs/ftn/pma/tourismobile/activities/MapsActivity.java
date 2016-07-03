@@ -33,6 +33,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Location mLastLocation;
 
+    private LatLng lastClickedLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,15 +73,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int height = getResources().getDisplayMetrics().heightPixels;
                 int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBoundsBuilder.build(), width, height, padding));
+                mMap.animateCamera( CameraUpdateFactory.zoomTo(destinations.size() > 1 ? 2.0f : 5.0f) );
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                       @Override public boolean onMarkerClick(Marker marker) {
                           for (Destination destination : destinations) {
                               LatLng location = new LatLng(destination.getLatitude(), destination.getLongitude());
                               if (location.equals(marker.getPosition())) {
-                                  DestinationDetailsActivity_.intent(MapsActivity.this)
-                                          .destinationID(destination.getId())
-                                          .start();
+                                  if(lastClickedLocation != null) {
+                                      if(location.equals(lastClickedLocation)) {
+                                          DestinationDetailsActivity_.intent(MapsActivity.this)
+                                                  .wikiPageID(destination.getWikiPageID())
+                                                  .start();
+                                      }
+                                      else {
+                                          lastClickedLocation = location;
+                                          marker.showInfoWindow();
+                                      }
+                                  }
+                                  else {
+                                      lastClickedLocation = location;
+                                      marker.showInfoWindow();
+                                  }
                                   return true;
                               }
                           }
@@ -95,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng latLng = new LatLng(here.getLatitude(), here.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latLng).title("You are here"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera( CameraUpdateFactory.zoomTo( 4.0f ) );
                 }
             }
     }
