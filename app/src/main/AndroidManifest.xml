@@ -38,6 +38,7 @@
 
         </activity>
         <activity android:name=".activities.DestinationDetailsActivity_" />
+        <activity android:name=".activities.TaggedDestinationsActivity_" />
         <activity android:name=".activities.DestinationFilterActivity_" />
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.SplashScreenActivity">

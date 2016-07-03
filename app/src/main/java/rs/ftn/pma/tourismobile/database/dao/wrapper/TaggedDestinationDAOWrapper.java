@@ -46,6 +46,19 @@ public class TaggedDestinationDAOWrapper {
         return refresh(taggedDestinationDAO.queryForId(id));
     }
 
+    public List<TaggedDestination> findAllTaggedDestinationsForTag(int tagID) {
+        try {
+            List<TaggedDestination> result = taggedDestinationDAO.queryBuilder().where()
+                    .eq(TaggedDestination.TAG_ID_FIELD, tagID)
+                    .query();
+            return refreshAll(result);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<TaggedDestination> findAllTaggedDestinationsForDestination(Destination destination) {
         try {
             List<TaggedDestination> result = taggedDestinationDAO.queryBuilder().where()
@@ -66,6 +79,15 @@ public class TaggedDestinationDAOWrapper {
             tags.add(td.getTag());
         }
         return refreshAllTags(tags);
+    }
+
+    public List<Destination> findAllDestinationsForTag(int tagID) {
+        List<TaggedDestination> taggedDestinations = findAllTaggedDestinationsForTag(tagID);
+        List<Destination> destinations = new ArrayList<>();
+        for(TaggedDestination td : taggedDestinations) {
+            destinations.add(td.getDestination());
+        }
+        return destinations;
     }
 
     public boolean create(TaggedDestination taggedDestination) {

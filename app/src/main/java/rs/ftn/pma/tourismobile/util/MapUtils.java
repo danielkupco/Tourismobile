@@ -29,9 +29,9 @@ public class MapUtils {
         destinations.add(destination);
     }
 
-    public static void setDestinations(List<Destination> destinations) {
+    public static void setDestinations(List<Destination> newDestinations) {
         updated = true;
-        destinations = new ArrayList<>(destinations);
+        destinations = new ArrayList<>(newDestinations);
     }
 
 }

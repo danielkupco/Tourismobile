@@ -100,4 +100,9 @@ public class TagDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @OptionsItem
+    void actionTaggedDestinations() {
+        TaggedDestinationsActivity_.intent(this).tagID(tagId).start();
+    }
+
 }

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="rs.ftn.pma.tourismobile.activities.TagDetailsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/actionTaggedDestinations"
+        android:id="@+id/actionMap"
         android:orderInCategory="1"
-        android:title="@string/action_show_tagged"
-        app:showAsAction="never" />
+        android:title="@string/action_map"
+        android:icon="@drawable/ic_google_maps_white_24dp"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/actionSettings"
         android:orderInCategory="100"

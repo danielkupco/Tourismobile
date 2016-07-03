@@ -30,7 +30,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
-import org.androidannotations.annotations.Trace;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -308,7 +307,6 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         ObjectAnimator.ofFloat(fabFavourite, "rotation", 0f, -360f).setDuration(DURATION).start();
     }
 
-    @Trace
     @UiThread
     public void updateTags() {
         StringBuilder stringBuilder = new StringBuilder("Tags: ");

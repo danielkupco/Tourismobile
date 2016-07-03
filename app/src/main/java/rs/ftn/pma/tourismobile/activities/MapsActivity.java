@@ -63,6 +63,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBoundsBuilder.build(), width, height, padding));
             }
+            else {
+
+            }
         }
     }
 }
