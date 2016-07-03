@@ -43,7 +43,3 @@ build/
 *.ipr
 *~
 *.swp
-
-# Resource images
-app/src/main/res/mipmap*/
-app/src/main/res/drawable*/
