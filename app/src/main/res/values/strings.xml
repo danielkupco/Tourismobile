@@ -90,4 +90,6 @@
     <string name="pref_destinations_per_page_key">destinations_per_page</string>
     <string name="pref_destinations_per_page_default">5</string>
 
+    <string name="splash_screen">Splash Screen</string>
+
 </resources>
