@@ -241,6 +241,12 @@ public class DestinationDetailsActivity extends AppCompatActivity implements ISe
         MapsActivity_.intent(this).start();
     }
 
+    @OptionsItem
+    void actionSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

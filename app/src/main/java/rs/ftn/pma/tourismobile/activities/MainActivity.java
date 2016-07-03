@@ -217,9 +217,13 @@ public class MainActivity extends AppCompatActivity implements IServiceActivity,
                 break;
             }
             case R.id.nav_settings: {
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             }
             case R.id.nav_exit: {
+                finish();
+                System.exit(0);
                 break;
             }
             default: {

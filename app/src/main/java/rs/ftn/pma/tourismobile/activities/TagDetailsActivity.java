@@ -1,9 +1,9 @@
 package rs.ftn.pma.tourismobile.activities;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +12,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import rs.ftn.pma.tourismobile.R;
@@ -22,6 +24,7 @@ import rs.ftn.pma.tourismobile.model.Tag;
  * Created by Daniel Kupčo on 04.06.2016.
  */
 @EActivity(R.layout.activity_tag_details)
+@OptionsMenu(R.menu.action_bar_tag_details)
 public class TagDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = TagDetailsActivity.class.getSimpleName();
@@ -85,16 +88,16 @@ public class TagDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // making home (up) button acts like back button is pressed
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
+    // must set explicitly because home ID is not part of our menu layout
+    @OptionsItem(android.R.id.home)
+    void home() {
+        onBackPressed();
+    }
 
-        return(super.onOptionsItemSelected(item));
+    @OptionsItem
+    void actionSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
 }
