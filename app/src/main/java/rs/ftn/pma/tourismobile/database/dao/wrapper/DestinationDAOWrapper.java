@@ -33,7 +33,16 @@ public class DestinationDAOWrapper extends Observable {
     }
 
     public boolean create(Destination destination) {
-        return destinationDAO.create(destination) == 1;
+        Destination existing = findByWikiPageID(destination.getWikiPageID());
+        if(existing == null) {
+            return destinationDAO.create(destination) == 1;
+        }
+        else {
+            if(!existing.isFavourite())
+                existing.setFavourite(destination.isFavourite());
+            update(existing);
+            return true;
+        }
     }
 
     public void update(Destination destination) {
